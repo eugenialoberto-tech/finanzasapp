@@ -665,8 +665,10 @@ function loadAll() {
     api('getVacations',    { uid: S.user.uid })
   ]).then(function(results) {
     S.transactions = results[0].transactions || [];
-    S.categories   = results[1].categories   || defaultCategories();
-    S.vacations    = results[2].vacations     || [];
+    // Si el backend no devuelve categorías, usar las por defecto
+    var backendCats = results[1].categories;
+    S.categories = (backendCats && backendCats.length) ? backendCats : defaultCategories();
+    S.vacations  = results[2].vacations || [];
   }).catch(function() {
     if (!S.categories.length) S.categories = defaultCategories();
   });
