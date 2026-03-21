@@ -657,9 +657,14 @@ function loadAll() {
     api('getVacations',    { uid: S.user.uid })
   ]).then(function(results) {
     S.transactions = results[0].transactions || [];
-    var backendCats = results[1].categories;
-    S.categories = (backendCats && backendCats.length) ? backendCats : defaultCategories();
-    S.vacations  = results[2].vacations || [];
+    // Siempre arrancamos con las categorías por defecto
+    // y agregamos las personalizadas del backend que tengan type
+    var defaults = defaultCategories();
+    var backendCats = (results[1].categories || []).filter(function(c) {
+      return c.type === 'expense' || c.type === 'income';
+    });
+    S.categories = defaults.concat(backendCats);
+    S.vacations = results[2].vacations || [];
   }).catch(function() {
     if (!S.categories.length) S.categories = defaultCategories();
   });
