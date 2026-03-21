@@ -180,6 +180,7 @@ canvas{max-width:100%;border-radius:var(--radius)}
 .check-text.done{text-decoration:line-through;color:var(--text3)}
 
 /* SETTINGS */
+.settings-section{margin-bottom:24px}
 .settings-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
 .settings-item:last-child{border-bottom:none}
 .settings-item-info h4{font-size:15px;font-weight:600}
@@ -230,8 +231,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     <button class="auth-tab active" id="btn-tab-login">Iniciar sesión</button>
     <button class="auth-tab" id="btn-tab-register">Registrarse</button>
   </div>
-
-  <!-- LOGIN FORM -->
   <div id="form-login">
     <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"/></div>
     <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••"/></div>
@@ -242,8 +241,6 @@ input:checked+.slider:before{transform:translateX(20px)}
       Google
     </button>
   </div>
-
-  <!-- REGISTER FORM -->
   <div id="form-register" style="display:none">
     <div class="field"><label>Nombre</label><input type="text" id="reg-name" placeholder="Tu nombre"/></div>
     <div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="tu@email.com"/></div>
@@ -318,10 +315,10 @@ input:checked+.slider:before{transform:translateX(20px)}
   </div>
 
   <div id="tab-settings" class="content" style="display:none">
-    <div style="margin-bottom:24px">
+    <div class="settings-section">
       <div class="section-title">Cuenta</div>
       <div class="card">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:14px">
           <div class="avatar" id="settings-avatar">👤</div>
           <div>
             <div style="font-size:16px;font-weight:700" id="settings-name">—</div>
@@ -330,7 +327,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         </div>
       </div>
     </div>
-    <div style="margin-bottom:24px">
+    <div class="settings-section">
       <div class="section-title">Modos</div>
       <div class="card">
         <div class="settings-item">
@@ -343,7 +340,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         </div>
       </div>
     </div>
-    <div style="margin-bottom:24px">
+    <div class="settings-section">
       <div class="section-title">Categorías</div>
       <div class="card" id="categories-list-settings"></div>
       <button class="btn btn-secondary" style="margin-top:10px" id="btn-new-cat">+ Nueva categoría</button>
@@ -530,20 +527,31 @@ var GAS_URL    = 'https://script.google.com/macros/s/AKfycbzuymeXgRU9ucZYshiWs4k
 
 // ── STATE ────────────────────────────────────────
 var S = {
-  user: null,
-  transactions: [],
-  categories: [],
-  vacations: [],
-  vacItems: {},
+  user: null, transactions: [], categories: [], vacations: [], vacItems: {},
   tc: { oficial: 1000, blue: 1200 },
-  txType: 'expense',
-  txFilter: 'all',
-  selectedCat: null,
-  currentTags: [],
-  activeVacId: null,
-  activeTab: 'dashboard',
-  newCatType: 'expense'
+  txType: 'expense', txFilter: 'all',
+  selectedCat: null, currentTags: [],
+  activeVacId: null, activeTab: 'dashboard', newCatType: 'expense'
 };
+
+// ── CATEGORIES ───────────────────────────────────
+function defaultCategories() {
+  return [
+    {id:'c1', name:'Comida',          icon:'🍔', color:'#ef4444', type:'expense'},
+    {id:'c2', name:'Transporte',      icon:'🚗', color:'#f59e0b', type:'expense'},
+    {id:'c3', name:'Supermercado',    icon:'🛒', color:'#22c55e', type:'expense'},
+    {id:'c4', name:'Salud',           icon:'💊', color:'#3b82f6', type:'expense'},
+    {id:'c5', name:'Entretenimiento', icon:'🎬', color:'#8b5cf6', type:'expense'},
+    {id:'c6', name:'Ropa',            icon:'👕', color:'#ec4899', type:'expense'},
+    {id:'c7', name:'Viaje',           icon:'✈️', color:'#06b6d4', type:'expense'},
+    {id:'c8', name:'Servicios',       icon:'💡', color:'#f59e0b', type:'expense'},
+    {id:'c9', name:'Otros gastos',    icon:'📦', color:'#6b7280', type:'expense'},
+    {id:'i1', name:'Salario',         icon:'💼', color:'#22c55e', type:'income'},
+    {id:'i2', name:'Reintegro',       icon:'↩️', color:'#10b981', type:'income'},
+    {id:'i3', name:'Intereses',       icon:'🏦', color:'#06b6d4', type:'income'},
+    {id:'i4', name:'Otros ingresos',  icon:'💰', color:'#6b7280', type:'income'},
+  ];
+}
 
 // ── API ──────────────────────────────────────────
 function api(action, params) {
@@ -552,12 +560,8 @@ function api(action, params) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Target-URL': GAS_URL },
     body: JSON.stringify(Object.assign({ action: action }, params))
-  }).then(function(r) {
-    return r.json();
-  }).then(function(d) {
-    if (d.error) throw new Error(d.error);
-    return d;
-  });
+  }).then(function(r) { return r.json(); })
+    .then(function(d) { if (d.error) throw new Error(d.error); return d; });
 }
 
 // ── TOAST ────────────────────────────────────────
@@ -571,17 +575,15 @@ function toast(msg, type) {
 }
 
 // ── UTILS ────────────────────────────────────────
-function fmt(n) { return (n || 0).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+function fmt(n) { return (n||0).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:2}); }
 function todayStr() { return new Date().toISOString().split('T')[0]; }
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 function monthName(m) { return ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][m]; }
 function fmtDate(str) {
   if (!str) return '';
   var d = new Date(str + 'T00:00:00');
-  return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+  return d.toLocaleDateString('es-AR', { day:'2-digit', month:'short' });
 }
-function showEl(id) { document.getElementById(id).style.display = ''; }
-function hideEl(id) { document.getElementById(id).style.display = 'none'; }
 function showModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -592,39 +594,38 @@ document.getElementById('btn-tab-login').addEventListener('click', function() {
   document.getElementById('btn-tab-login').classList.add('active');
   document.getElementById('btn-tab-register').classList.remove('active');
 });
-
 document.getElementById('btn-tab-register').addEventListener('click', function() {
   document.getElementById('form-login').style.display = 'none';
   document.getElementById('form-register').style.display = 'block';
   document.getElementById('btn-tab-login').classList.remove('active');
   document.getElementById('btn-tab-register').classList.add('active');
 });
-
 document.getElementById('btn-do-login').addEventListener('click', function() {
   var email = document.getElementById('login-email').value.trim();
   var pass  = document.getElementById('login-pass').value;
   if (!email || !pass) { toast('Completá los campos', 'error'); return; }
-  api('login', { email: email, password: pass }).then(function(d) {
-    loginSuccess(d.user);
-  }).catch(function(e) { toast(e.message, 'error'); });
+  api('login', { email:email, password:pass })
+    .then(function(d) { loginSuccess(d.user); })
+    .catch(function(e) { toast(e.message, 'error'); });
 });
-
 document.getElementById('btn-do-register').addEventListener('click', function() {
   var name  = document.getElementById('reg-name').value.trim();
   var email = document.getElementById('reg-email').value.trim();
   var pass  = document.getElementById('reg-pass').value;
-  if (!name || !email || !pass) { toast('Completá todos los campos', 'error'); return; }
-  if (pass.length < 6) { toast('La contraseña debe tener al menos 6 caracteres', 'error'); return; }
-  api('register', { name: name, email: email, password: pass }).then(function(d) {
-    loginSuccess(d.user);
-  }).catch(function(e) { toast(e.message, 'error'); });
+  if (!name||!email||!pass) { toast('Completá todos los campos','error'); return; }
+  if (pass.length < 6) { toast('La contraseña debe tener al menos 6 caracteres','error'); return; }
+  api('register', { name:name, email:email, password:pass })
+    .then(function(d) { loginSuccess(d.user); })
+    .catch(function(e) { toast(e.message, 'error'); });
 });
-
-document.getElementById('btn-google-login').addEventListener('click', function() {
-  toast('Login con Google próximamente', 'error');
-});
-document.getElementById('btn-google-register').addEventListener('click', function() {
-  toast('Login con Google próximamente', 'error');
+document.getElementById('btn-google-login').addEventListener('click', function() { toast('Login con Google próximamente','error'); });
+document.getElementById('btn-google-register').addEventListener('click', function() { toast('Login con Google próximamente','error'); });
+document.getElementById('btn-logout').addEventListener('click', function() {
+  localStorage.removeItem('session');
+  S.user = null; S.transactions = []; S.categories = [];
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('screen-auth').classList.add('active');
+  document.getElementById('fab').style.display = 'none';
 });
 
 function loginSuccess(user) {
@@ -633,15 +634,6 @@ function loginSuccess(user) {
   initApp();
 }
 
-document.getElementById('btn-logout').addEventListener('click', function() {
-  localStorage.removeItem('session');
-  S.user = null; S.transactions = []; S.categories = [];
-  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-  document.getElementById('screen-auth').classList.add('active');
-  hideEl('fab');
-});
-
-// Check session on load
 (function() {
   var saved = localStorage.getItem('session');
   if (saved) { try { loginSuccess(JSON.parse(saved)); } catch(e) {} }
@@ -652,7 +644,7 @@ document.getElementById('btn-logout').addEventListener('click', function() {
 function initApp() {
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById('screen-main').classList.add('active');
-  showEl('fab');
+  document.getElementById('fab').style.display = 'flex';
   updateModeUI();
   updateSettingsUI();
   loadAll().then(function() { renderDashboard(); });
@@ -665,7 +657,6 @@ function loadAll() {
     api('getVacations',    { uid: S.user.uid })
   ]).then(function(results) {
     S.transactions = results[0].transactions || [];
-    // Si el backend no devuelve categorías, usar las por defecto
     var backendCats = results[1].categories;
     S.categories = (backendCats && backendCats.length) ? backendCats : defaultCategories();
     S.vacations  = results[2].vacations || [];
@@ -674,143 +665,107 @@ function loadAll() {
   });
 }
 
-function defaultCategories() {
-  return [
-    // Gastos
-    {id:'c1', name:'Comida',          icon:'🍔', color:'#ef4444', type:'expense'},
-    {id:'c2', name:'Transporte',      icon:'🚗', color:'#f59e0b', type:'expense'},
-    {id:'c3', name:'Supermercado',    icon:'🛒', color:'#22c55e', type:'expense'},
-    {id:'c4', name:'Salud',           icon:'💊', color:'#3b82f6', type:'expense'},
-    {id:'c5', name:'Entretenimiento', icon:'🎬', color:'#8b5cf6', type:'expense'},
-    {id:'c6', name:'Ropa',            icon:'👕', color:'#ec4899', type:'expense'},
-    {id:'c7', name:'Viaje',           icon:'✈️', color:'#06b6d4', type:'expense'},
-    {id:'c8', name:'Servicios',       icon:'💡', color:'#f59e0b', type:'expense'},
-    {id:'c9', name:'Otros gastos',    icon:'📦', color:'#6b7280', type:'expense'},
-    // Ingresos
-    {id:'i1', name:'Salario',         icon:'💼', color:'#22c55e', type:'income'},
-    {id:'i2', name:'Reintegro',       icon:'↩️', color:'#10b981', type:'income'},
-    {id:'i3', name:'Intereses',       icon:'🏦', color:'#06b6d4', type:'income'},
-    {id:'i4', name:'Otros ingresos',  icon:'💰', color:'#6b7280', type:'income'},
-  ];
-}
-
 // ── TABS ─────────────────────────────────────────
 document.querySelectorAll('.nav-item').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var tab = btn.getAttribute('data-tab');
-    switchTab(tab, btn);
-  });
+  btn.addEventListener('click', function() { switchTab(btn.getAttribute('data-tab'), btn); });
 });
-
 function switchTab(tab, btn) {
   ['dashboard','transactions','couple','vacation','settings'].forEach(function(t) {
-    var el = document.getElementById('tab-' + t);
-    if (el) el.style.display = 'none';
+    var el = document.getElementById('tab-'+t); if (el) el.style.display = 'none';
   });
-  var active = document.getElementById('tab-' + tab);
-  if (active) active.style.display = '';
+  var active = document.getElementById('tab-'+tab); if (active) active.style.display = '';
   document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
   S.activeTab = tab;
   var titles = { dashboard:'Dashboard', transactions:'Movimientos', couple:'Pareja', vacation:'Viajes', settings:'Configuración' };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
-  if (tab === 'transactions') renderTransactions();
-  if (tab === 'couple')       renderCouple();
-  if (tab === 'vacation')     renderVacations();
-  if (tab === 'settings')     updateSettingsUI();
+  if (tab==='transactions') renderTransactions();
+  if (tab==='couple')       renderCouple();
+  if (tab==='vacation')     renderVacations();
+  if (tab==='settings')     updateSettingsUI();
 }
-
 document.getElementById('btn-go-settings').addEventListener('click', function() {
-  var btn = document.querySelector('[data-tab="settings"]');
-  switchTab('settings', btn);
+  switchTab('settings', document.querySelector('[data-tab="settings"]'));
 });
 
 // ── MODE ──────────────────────────────────────────
 function updateModeUI() {
   if (!S.user) return;
-  var hasCouple  = S.user.mode === 'couple'  || S.user.mode === 'both';
-  var hasVacation= S.user.mode === 'vacation' || S.user.mode === 'both';
-  document.getElementById('nav-couple').style.display  = hasCouple   ? '' : 'none';
-  document.getElementById('nav-vacation').style.display= hasVacation ? '' : 'none';
+  var c = S.user.mode==='couple'  || S.user.mode==='both';
+  var v = S.user.mode==='vacation' || S.user.mode==='both';
+  document.getElementById('nav-couple').style.display   = c ? '' : 'none';
+  document.getElementById('nav-vacation').style.display = v ? '' : 'none';
   var badges = '';
-  if (hasCouple)   badges += '<span class="mode-badge couple">💑 Pareja</span> ';
-  if (hasVacation) badges += '<span class="mode-badge vacation">🏖️ Vacaciones</span>';
+  if (c) badges += '<span class="mode-badge couple">💑 Pareja</span> ';
+  if (v) badges += '<span class="mode-badge vacation">🏖️ Vacaciones</span>';
   document.getElementById('mode-indicator').innerHTML = badges;
-  document.getElementById('shared-section').style.display     = hasCouple ? '' : 'none';
-  document.getElementById('vexp-shared-wrap').style.display   = hasCouple ? '' : 'none';
+  document.getElementById('shared-section').style.display   = c ? '' : 'none';
+  document.getElementById('vexp-shared-wrap').style.display = c ? '' : 'none';
 }
-
-document.getElementById('toggle-couple').addEventListener('change', function() {
-  toggleMode('couple', this.checked);
-});
-document.getElementById('toggle-vacation').addEventListener('change', function() {
-  toggleMode('vacation', this.checked);
-});
-
+document.getElementById('toggle-couple').addEventListener('change', function() { toggleMode('couple', this.checked); });
+document.getElementById('toggle-vacation').addEventListener('change', function() { toggleMode('vacation', this.checked); });
 function toggleMode(mode, checked) {
   if (!S.user) return;
-  var c = S.user.mode === 'couple'  || S.user.mode === 'both';
-  var v = S.user.mode === 'vacation' || S.user.mode === 'both';
-  if (mode === 'couple')   c = checked;
-  if (mode === 'vacation') v = checked;
-  S.user.mode = c && v ? 'both' : c ? 'couple' : v ? 'vacation' : 'normal';
+  var c = S.user.mode==='couple'  || S.user.mode==='both';
+  var v = S.user.mode==='vacation' || S.user.mode==='both';
+  if (mode==='couple')   c = checked;
+  if (mode==='vacation') v = checked;
+  S.user.mode = c&&v ? 'both' : c ? 'couple' : v ? 'vacation' : 'normal';
   localStorage.setItem('session', JSON.stringify(S.user));
   updateModeUI();
-  api('updateUserMode', { uid: S.user.uid, mode: S.user.mode }).catch(function(){});
+  api('updateUserMode', { uid:S.user.uid, mode:S.user.mode }).catch(function(){});
 }
 
-// ── SETTINGS UI ───────────────────────────────────
+// ── SETTINGS ─────────────────────────────────────
 function updateSettingsUI() {
   if (!S.user) return;
   document.getElementById('settings-name').textContent  = S.user.name  || '—';
   document.getElementById('settings-email').textContent = S.user.email || '—';
-  document.getElementById('settings-avatar').textContent = (S.user.name || '?')[0].toUpperCase();
-  document.getElementById('toggle-couple').checked   = S.user.mode === 'couple'  || S.user.mode === 'both';
-  document.getElementById('toggle-vacation').checked = S.user.mode === 'vacation' || S.user.mode === 'both';
+  document.getElementById('settings-avatar').textContent = (S.user.name||'?')[0].toUpperCase();
+  document.getElementById('toggle-couple').checked   = S.user.mode==='couple'  || S.user.mode==='both';
+  document.getElementById('toggle-vacation').checked = S.user.mode==='vacation' || S.user.mode==='both';
   var list = document.getElementById('categories-list-settings');
   list.innerHTML = S.categories.map(function(cat) {
     return '<div class="settings-item">' +
-      '<div class="settings-item-info" style="display:flex;align-items:center;gap:10px">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
       '<span style="font-size:22px">' + cat.icon + '</span>' +
-      '<div><h4>' + cat.name + '</h4></div></div>' +
+      '<div><div style="font-weight:600">' + cat.name + '</div>' +
+      '<div style="font-size:11px;color:var(--text3)">' + (cat.type==='income'?'Ingreso':'Gasto') + '</div></div></div>' +
       '<span style="width:20px;height:20px;border-radius:50%;background:' + cat.color + ';display:inline-block"></span>' +
       '</div>';
   }).join('');
 }
 
 document.getElementById('btn-new-cat').addEventListener('click', function() {
-  // Reset tipo al abrir
   S.newCatType = 'expense';
   document.getElementById('cat-type-expense').classList.add('active');
   document.getElementById('cat-type-income').classList.remove('active');
   showModal('modal-new-cat');
 });
-
 document.getElementById('cat-type-expense').addEventListener('click', function() {
   S.newCatType = 'expense';
-  this.classList.add('active');
+  document.getElementById('cat-type-expense').classList.add('active');
   document.getElementById('cat-type-income').classList.remove('active');
 });
 document.getElementById('cat-type-income').addEventListener('click', function() {
   S.newCatType = 'income';
-  this.classList.add('active');
+  document.getElementById('cat-type-income').classList.add('active');
   document.getElementById('cat-type-expense').classList.remove('active');
 });
-
 document.getElementById('btn-save-cat').addEventListener('click', function() {
   var name  = document.getElementById('cat-name').value.trim();
   var icon  = document.getElementById('cat-icon').value.trim() || '📦';
   var color = document.getElementById('cat-color').value;
-  if (!name) { toast('Ingresá un nombre', 'error'); return; }
-  var cat = { id: genId(), uid: S.user.uid, name: name, icon: icon, color: color, type: S.newCatType };
+  if (!name) { toast('Ingresá un nombre','error'); return; }
+  var cat = { id:genId(), uid:S.user.uid, name:name, icon:icon, color:color, type:S.newCatType };
   S.categories.push(cat);
   closeModal('modal-new-cat');
   updateSettingsUI();
-  toast('Categoría creada ✓', 'success');
-  api('addCategory', { category: cat }).catch(function(){});
+  toast('Categoría creada ✓','success');
+  api('addCategory', { category:cat }).catch(function(){});
 });
 
-// ── TIPO DE CAMBIO ────────────────────────────────
+// ── TC ────────────────────────────────────────────
 document.getElementById('btn-open-tc').addEventListener('click', function() {
   document.getElementById('tc-oficial').value = S.tc.oficial;
   document.getElementById('tc-blue').value    = S.tc.blue;
@@ -820,92 +775,85 @@ document.getElementById('btn-save-tc').addEventListener('click', function() {
   S.tc.oficial = parseFloat(document.getElementById('tc-oficial').value) || S.tc.oficial;
   S.tc.blue    = parseFloat(document.getElementById('tc-blue').value)    || S.tc.blue;
   localStorage.setItem('tc', JSON.stringify(S.tc));
-  toast('Tipo de cambio guardado ✓', 'success');
+  toast('Tipo de cambio guardado ✓','success');
   closeModal('modal-tc');
 });
 
-// ── CLOSE MODALS ─────────────────────────────────
+// ── MODALS CLOSE ─────────────────────────────────
 document.querySelectorAll('[data-close]').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    closeModal(btn.getAttribute('data-close'));
-  });
+  btn.addEventListener('click', function() { closeModal(btn.getAttribute('data-close')); });
 });
 document.querySelectorAll('.modal-overlay').forEach(function(o) {
-  o.addEventListener('click', function(e) {
-    if (e.target === o) o.classList.remove('open');
-  });
+  o.addEventListener('click', function(e) { if (e.target===o) o.classList.remove('open'); });
 });
 
-// ── NEW TRANSACTION ───────────────────────────────
-document.getElementById('fab').addEventListener('click', function() { openNewTx(); });
-
+// ── NEW TX ────────────────────────────────────────
+document.getElementById('fab').addEventListener('click', openNewTx);
 function openNewTx() {
-  document.getElementById('tx-desc').value   = '';
+  document.getElementById('tx-desc').value = '';
   document.getElementById('tx-amount').value = '';
-  document.getElementById('tx-note').value   = '';
-  document.getElementById('tx-date').value   = todayStr();
+  document.getElementById('tx-note').value = '';
+  document.getElementById('tx-date').value = todayStr();
   document.getElementById('tx-currency').value = 'ARS';
   document.getElementById('tc-field').style.display = 'none';
   document.getElementById('tx-shared').checked = false;
   document.getElementById('split-section').style.display = 'none';
   document.getElementById('split-me').value = 50;
   document.getElementById('split-partner').value = 50;
-  S.txType = 'expense';
-  S.currentTags = [];
-  S.selectedCat = null;
-  document.querySelectorAll('.toggle-opt').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-type') === 'expense');
+  S.txType = 'expense'; S.currentTags = []; S.selectedCat = null;
+  // Reset toggle visual
+  document.querySelectorAll('.toggle-opt[data-type]').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-type')==='expense');
   });
   renderTagsWrap();
   renderCatPicker();
   showModal('modal-new-tx');
 }
 
-document.querySelectorAll('.toggle-opt').forEach(function(btn) {
+// Toggle gasto/ingreso en nueva tx
+document.querySelectorAll('.toggle-opt[data-type]').forEach(function(btn) {
   btn.addEventListener('click', function() {
     S.txType = btn.getAttribute('data-type');
-    document.querySelectorAll('.toggle-opt').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.toggle-opt[data-type]').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
+    S.selectedCat = null;
+    renderCatPicker(); // ← RECARGA categorías filtradas por tipo
   });
 });
 
 document.getElementById('tx-currency').addEventListener('change', function() {
-  document.getElementById('tc-field').style.display = this.value === 'USD' ? '' : 'none';
-  if (this.value === 'USD') document.getElementById('tx-tc').value = S.tc.blue;
+  document.getElementById('tc-field').style.display = this.value==='USD' ? '' : 'none';
+  if (this.value==='USD') document.getElementById('tx-tc').value = S.tc.blue;
 });
-
 document.getElementById('tx-shared').addEventListener('change', function() {
   document.getElementById('split-section').style.display = this.checked ? '' : 'none';
 });
-
 document.getElementById('split-me').addEventListener('change', function() {
-  document.getElementById('split-partner').value = Math.max(0, 100 - (parseInt(this.value) || 0));
+  document.getElementById('split-partner').value = Math.max(0, 100-(parseInt(this.value)||0));
 });
 document.getElementById('split-partner').addEventListener('change', function() {
-  document.getElementById('split-me').value = Math.max(0, 100 - (parseInt(this.value) || 0));
+  document.getElementById('split-me').value = Math.max(0, 100-(parseInt(this.value)||0));
 });
-
 document.getElementById('vexp-shared').addEventListener('change', function() {
   document.getElementById('vexp-split-section').style.display = this.checked ? '' : 'none';
 });
 document.getElementById('vexp-split-me').addEventListener('change', function() {
-  document.getElementById('vexp-split-partner').value = Math.max(0, 100 - (parseInt(this.value) || 0));
+  document.getElementById('vexp-split-partner').value = Math.max(0, 100-(parseInt(this.value)||0));
 });
 document.getElementById('vexp-split-partner').addEventListener('change', function() {
-  document.getElementById('vexp-split-me').value = Math.max(0, 100 - (parseInt(this.value) || 0));
+  document.getElementById('vexp-split-me').value = Math.max(0, 100-(parseInt(this.value)||0));
 });
 
 // Tags
 document.getElementById('tags-input').addEventListener('keydown', function(e) {
-  if ((e.key === 'Enter' || e.key === ',') && this.value.trim()) {
+  if ((e.key==='Enter'||e.key===',') && this.value.trim()) {
     e.preventDefault();
-    var tag = this.value.trim().replace(',', '');
-    if (S.currentTags.indexOf(tag) === -1) S.currentTags.push(tag);
+    var tag = this.value.trim().replace(',','');
+    if (S.currentTags.indexOf(tag)===-1) S.currentTags.push(tag);
     this.value = '';
     renderTagsWrap();
   }
 });
-
 function renderTagsWrap() {
   var wrap = document.getElementById('tags-wrap');
   wrap.querySelectorAll('.tag-pill').forEach(function(p) { p.remove(); });
@@ -915,28 +863,29 @@ function renderTagsWrap() {
     pill.className = 'tag-pill';
     pill.innerHTML = tag + '<button type="button">×</button>';
     pill.querySelector('button').addEventListener('click', function() {
-      S.currentTags = S.currentTags.filter(function(t) { return t !== tag; });
+      S.currentTags = S.currentTags.filter(function(t) { return t!==tag; });
       renderTagsWrap();
     });
     wrap.insertBefore(pill, inp);
   });
 }
 
+// Cat picker — FILTRA POR TIPO
 function renderCatPicker() {
   var grid = document.getElementById('cat-picker');
   grid.innerHTML = '';
   var filtered = S.categories.filter(function(cat) {
-    if (!cat.type) return true; // categorías sin tipo aparecen siempre
     return cat.type === S.txType;
   });
+  if (!filtered.length) {
+    grid.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:8px">Sin categorías para este tipo</p>';
+    return;
+  }
   filtered.forEach(function(cat) {
     var d = document.createElement('div');
-    d.className = 'cat-opt' + (S.selectedCat === cat.id ? ' selected' : '');
+    d.className = 'cat-opt' + (S.selectedCat===cat.id ? ' selected' : '');
     d.innerHTML = '<span class="cat-icon">' + cat.icon + '</span><span class="cat-name">' + cat.name + '</span>';
-    d.addEventListener('click', function() {
-      S.selectedCat = cat.id;
-      renderCatPicker();
-    });
+    d.addEventListener('click', function() { S.selectedCat = cat.id; renderCatPicker(); });
     grid.appendChild(d);
   });
 }
@@ -946,34 +895,30 @@ document.getElementById('btn-save-tx').addEventListener('click', function() {
   var amount   = parseFloat(document.getElementById('tx-amount').value);
   var currency = document.getElementById('tx-currency').value;
   var date     = document.getElementById('tx-date').value || todayStr();
-  var tc       = currency === 'USD' ? (parseFloat(document.getElementById('tx-tc').value) || S.tc.blue) : 1;
+  var tc       = currency==='USD' ? (parseFloat(document.getElementById('tx-tc').value)||S.tc.blue) : 1;
   var note     = document.getElementById('tx-note').value.trim();
   var shared   = document.getElementById('tx-shared').checked;
   var payer    = document.getElementById('tx-payer').value;
-  var splitMe  = parseInt(document.getElementById('split-me').value) || 50;
+  var splitMe  = parseInt(document.getElementById('split-me').value)||50;
   var account  = document.getElementById('tx-account-src').value;
-
-  if (!desc)              { toast('Agregá una descripción', 'error'); return; }
-  if (!amount || amount <= 0) { toast('Ingresá un monto válido', 'error'); return; }
-
+  if (!desc)           { toast('Agregá una descripción','error'); return; }
+  if (!amount||amount<=0) { toast('Ingresá un monto válido','error'); return; }
+  var defaultCatId = S.txType==='income' ? 'i4' : 'c9';
   var tx = {
-    id: genId(), uid: S.user.uid, date: date,
-    type: S.txType, amount: amount, currency: currency, tc: tc,
-    category_id: S.selectedCat || 'c10',
-    tags: S.currentTags.slice(),
-    description: desc, note: note,
-    shared: shared, payer: shared ? payer : 'me',
-    split_me: shared ? splitMe : 100,
-    account_src: shared ? account : 'me',
-    created_at: new Date().toISOString()
+    id:genId(), uid:S.user.uid, date:date,
+    type:S.txType, amount:amount, currency:currency, tc:tc,
+    category_id: S.selectedCat || defaultCatId,
+    tags:S.currentTags.slice(), description:desc, note:note,
+    shared:shared, payer:shared?payer:'me',
+    split_me:shared?splitMe:100, account_src:shared?account:'me',
+    created_at:new Date().toISOString()
   };
-
   S.transactions.unshift(tx);
   closeModal('modal-new-tx');
   renderDashboard();
-  if (S.activeTab === 'transactions') renderTransactions();
-  toast('Transacción guardada ✓', 'success');
-  api('addTransaction', { transaction: tx }).catch(function(){});
+  if (S.activeTab==='transactions') renderTransactions();
+  toast('Transacción guardada ✓','success');
+  api('addTransaction', { transaction:tx }).catch(function(){});
 });
 
 // ── TRANSACTIONS ──────────────────────────────────
@@ -985,320 +930,264 @@ document.querySelectorAll('.filter-chip').forEach(function(btn) {
     renderTransactions();
   });
 });
-
 function renderTransactions() {
   var container = document.getElementById('tx-list-container');
   var txs = S.transactions.slice();
-  if (S.txFilter === 'income')  txs = txs.filter(function(t) { return t.type === 'income'; });
-  if (S.txFilter === 'expense') txs = txs.filter(function(t) { return t.type === 'expense'; });
-  if (S.txFilter === 'shared')  txs = txs.filter(function(t) { return t.shared; });
-  if (S.txFilter === 'ARS')     txs = txs.filter(function(t) { return t.currency === 'ARS'; });
-  if (S.txFilter === 'USD')     txs = txs.filter(function(t) { return t.currency === 'USD'; });
+  if (S.txFilter==='income')  txs = txs.filter(function(t) { return t.type==='income'; });
+  if (S.txFilter==='expense') txs = txs.filter(function(t) { return t.type==='expense'; });
+  if (S.txFilter==='shared')  txs = txs.filter(function(t) { return t.shared; });
+  if (S.txFilter==='ARS')     txs = txs.filter(function(t) { return t.currency==='ARS'; });
+  if (S.txFilter==='USD')     txs = txs.filter(function(t) { return t.currency==='USD'; });
   if (!txs.length) {
     container.innerHTML = '<div class="empty"><div class="e-icon">📭</div><h3>Sin movimientos</h3><p>Tocá el + para agregar tu primer transacción</p></div>';
     return;
   }
   container.innerHTML = '<div class="tx-list">' + txs.map(txHTML).join('') + '</div>';
 }
-
 function txHTML(tx) {
-  var cat    = S.categories.find(function(c) { return c.id === tx.category_id; }) || { icon:'📦', color:'#6b7280', name:'Otros' };
-  var sign   = tx.type === 'income' ? '+' : '-';
-  var cls    = tx.type === 'income' ? 'income' : 'expense';
-  var tags   = (tx.tags || []).map(function(t) { return '<span class="tx-tag">#' + t + '</span>'; }).join('');
-  var badge  = tx.shared ? '<span class="tx-shared-badge">💑 Compartido</span>' : '';
-  var amtStr = tx.currency === 'USD' ? 'U$' + fmt(tx.amount) : '$' + fmt(tx.amount);
-  var equiv  = tx.currency === 'USD' ? '≈ $' + fmt(tx.amount * tx.tc) + ' ARS' : '';
+  var cat   = S.categories.find(function(c) { return c.id===tx.category_id; }) || {icon:'📦',color:'#6b7280'};
+  var sign  = tx.type==='income' ? '+' : '-';
+  var cls   = tx.type==='income' ? 'income' : 'expense';
+  var tags  = (tx.tags||[]).map(function(t) { return '<span class="tx-tag">#'+t+'</span>'; }).join('');
+  var badge = tx.shared ? '<span class="tx-shared-badge">💑 Compartido</span>' : '';
+  var amt   = tx.currency==='USD' ? 'U$'+fmt(tx.amount) : '$'+fmt(tx.amount);
+  var equiv = tx.currency==='USD' ? '≈ $'+fmt(tx.amount*tx.tc)+' ARS' : '';
   return '<div class="tx-item">' +
-    '<div class="tx-cat-icon" style="background:' + cat.color + '22">' + cat.icon + '</div>' +
-    '<div class="tx-info"><div class="tx-desc">' + tx.description + '</div>' +
-    '<div class="tx-meta">' + fmtDate(tx.date) + ' ' + badge + ' ' + tags + '</div></div>' +
-    '<div class="tx-amount"><div class="amount-main ' + cls + '">' + sign + amtStr + '</div>' +
-    (equiv ? '<div class="amount-sub">' + equiv + '</div>' : '') + '</div></div>';
+    '<div class="tx-cat-icon" style="background:'+cat.color+'22">'+cat.icon+'</div>' +
+    '<div class="tx-info"><div class="tx-desc">'+tx.description+'</div>' +
+    '<div class="tx-meta">'+fmtDate(tx.date)+' '+badge+' '+tags+'</div></div>' +
+    '<div class="tx-amount"><div class="amount-main '+cls+'">'+sign+amt+'</div>' +
+    (equiv?'<div class="amount-sub">'+equiv+'</div>':'')+
+    '</div></div>';
 }
 
 // ── DASHBOARD ─────────────────────────────────────
 function renderDashboard() {
-  var now   = new Date();
-  var month = now.getMonth(), year = now.getFullYear();
-  var txs   = S.transactions.filter(function(t) {
-    var d = new Date(t.date); return d.getMonth() === month && d.getFullYear() === year;
+  var now=new Date(), month=now.getMonth(), year=now.getFullYear();
+  var txs=S.transactions.filter(function(t) {
+    var d=new Date(t.date); return d.getMonth()===month && d.getFullYear()===year;
   });
-  var iARS=0, eARS=0, iUSD=0, eUSD=0;
+  var iARS=0,eARS=0,iUSD=0,eUSD=0;
   txs.forEach(function(t) {
-    var isIn = t.type === 'income';
-    if (t.currency === 'ARS') { isIn ? (iARS += t.amount) : (eARS += t.amount); }
-    else                      { isIn ? (iUSD += t.amount) : (eUSD += t.amount); }
+    var isIn=t.type==='income';
+    if(t.currency==='ARS'){isIn?(iARS+=t.amount):(eARS+=t.amount);}
+    else{isIn?(iUSD+=t.amount):(eUSD+=t.amount);}
   });
-  document.getElementById('balance-month-label').textContent = monthName(month) + ' ' + year;
-  document.getElementById('balance-main-val').textContent    = '$' + fmt(iARS - eARS) + ' ARS';
-  document.getElementById('dash-income').textContent  = '+$' + fmt(iARS);
-  document.getElementById('dash-expense').textContent = '-$' + fmt(eARS);
-  var tARS = iARS - eARS, tUSD = iUSD - eUSD;
-  var arsEl = document.getElementById('dash-ars');
-  arsEl.textContent  = (tARS >= 0 ? '+' : '') + '$' + fmt(tARS);
-  arsEl.className    = 'si-val ' + (tARS >= 0 ? 'green' : 'red');
-  var usdEl = document.getElementById('dash-usd');
-  usdEl.textContent  = (tUSD >= 0 ? '+' : '') + 'U$' + fmt(tUSD);
-  usdEl.className    = 'si-val ' + (tUSD >= 0 ? 'green' : 'red');
+  document.getElementById('balance-month-label').textContent = monthName(month)+' '+year;
+  document.getElementById('balance-main-val').textContent    = '$'+fmt(iARS-eARS)+' ARS';
+  document.getElementById('dash-income').textContent  = '+$'+fmt(iARS);
+  document.getElementById('dash-expense').textContent = '-$'+fmt(eARS);
+  var tARS=iARS-eARS, tUSD=iUSD-eUSD;
+  var arsEl=document.getElementById('dash-ars');
+  arsEl.textContent = (tARS>=0?'+':'')+' $'+fmt(tARS);
+  arsEl.className   = 'si-val '+(tARS>=0?'green':'red');
+  var usdEl=document.getElementById('dash-usd');
+  usdEl.textContent = (tUSD>=0?'+':'')+'U$'+fmt(tUSD);
+  usdEl.className   = 'si-val '+(tUSD>=0?'green':'red');
   document.getElementById('dash-count').textContent = txs.length;
-  var cats = {};
-  txs.forEach(function(t) { cats[t.category_id] = true; });
+  var cats={}; txs.forEach(function(t){cats[t.category_id]=true;});
   document.getElementById('dash-cats').textContent = Object.keys(cats).length;
-  renderPie(txs.filter(function(t) { return t.type === 'expense'; }));
-  var recent = S.transactions.slice(0, 5);
+  renderPie(txs.filter(function(t){return t.type==='expense';}));
+  var recent=S.transactions.slice(0,5);
   document.getElementById('dash-recent-list').innerHTML = recent.length
-    ? '<div class="tx-list">' + recent.map(txHTML).join('') + '</div>'
+    ? '<div class="tx-list">'+recent.map(txHTML).join('')+'</div>'
     : '<div class="empty"><div class="e-icon">💸</div><h3>Sin movimientos</h3><p>Empezá cargando tu primer gasto</p></div>';
 }
-
 function renderPie(expenses) {
-  var canvas = document.getElementById('pieChart');
-  var legend = document.getElementById('pie-legend');
-  var ctx = canvas.getContext('2d');
-  var W = canvas.offsetWidth || 300, H = 220;
-  canvas.width = W; canvas.height = H;
-  ctx.clearRect(0, 0, W, H);
-  var catMap = {};
+  var canvas=document.getElementById('pieChart');
+  var legend=document.getElementById('pie-legend');
+  var ctx=canvas.getContext('2d');
+  var W=canvas.offsetWidth||300, H=220;
+  canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
+  var catMap={};
   expenses.forEach(function(t) {
-    var val = t.currency === 'USD' ? t.amount * t.tc : t.amount;
-    catMap[t.category_id] = (catMap[t.category_id] || 0) + val;
+    var val=t.currency==='USD'?t.amount*t.tc:t.amount;
+    catMap[t.category_id]=(catMap[t.category_id]||0)+val;
   });
-  var entries = Object.keys(catMap).map(function(k) { return [k, catMap[k]]; }).sort(function(a,b) { return b[1]-a[1]; });
-  var total = entries.reduce(function(s,e) { return s + e[1]; }, 0) || 1;
-  legend.innerHTML = '';
-  if (!entries.length) {
-    ctx.fillStyle = '#ffffff22';
-    ctx.beginPath(); ctx.arc(W/2, H/2, 80, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#9ca3af'; ctx.textAlign = 'center'; ctx.font = '14px Inter';
-    ctx.fillText('Sin datos', W/2, H/2+5);
-    return;
+  var entries=Object.keys(catMap).map(function(k){return[k,catMap[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var total=entries.reduce(function(s,e){return s+e[1];},0)||1;
+  legend.innerHTML='';
+  if(!entries.length){
+    ctx.fillStyle='#ffffff22';
+    ctx.beginPath();ctx.arc(W/2,H/2,80,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#9ca3af';ctx.textAlign='center';ctx.font='14px Inter';
+    ctx.fillText('Sin datos',W/2,H/2+5); return;
   }
-  var cx = W/2, cy = H/2, r = Math.min(cx, cy) - 20, startAngle = -Math.PI/2;
+  var cx=W/2,cy=H/2,r=Math.min(cx,cy)-20,startAngle=-Math.PI/2;
   entries.forEach(function(entry) {
-    var cat   = S.categories.find(function(c) { return c.id === entry[0]; }) || { color:'#6b7280', name:'Otros', icon:'📦' };
-    var slice = (entry[1]/total) * Math.PI * 2;
-    ctx.beginPath(); ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, startAngle, startAngle + slice);
-    ctx.closePath(); ctx.fillStyle = cat.color; ctx.fill();
-    ctx.strokeStyle = '#1a1d27'; ctx.lineWidth = 2; ctx.stroke();
-    var pct = Math.round(entry[1]/total*100);
-    legend.innerHTML += '<div class="legend-item"><div class="legend-dot" style="background:' + cat.color + '"></div>' + cat.icon + ' ' + cat.name + ' ' + pct + '%</div>';
-    startAngle += slice;
+    var cat=S.categories.find(function(c){return c.id===entry[0];})||{color:'#6b7280',name:'Otros',icon:'📦'};
+    var slice=(entry[1]/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,startAngle,startAngle+slice);
+    ctx.closePath();ctx.fillStyle=cat.color;ctx.fill();
+    ctx.strokeStyle='#1a1d27';ctx.lineWidth=2;ctx.stroke();
+    legend.innerHTML+='<div class="legend-item"><div class="legend-dot" style="background:'+cat.color+'"></div>'+cat.icon+' '+cat.name+' '+Math.round(entry[1]/total*100)+'%</div>';
+    startAngle+=slice;
   });
-  ctx.beginPath(); ctx.arc(cx, cy, r * 0.5, 0, Math.PI*2);
-  ctx.fillStyle = '#1a1d27'; ctx.fill();
-  ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 14px Inter';
-  ctx.fillText('$' + fmt(total), cx, cy + 5);
+  ctx.beginPath();ctx.arc(cx,cy,r*0.5,0,Math.PI*2);ctx.fillStyle='#1a1d27';ctx.fill();
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 14px Inter';
+  ctx.fillText('$'+fmt(total),cx,cy+5);
 }
 
 // ── COUPLE ────────────────────────────────────────
 document.getElementById('btn-send-partner').addEventListener('click', function() {
-  var email = document.getElementById('partner-email').value.trim();
-  if (!email) { toast('Ingresá un email', 'error'); return; }
-  api('linkPartner', { uid: S.user.uid, partner_email: email }).then(function(d) {
-    S.user.partner_uid  = d.partner_uid;
-    S.user.partner_name = d.partner_name;
-    localStorage.setItem('session', JSON.stringify(S.user));
-    toast('¡Pareja vinculada! ✓', 'success');
-    closeModal('modal-link-partner');
-    renderCouple();
-  }).catch(function(e) { toast(e.message, 'error'); });
+  var email=document.getElementById('partner-email').value.trim();
+  if(!email){toast('Ingresá un email','error');return;}
+  api('linkPartner',{uid:S.user.uid,partner_email:email}).then(function(d){
+    S.user.partner_uid=d.partner_uid; S.user.partner_name=d.partner_name;
+    localStorage.setItem('session',JSON.stringify(S.user));
+    toast('¡Pareja vinculada! ✓','success');
+    closeModal('modal-link-partner'); renderCouple();
+  }).catch(function(e){toast(e.message,'error');});
 });
-
 function renderCouple() {
-  var c = document.getElementById('couple-content');
-  if (!S.user.partner_uid) {
-    c.innerHTML = '<div class="couple-status"><div class="avatar">👤</div><div class="couple-info"><h3>' + S.user.name + '</h3><p>Sin pareja vinculada</p></div></div>' +
-      '<div class="empty"><div class="e-icon">💑</div><h3>Modo pareja activado</h3><p>Vinculá tu cuenta con la de tu pareja para compartir gastos.</p></div>' +
+  var c=document.getElementById('couple-content');
+  if(!S.user.partner_uid){
+    c.innerHTML='<div class="couple-status"><div class="avatar">👤</div><div class="couple-info"><h3>'+S.user.name+'</h3><p>Sin pareja vinculada</p></div></div>'+
+      '<div class="empty"><div class="e-icon">💑</div><h3>Modo pareja activado</h3><p>Vinculá tu cuenta con la de tu pareja para compartir gastos.</p></div>'+
       '<button class="btn btn-primary" style="margin-top:20px" id="btn-open-link-partner">Vincular pareja</button>';
-    document.getElementById('btn-open-link-partner').addEventListener('click', function() { showModal('modal-link-partner'); });
+    document.getElementById('btn-open-link-partner').addEventListener('click',function(){showModal('modal-link-partner');});
     return;
   }
-  var shared = S.transactions.filter(function(t) { return t.shared; });
-  var iOwe = 0, theyOwe = 0;
-  shared.forEach(function(t) {
-    var val = t.currency === 'USD' ? t.amount * t.tc : t.amount;
-    var my  = val * (t.split_me || 50) / 100;
-    if (t.payer === 'me') theyOwe += (val - my);
-    else iOwe += my;
+  var shared=S.transactions.filter(function(t){return t.shared;});
+  var iOwe=0,theyOwe=0;
+  shared.forEach(function(t){
+    var val=t.currency==='USD'?t.amount*t.tc:t.amount;
+    var my=val*(t.split_me||50)/100;
+    if(t.payer==='me')theyOwe+=(val-my); else iOwe+=my;
   });
-  var net = theyOwe - iOwe;
-  c.innerHTML = '<div class="couple-status"><div class="avatar">👤</div><span class="link-icon">💞</span><div class="avatar">👤</div>' +
-    '<div class="couple-info"><h3>' + S.user.name + ' & ' + (S.user.partner_name || 'Pareja') + '</h3><p>Vinculados</p></div></div>' +
-    '<div class="balance-between"><h3>Balance compartido (ARS)</h3>' +
-    '<div><div class="owe-amount" style="color:' + (net >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (net >= 0 ? '+' : '') + ' $' + fmt(Math.abs(net)) + '</div>' +
-    '<div class="owe-who">' + (net > 0 ? 'Te deben' : 'Le debés a ' + (S.user.partner_name || 'tu pareja')) + '</div></div></div>' +
-    '<div class="section-title">Gastos compartidos</div>' +
-    '<div class="tx-list">' + (shared.length ? shared.map(txHTML).join('') : '<div class="empty"><div class="e-icon">🤝</div><h3>Sin gastos compartidos</h3></div>') + '</div>';
+  var net=theyOwe-iOwe;
+  c.innerHTML='<div class="couple-status"><div class="avatar">👤</div><span class="link-icon">💞</span><div class="avatar">👤</div>'+
+    '<div class="couple-info"><h3>'+S.user.name+' & '+(S.user.partner_name||'Pareja')+'</h3><p>Vinculados</p></div></div>'+
+    '<div class="balance-between"><h3>Balance compartido (ARS)</h3>'+
+    '<div><div class="owe-amount" style="color:'+(net>=0?'var(--green)':'var(--red)')+'">'+
+    (net>=0?'+':'')+' $'+fmt(Math.abs(net))+'</div>'+
+    '<div class="owe-who">'+(net>0?'Te deben':'Le debés a '+(S.user.partner_name||'tu pareja'))+'</div></div></div>'+
+    '<div class="section-title">Gastos compartidos</div>'+
+    '<div class="tx-list">'+(shared.length?shared.map(txHTML).join(''):'<div class="empty"><div class="e-icon">🤝</div><h3>Sin gastos compartidos</h3></div>')+'</div>';
 }
 
 // ── VACATIONS ─────────────────────────────────────
 document.getElementById('btn-save-vac').addEventListener('click', function() {
-  var name   = document.getElementById('vac-name').value.trim();
-  var start  = document.getElementById('vac-start').value;
-  var end    = document.getElementById('vac-end').value;
-  var budget = parseFloat(document.getElementById('vac-budget').value) || 0;
-  var curr   = document.getElementById('vac-currency').value;
-  if (!name) { toast('Poné un nombre al viaje', 'error'); return; }
-  var vac = { id: genId(), uid: S.user.uid, name: name, start_date: start, end_date: end, budget: budget, currency: curr, created_at: new Date().toISOString() };
+  var name=document.getElementById('vac-name').value.trim();
+  var start=document.getElementById('vac-start').value;
+  var end=document.getElementById('vac-end').value;
+  var budget=parseFloat(document.getElementById('vac-budget').value)||0;
+  var curr=document.getElementById('vac-currency').value;
+  if(!name){toast('Poné un nombre al viaje','error');return;}
+  var vac={id:genId(),uid:S.user.uid,name:name,start_date:start,end_date:end,budget:budget,currency:curr,created_at:new Date().toISOString()};
   S.vacations.unshift(vac);
-  closeModal('modal-new-vac');
-  renderVacations();
-  toast('Viaje creado ✓', 'success');
-  api('addVacation', { vacation: vac }).catch(function(){});
+  closeModal('modal-new-vac'); renderVacations();
+  toast('Viaje creado ✓','success');
+  api('addVacation',{vacation:vac}).catch(function(){});
 });
-
 document.getElementById('btn-save-vexp').addEventListener('click', function() {
-  var desc   = document.getElementById('vexp-desc').value.trim();
-  var amount = parseFloat(document.getElementById('vexp-amount').value);
-  var curr   = document.getElementById('vexp-currency').value;
-  var tc     = parseFloat(document.getElementById('vexp-tc').value) || S.tc.blue;
-  var shared = document.getElementById('vexp-shared').checked;
-  var payer  = document.getElementById('vexp-payer').value;
-  var splitMe= parseInt(document.getElementById('vexp-split-me').value) || 50;
-  if (!desc || !amount) { toast('Completá los campos', 'error'); return; }
-  var item = { id: genId(), vacation_id: S.activeVacId, type: 'expense', description: desc, amount: amount, currency: curr, tc: tc, shared: shared, payer: payer, split_me: splitMe, created_at: new Date().toISOString() };
-  if (!S.vacItems[S.activeVacId]) S.vacItems[S.activeVacId] = [];
+  var desc=document.getElementById('vexp-desc').value.trim();
+  var amount=parseFloat(document.getElementById('vexp-amount').value);
+  var curr=document.getElementById('vexp-currency').value;
+  var tc=parseFloat(document.getElementById('vexp-tc').value)||S.tc.blue;
+  var shared=document.getElementById('vexp-shared').checked;
+  var payer=document.getElementById('vexp-payer').value;
+  var splitMe=parseInt(document.getElementById('vexp-split-me').value)||50;
+  if(!desc||!amount){toast('Completá los campos','error');return;}
+  var item={id:genId(),vacation_id:S.activeVacId,type:'expense',description:desc,amount:amount,currency:curr,tc:tc,shared:shared,payer:payer,split_me:splitMe,created_at:new Date().toISOString()};
+  if(!S.vacItems[S.activeVacId])S.vacItems[S.activeVacId]=[];
   S.vacItems[S.activeVacId].unshift(item);
-  closeModal('modal-vac-expense');
-  renderVacations();
-  toast('Gasto guardado ✓', 'success');
-  api('addVacationItem', { item: item }).catch(function(){});
+  closeModal('modal-vac-expense'); renderVacations();
+  toast('Gasto guardado ✓','success');
+  api('addVacationItem',{item:item}).catch(function(){});
 });
-
-function calcVacSpent(vacId) {
-  return (S.vacItems[vacId] || []).filter(function(i) { return i.type === 'expense'; }).reduce(function(s, i) {
-    return s + (i.currency === 'USD' ? i.amount * (i.tc || S.tc.blue) : i.amount);
-  }, 0);
+function calcVacSpent(vacId){
+  return(S.vacItems[vacId]||[]).filter(function(i){return i.type==='expense';}).reduce(function(s,i){
+    return s+(i.currency==='USD'?i.amount*(i.tc||S.tc.blue):i.amount);
+  },0);
 }
-
-function renderVacations() {
-  var c = document.getElementById('vacation-content');
-  var btnHtml = '<button class="btn btn-primary" style="margin-bottom:16px;width:auto;padding:10px 20px" id="btn-open-new-vac">+ Nuevo viaje</button>';
-  if (!S.vacations.length) {
-    c.innerHTML = '<div class="empty"><div class="e-icon">✈️</div><h3>Sin viajes</h3><p>Creá tu primer viaje para empezar.</p></div>' + btnHtml;
+function renderVacations(){
+  var c=document.getElementById('vacation-content');
+  var btnHtml='<button class="btn btn-primary" style="margin-bottom:16px;width:auto;padding:10px 20px" id="btn-open-new-vac">+ Nuevo viaje</button>';
+  if(!S.vacations.length){
+    c.innerHTML='<div class="empty"><div class="e-icon">✈️</div><h3>Sin viajes</h3><p>Creá tu primer viaje para empezar.</p></div>'+btnHtml;
   } else {
-    var cards = S.vacations.map(function(v) {
-      var spent = calcVacSpent(v.id);
-      var pct   = Math.min(100, Math.round((spent / v.budget) * 100)) || 0;
-      var rem   = v.budget - spent;
-      var curr  = v.currency === 'USD' ? 'U$' : '$';
-      return '<div class="vac-card">' +
-        '<div class="vac-title">✈️ ' + v.name + '</div>' +
-        '<div class="vac-dates">📅 ' + fmtDate(v.start_date) + ' → ' + fmtDate(v.end_date) + '</div>' +
-        '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-        '<div class="vac-budget-vals"><span style="color:var(--red)">' + curr + fmt(spent) + ' gastado</span><span style="color:var(--green)">' + curr + fmt(rem) + ' restante</span></div>' +
-        '<div class="vac-actions">' +
-        '<button class="btn btn-secondary btn-sm" data-vac-detail="' + v.id + '">Ver detalle</button>' +
-        '<button class="btn btn-primary btn-sm" data-vac-expense="' + v.id + '">+ Gasto</button>' +
+    var cards=S.vacations.map(function(v){
+      var spent=calcVacSpent(v.id),pct=Math.min(100,Math.round(spent/v.budget*100))||0;
+      var curr=v.currency==='USD'?'U$':'$';
+      return '<div class="vac-card">'+
+        '<div class="vac-title">✈️ '+v.name+'</div>'+
+        '<div class="vac-dates">📅 '+fmtDate(v.start_date)+' → '+fmtDate(v.end_date)+'</div>'+
+        '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="vac-budget-vals"><span style="color:var(--red)">'+curr+fmt(spent)+' gastado</span><span style="color:var(--green)">'+curr+fmt(v.budget-spent)+' restante</span></div>'+
+        '<div class="vac-actions">'+
+        '<button class="btn btn-secondary btn-sm" data-vac-detail="'+v.id+'">Ver detalle</button>'+
+        '<button class="btn btn-primary btn-sm" data-vac-expense="'+v.id+'">+ Gasto</button>'+
         '</div></div>';
     }).join('');
-    c.innerHTML = btnHtml + cards;
+    c.innerHTML=btnHtml+cards;
   }
-  document.getElementById('btn-open-new-vac').addEventListener('click', function() { showModal('modal-new-vac'); });
-  c.querySelectorAll('[data-vac-expense]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      S.activeVacId = btn.getAttribute('data-vac-expense');
-      showModal('modal-vac-expense');
-    });
+  document.getElementById('btn-open-new-vac').addEventListener('click',function(){showModal('modal-new-vac');});
+  c.querySelectorAll('[data-vac-expense]').forEach(function(btn){
+    btn.addEventListener('click',function(e){e.stopPropagation();S.activeVacId=btn.getAttribute('data-vac-expense');showModal('modal-vac-expense');});
   });
-  c.querySelectorAll('[data-vac-detail]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      openVacationDetail(btn.getAttribute('data-vac-detail'));
-    });
+  c.querySelectorAll('[data-vac-detail]').forEach(function(btn){
+    btn.addEventListener('click',function(e){e.stopPropagation();openVacationDetail(btn.getAttribute('data-vac-detail'));});
   });
 }
-
-function openVacationDetail(vacId) {
-  var vac    = S.vacations.find(function(v) { return v.id === vacId; });
-  if (!vac) return;
-  var items   = S.vacItems[vacId] || [];
-  var expenses= items.filter(function(i) { return i.type === 'expense'; });
-  var checks  = items.filter(function(i) { return i.type === 'checklist'; });
-  var spent   = calcVacSpent(vacId);
-  var pct     = Math.min(100, Math.round(spent / vac.budget * 100)) || 0;
-  var curr    = vac.currency === 'USD' ? 'U$' : '$';
-
-  var overlay = document.createElement('div');
-  overlay.className = 'modal-overlay open';
-  overlay.style.zIndex = '600';
-
-  var checkHtml = checks.length
-    ? checks.map(function(i) {
-        return '<div class="checklist-item" data-item-id="' + i.id + '">' +
-          '<div class="check-box ' + (i.done ? 'checked' : '') + '">✓</div>' +
-          '<span class="check-text ' + (i.done ? 'done' : '') + '">' + i.description + '</span></div>';
-      }).join('')
-    : '<p style="color:var(--text2);text-align:center;padding:12px">Sin ítems</p>';
-
-  var expHtml = expenses.length
-    ? expenses.map(function(i) {
-        return '<div class="tx-item"><div class="tx-cat-icon" style="background:#06b6d422">✈️</div>' +
-          '<div class="tx-info"><div class="tx-desc">' + i.description + '</div>' +
-          '<div class="tx-meta">' + (i.shared ? '<span class="tx-shared-badge">💑</span>' : '') + '</div></div>' +
-          '<div class="tx-amount"><div class="amount-main expense">-' + (i.currency==='USD'?'U$':'$') + fmt(i.amount) + '</div></div></div>';
-      }).join('')
-    : '<p style="color:var(--text2);text-align:center;padding:20px">Sin gastos aún</p>';
-
-  overlay.innerHTML = '<div class="modal">' +
-    '<div class="modal-handle"></div>' +
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">' +
-    '<div class="modal-title" style="margin:0">✈️ ' + vac.name + '</div>' +
-    '<button class="icon-btn" id="close-vac-detail">✕</button></div>' +
-    '<div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-    '<div class="vac-budget-vals" style="margin-bottom:16px"><span style="color:var(--red)">' + curr + fmt(spent) + '</span><span>/ ' + curr + fmt(vac.budget) + '</span></div>' +
-    '<div class="section-title">Gastos</div>' +
-    '<div class="tx-list" style="margin-bottom:16px">' + expHtml + '</div>' +
-    '<div class="section-title">Checklist</div>' +
-    '<div id="checklist-container">' + checkHtml + '</div>' +
-    '<div style="display:flex;gap:8px;margin-top:16px">' +
-    '<input type="text" id="new-check-txt" placeholder="Nuevo ítem..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text)"/>' +
-    '<button class="btn btn-primary" id="btn-add-check" style="width:auto;padding:10px 16px">+</button>' +
-    '</div></div>';
-
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+function openVacationDetail(vacId){
+  var vac=S.vacations.find(function(v){return v.id===vacId;}); if(!vac)return;
+  var items=S.vacItems[vacId]||[];
+  var expenses=items.filter(function(i){return i.type==='expense';});
+  var checks=items.filter(function(i){return i.type==='checklist';});
+  var spent=calcVacSpent(vacId),pct=Math.min(100,Math.round(spent/vac.budget*100))||0;
+  var curr=vac.currency==='USD'?'U$':'$';
+  var overlay=document.createElement('div');
+  overlay.className='modal-overlay open'; overlay.style.zIndex='600';
+  var checkHtml=checks.length?checks.map(function(i){
+    return '<div class="checklist-item" data-item-id="'+i.id+'"><div class="check-box '+(i.done?'checked':'')+'">✓</div><span class="check-text '+(i.done?'done':'')+'">'+i.description+'</span></div>';
+  }).join(''):'<p style="color:var(--text2);text-align:center;padding:12px">Sin ítems</p>';
+  var expHtml=expenses.length?expenses.map(function(i){
+    return '<div class="tx-item"><div class="tx-cat-icon" style="background:#06b6d422">✈️</div>'+
+      '<div class="tx-info"><div class="tx-desc">'+i.description+'</div>'+
+      '<div class="tx-meta">'+(i.shared?'<span class="tx-shared-badge">💑</span>':'')+'</div></div>'+
+      '<div class="tx-amount"><div class="amount-main expense">-'+(i.currency==='USD'?'U$':'$')+fmt(i.amount)+'</div></div></div>';
+  }).join(''):'<p style="color:var(--text2);text-align:center;padding:20px">Sin gastos aún</p>';
+  overlay.innerHTML='<div class="modal">'+
+    '<div class="modal-handle"></div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
+    '<div class="modal-title" style="margin:0">✈️ '+vac.name+'</div>'+
+    '<button class="icon-btn" id="close-vac-detail">✕</button></div>'+
+    '<div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="vac-budget-vals" style="margin-bottom:16px"><span style="color:var(--red)">'+curr+fmt(spent)+'</span><span>/ '+curr+fmt(vac.budget)+'</span></div>'+
+    '<div class="section-title">Gastos</div><div class="tx-list" style="margin-bottom:16px">'+expHtml+'</div>'+
+    '<div class="section-title">Checklist</div>'+
+    '<div id="checklist-container">'+checkHtml+'</div>'+
+    '<div style="display:flex;gap:8px;margin-top:16px">'+
+    '<input type="text" id="new-check-txt" placeholder="Nuevo ítem..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text)"/>'+
+    '<button class="btn btn-primary" id="btn-add-check" style="width:auto;padding:10px 16px">+</button></div></div>';
+  overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
   document.body.appendChild(overlay);
-
-  document.getElementById('close-vac-detail').addEventListener('click', function() { overlay.remove(); });
-
-  document.getElementById('checklist-container').addEventListener('click', function(e) {
-    var item = e.target.closest('.checklist-item');
-    if (!item) return;
-    var box = item.querySelector('.check-box');
-    var txt = item.querySelector('.check-text');
-    var iid = item.getAttribute('data-item-id');
-    var vacItem = (S.vacItems[vacId] || []).find(function(x) { return x.id === iid; });
-    if (vacItem) vacItem.done = !vacItem.done;
-    box.classList.toggle('checked');
-    txt.classList.toggle('done');
+  document.getElementById('close-vac-detail').addEventListener('click',function(){overlay.remove();});
+  document.getElementById('checklist-container').addEventListener('click',function(e){
+    var item=e.target.closest('.checklist-item'); if(!item)return;
+    var box=item.querySelector('.check-box'),txt=item.querySelector('.check-text');
+    var iid=item.getAttribute('data-item-id');
+    var vacItem=(S.vacItems[vacId]||[]).find(function(x){return x.id===iid;});
+    if(vacItem)vacItem.done=!vacItem.done;
+    box.classList.toggle('checked'); txt.classList.toggle('done');
   });
-
-  document.getElementById('btn-add-check').addEventListener('click', function() {
-    var inp  = document.getElementById('new-check-txt');
-    var desc = inp.value.trim();
-    if (!desc) return;
-    var newItem = { id: genId(), vacation_id: vacId, type: 'checklist', description: desc, done: false };
-    if (!S.vacItems[vacId]) S.vacItems[vacId] = [];
-    S.vacItems[vacId].push(newItem);
-    inp.value = '';
-    var container = document.getElementById('checklist-container');
-    var p = container.querySelector('p');
-    if (p) p.remove();
-    var div = document.createElement('div');
-    div.className = 'checklist-item';
-    div.setAttribute('data-item-id', newItem.id);
-    div.innerHTML = '<div class="check-box">✓</div><span class="check-text">' + desc + '</span>';
+  document.getElementById('btn-add-check').addEventListener('click',function(){
+    var inp=document.getElementById('new-check-txt'),desc=inp.value.trim(); if(!desc)return;
+    var newItem={id:genId(),vacation_id:vacId,type:'checklist',description:desc,done:false};
+    if(!S.vacItems[vacId])S.vacItems[vacId]=[];
+    S.vacItems[vacId].push(newItem); inp.value='';
+    var container=document.getElementById('checklist-container');
+    var p=container.querySelector('p'); if(p)p.remove();
+    var div=document.createElement('div');
+    div.className='checklist-item'; div.setAttribute('data-item-id',newItem.id);
+    div.innerHTML='<div class="check-box">✓</div><span class="check-text">'+desc+'</span>';
     container.appendChild(div);
-    api('addVacationItem', { item: newItem }).catch(function(){});
+    api('addVacationItem',{item:newItem}).catch(function(){});
   });
 }
 
-window.addEventListener('resize', function() {
-  if (S.activeTab === 'dashboard') renderDashboard();
-});
+window.addEventListener('resize',function(){ if(S.activeTab==='dashboard') renderDashboard(); });
 </script>
 </body>
 </html>
