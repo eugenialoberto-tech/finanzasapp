@@ -441,6 +441,12 @@ input:checked+.slider:before{transform:translateX(20px)}
   <div class="form-field"><label>Nombre</label><input type="text" id="cat-name" placeholder="Ej: Supermercado"/></div>
   <div class="form-field"><label>Ícono (emoji)</label><input type="text" id="cat-icon" placeholder="🛒" maxlength="4"/></div>
   <div class="form-field"><label>Color</label><input type="color" id="cat-color" value="#6c63ff" style="height:44px"/></div>
+  <div class="form-field"><label>Tipo</label>
+    <div class="toggle-group">
+      <button class="toggle-opt active" id="cat-type-expense">💸 Gasto</button>
+      <button class="toggle-opt" id="cat-type-income">💵 Ingreso</button>
+    </div>
+  </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" data-close="modal-new-cat">Cancelar</button>
     <button class="btn btn-primary" id="btn-save-cat">Crear</button>
@@ -535,7 +541,8 @@ var S = {
   selectedCat: null,
   currentTags: [],
   activeVacId: null,
-  activeTab: 'dashboard'
+  activeTab: 'dashboard',
+  newCatType: 'expense'
 };
 
 // ── API ──────────────────────────────────────────
@@ -667,16 +674,21 @@ function loadAll() {
 
 function defaultCategories() {
   return [
-    {id:'c1',name:'Comida',icon:'🍔',color:'#ef4444'},
-    {id:'c2',name:'Transporte',icon:'🚗',color:'#f59e0b'},
-    {id:'c3',name:'Supermercado',icon:'🛒',color:'#22c55e'},
-    {id:'c4',name:'Salud',icon:'💊',color:'#3b82f6'},
-    {id:'c5',name:'Entretenimiento',icon:'🎬',color:'#8b5cf6'},
-    {id:'c6',name:'Ropa',icon:'👕',color:'#ec4899'},
-    {id:'c7',name:'Viaje',icon:'✈️',color:'#06b6d4'},
-    {id:'c8',name:'Sueldo',icon:'💼',color:'#22c55e'},
-    {id:'c9',name:'Servicios',icon:'💡',color:'#f59e0b'},
-    {id:'c10',name:'Otros',icon:'📦',color:'#6b7280'}
+    // Gastos
+    {id:'c1', name:'Comida',          icon:'🍔', color:'#ef4444', type:'expense'},
+    {id:'c2', name:'Transporte',      icon:'🚗', color:'#f59e0b', type:'expense'},
+    {id:'c3', name:'Supermercado',    icon:'🛒', color:'#22c55e', type:'expense'},
+    {id:'c4', name:'Salud',           icon:'💊', color:'#3b82f6', type:'expense'},
+    {id:'c5', name:'Entretenimiento', icon:'🎬', color:'#8b5cf6', type:'expense'},
+    {id:'c6', name:'Ropa',            icon:'👕', color:'#ec4899', type:'expense'},
+    {id:'c7', name:'Viaje',           icon:'✈️', color:'#06b6d4', type:'expense'},
+    {id:'c8', name:'Servicios',       icon:'💡', color:'#f59e0b', type:'expense'},
+    {id:'c9', name:'Otros gastos',    icon:'📦', color:'#6b7280', type:'expense'},
+    // Ingresos
+    {id:'i1', name:'Salario',         icon:'💼', color:'#22c55e', type:'income'},
+    {id:'i2', name:'Reintegro',       icon:'↩️', color:'#10b981', type:'income'},
+    {id:'i3', name:'Intereses',       icon:'🏦', color:'#06b6d4', type:'income'},
+    {id:'i4', name:'Otros ingresos',  icon:'💰', color:'#6b7280', type:'income'},
   ];
 }
 
@@ -764,14 +776,31 @@ function updateSettingsUI() {
   }).join('');
 }
 
-document.getElementById('btn-new-cat').addEventListener('click', function() { showModal('modal-new-cat'); });
+document.getElementById('btn-new-cat').addEventListener('click', function() {
+  // Reset tipo al abrir
+  S.newCatType = 'expense';
+  document.getElementById('cat-type-expense').classList.add('active');
+  document.getElementById('cat-type-income').classList.remove('active');
+  showModal('modal-new-cat');
+});
+
+document.getElementById('cat-type-expense').addEventListener('click', function() {
+  S.newCatType = 'expense';
+  this.classList.add('active');
+  document.getElementById('cat-type-income').classList.remove('active');
+});
+document.getElementById('cat-type-income').addEventListener('click', function() {
+  S.newCatType = 'income';
+  this.classList.add('active');
+  document.getElementById('cat-type-expense').classList.remove('active');
+});
 
 document.getElementById('btn-save-cat').addEventListener('click', function() {
   var name  = document.getElementById('cat-name').value.trim();
   var icon  = document.getElementById('cat-icon').value.trim() || '📦';
   var color = document.getElementById('cat-color').value;
   if (!name) { toast('Ingresá un nombre', 'error'); return; }
-  var cat = { id: genId(), uid: S.user.uid, name: name, icon: icon, color: color };
+  var cat = { id: genId(), uid: S.user.uid, name: name, icon: icon, color: color, type: S.newCatType };
   S.categories.push(cat);
   closeModal('modal-new-cat');
   updateSettingsUI();
@@ -894,7 +923,11 @@ function renderTagsWrap() {
 function renderCatPicker() {
   var grid = document.getElementById('cat-picker');
   grid.innerHTML = '';
-  S.categories.forEach(function(cat) {
+  var filtered = S.categories.filter(function(cat) {
+    if (!cat.type) return true; // categorías sin tipo aparecen siempre
+    return cat.type === S.txType;
+  });
+  filtered.forEach(function(cat) {
     var d = document.createElement('div');
     d.className = 'cat-opt' + (S.selectedCat === cat.id ? ' selected' : '');
     d.innerHTML = '<span class="cat-icon">' + cat.icon + '</span><span class="cat-name">' + cat.name + '</span>';
