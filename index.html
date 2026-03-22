@@ -516,7 +516,7 @@ input:checked+.slider:before{transform:translateX(20px)}
 
 <script>
 var WORKER_URL = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyKgnqsJ72hjyStLnbU2Q-dWHdSd1osBU7HepmzV8ZfON7WGNrX2Ux3RI4iwrGuKMXB4w/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwM0MY8c9cksG2e0Nsws3LhZclKBdrjlggH_bdKT5-CLqy5TxLWaXLN4bZFFQ5-JJSAGg/exec';
 
 var ACC_TYPES = {
   bank:         {label:'Banco',            icon:'B', savings:false},
@@ -643,6 +643,7 @@ function loadAll(){
     api('getAccounts',{uid:S.user.uid})
   ]).then(function(results){
     S.transactions=results[0].transactions||[];
+
     var bc=results[1].categories||[];
     if(bc.length){
       S.categories=bc.map(function(c){if(!c.type||(c.type!=='expense'&&c.type!=='income'))c.type='expense';return c;});
@@ -651,14 +652,22 @@ function loadAll(){
       var lc=localStorage.getItem('categories_'+S.user.uid);
       S.categories=lc?JSON.parse(lc):[];
     }
+
     S.vacations=results[2].vacations||[];
+
     var ba=results[3].accounts||[];
     if(ba.length){
+      // Backend tiene cuentas — usarlas y sincronizar local
       S.accounts=ba.map(function(a){a.balance=parseFloat(a.balance)||0;return a;});
       saveAccountsLocal();
     } else {
+      // Backend vacio — conservar local para no perder datos
       var la=localStorage.getItem('accounts_'+S.user.uid);
-      if(la)S.accounts=JSON.parse(la);
+      if(la&&JSON.parse(la).length){
+        S.accounts=JSON.parse(la);
+        // Resubir al backend
+        S.accounts.forEach(function(a){api('addAccount',{account:a}).catch(function(){});});
+      }
     }
   });
 }
