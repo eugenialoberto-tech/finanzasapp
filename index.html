@@ -1610,8 +1610,7 @@ async function toggleVacItem(id, done) {
     try {
       S.user = JSON.parse(saved);
       if (!S.user || !S.user.uid) throw new Error('invalid');
-      hideLoader();
-      document.getElementById('auth-screen').style.display = 'none';
+      // Mostrar loader siempre, sin excepcion
       document.getElementById('app-loader').style.display = 'flex';
       document.getElementById('app-loader').style.opacity = '1';
       await initApp();
