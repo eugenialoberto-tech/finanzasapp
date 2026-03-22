@@ -516,7 +516,7 @@ input:checked+.slider:before{transform:translateX(20px)}
 
 <script>
 var WORKER_URL = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwM0MY8c9cksG2e0Nsws3LhZclKBdrjlggH_bdKT5-CLqy5TxLWaXLN4bZFFQ5-JJSAGg/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbws126maGhdGEgJe3ZI_NiQxwa1dwoXhVgmbOdLDjRNBY9kVaTJz5s1_jgA6McPq9JFeA/exec';
 
 var ACC_TYPES = {
   bank:         {label:'Banco',            icon:'B', savings:false},
@@ -559,7 +559,14 @@ function showModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function isSavings(acc){return acc&&(acc.type==='savings'||acc.type==='savings_cash');}
 function saveAccountsLocal(){localStorage.setItem('accounts_'+S.user.uid,JSON.stringify(S.accounts));}
-function saveCatsLocal(){localStorage.setItem('categories_'+S.user.uid,JSON.stringify(S.categories));}
+function saveCatsLocal(){
+  localStorage.setItem('categories_'+S.user.uid,JSON.stringify(S.categories));
+}
+
+function saveCatOrder(){
+  var order=S.categories.map(function(c,i){return{id:c.id,sort_order:i};});
+  api('saveCategoryOrder',{order:order}).catch(function(){});
+}
 function getTc(){return S.tc.oficial||1000;}
 
 // ── AUTH ─────────────────────────────────────────
@@ -647,7 +654,6 @@ function loadAll(){
     var bc=results[1].categories||[];
     if(bc.length){
       S.categories=bc.map(function(c){if(!c.type||(c.type!=='expense'&&c.type!=='income'))c.type='expense';return c;});
-      localStorage.removeItem('categories_'+S.user.uid);
     } else {
       var lc=localStorage.getItem('categories_'+S.user.uid);
       S.categories=lc?JSON.parse(lc):[];
@@ -657,15 +663,12 @@ function loadAll(){
 
     var ba=results[3].accounts||[];
     if(ba.length){
-      // Backend tiene cuentas — usarlas y sincronizar local
       S.accounts=ba.map(function(a){a.balance=parseFloat(a.balance)||0;return a;});
       saveAccountsLocal();
     } else {
-      // Backend vacio — conservar local para no perder datos
       var la=localStorage.getItem('accounts_'+S.user.uid);
       if(la&&JSON.parse(la).length){
         S.accounts=JSON.parse(la);
-        // Resubir al backend
         S.accounts.forEach(function(a){api('addAccount',{account:a}).catch(function(){});});
       }
     }
@@ -766,7 +769,7 @@ function renderCatSettings(){
       var i=parseInt(btn.getAttribute('data-cat-up'));
       if(i===0)return;
       var tmp=S.categories[i-1];S.categories[i-1]=S.categories[i];S.categories[i]=tmp;
-      saveCatsLocal(); renderCatSettings();
+      saveCatsLocal(); saveCatOrder(); renderCatSettings();
     });
   });
   list.querySelectorAll('[data-cat-down]').forEach(function(btn){
@@ -774,7 +777,7 @@ function renderCatSettings(){
       var i=parseInt(btn.getAttribute('data-cat-down'));
       if(i===S.categories.length-1)return;
       var tmp=S.categories[i+1];S.categories[i+1]=S.categories[i];S.categories[i]=tmp;
-      saveCatsLocal(); renderCatSettings();
+      saveCatsLocal(); saveCatOrder(); renderCatSettings();
     });
   });
 }
@@ -1238,7 +1241,10 @@ function renderDashboard(){
   var savIds=S.accounts.filter(isSavings).map(function(a){return a.id;});
   var txs=S.transactions.filter(function(t){
     var d=new Date(t.date);
-    return d.getMonth()===month&&d.getFullYear()===year&&(!t.account_id||savIds.indexOf(t.account_id)===-1);
+    var inMonth=d.getMonth()===month&&d.getFullYear()===year;
+    // Solo excluir si account_id matchea exactamente un ID de cuenta de ahorro
+    var isSav=t.account_id&&savIds.length&&savIds.indexOf(t.account_id)!==-1;
+    return inMonth&&!isSav;
   });
   var iARS=0,eARS=0,iUSD=0,eUSD=0;
   txs.forEach(function(t){
