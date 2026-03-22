@@ -821,9 +821,17 @@ document.getElementById('btn-save-cat').addEventListener('click',function(){
   var sortOrder=S.categories.length;
   var cat={id:genId(),uid:S.user.uid,name:name,icon:icon,color:color,type:S.newCatType,sort_order:sortOrder};
   S.categories.push(cat);
-  saveCatsLocal();closeModal('modal-new-cat');renderCatSettings();
+  saveCatsLocal();closeModal('modal-new-cat');
   toast('Categoria creada','success');
   api('addCategory',{category:cat}).catch(function(){});
+  if(S._returnToTx){
+    S._returnToTx=false;
+    S.selectedCat=cat.id;
+    renderCatPicker();
+    showModal('modal-new-tx');
+  } else {
+    renderCatSettings();
+  }
 });
 
 // TC MODAL
@@ -1118,14 +1126,38 @@ function renderTagsWrap(){
 function renderCatPicker(){
   var grid=document.getElementById('cat-picker');grid.innerHTML='';
   var filtered=S.categories.filter(function(cat){return cat.type===S.txType;});
-  if(!filtered.length){grid.innerHTML='<p style="color:var(--text3);font-size:13px;padding:8px">Sin categorias para este tipo</p>';return;}
-  filtered.forEach(function(cat){
-    var d=document.createElement('div');
-    d.className='cat-opt'+(S.selectedCat===cat.id?' selected':'');
-    d.innerHTML='<span class="cat-icon">'+cat.icon+'</span><span class="cat-name">'+cat.name+'</span>';
-    d.addEventListener('click',function(){S.selectedCat=cat.id;renderCatPicker();});
-    grid.appendChild(d);
+  if(!filtered.length){grid.innerHTML='<p style="color:var(--text3);font-size:13px;padding:8px">Sin categorias para este tipo</p>';}
+  else {
+    filtered.forEach(function(cat){
+      var d=document.createElement('div');
+      d.className='cat-opt'+(S.selectedCat===cat.id?' selected':'');
+      d.innerHTML='<span class="cat-icon">'+cat.icon+'</span><span class="cat-name">'+cat.name+'</span>';
+      d.addEventListener('click',function(){S.selectedCat=cat.id;renderCatPicker();});
+      grid.appendChild(d);
+    });
+  }
+  // Boton + Nueva categoria
+  var addBtn=document.createElement('div');
+  addBtn.className='cat-opt';
+  addBtn.style.borderStyle='dashed';
+  addBtn.innerHTML='<span class="cat-icon" style="font-size:18px">+</span><span class="cat-name">Nueva</span>';
+  addBtn.addEventListener('click',function(){
+    // Pre-setear tipo segun el contexto actual
+    S.newCatType=S.txType;
+    document.getElementById('cat-name').value='';
+    document.getElementById('cat-icon').value='';
+    document.getElementById('cat-color').value='#6c63ff';
+    if(S.txType==='expense'){
+      document.getElementById('cat-type-expense').classList.add('active');
+      document.getElementById('cat-type-income').classList.remove('active');
+    } else {
+      document.getElementById('cat-type-income').classList.add('active');
+      document.getElementById('cat-type-expense').classList.remove('active');
+    }
+    S._returnToTx=true; // flag para volver al modal de tx
+    showModal('modal-new-cat');
   });
+  grid.appendChild(addBtn);
 }
 document.getElementById('btn-save-tx').addEventListener('click',function(){
   var desc=document.getElementById('tx-desc').value.trim();
