@@ -785,8 +785,12 @@ async function loadAll() {
     if (r.ok && r.data) S.vacItems = S.vacItems.concat(r.data);
   }
   setLoaderMsg('Casi listo...');
-  const reqR = await api('getPendingRequests', { uid });
-  S.pendingRequests = (reqR.ok && reqR.data) ? reqR.data : [];
+  try {
+    const reqR = await api('getPendingRequests', { uid });
+    S.pendingRequests = (reqR.ok && reqR.data) ? reqR.data : [];
+  } catch(e) {
+    S.pendingRequests = [];
+  }
 }
 
 // ─── SCREENS ──────────────────────────────────────
