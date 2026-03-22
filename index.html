@@ -554,7 +554,22 @@ function fmt(n){return(n||0).toLocaleString('es-AR',{minimumFractionDigits:0,max
 function todayStr(){return new Date().toISOString().split('T')[0];}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function monthName(m){return['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][m];}
-function fmtDate(str){if(!str)return'';var d=new Date(str+'T00:00:00');return d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'});}
+function fmtDate(str){
+  if(!str)return'';
+  var parts=String(str).split('T')[0].split('-');
+  if(parts.length<3)return str;
+  var months=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return parts[2]+'-'+months[parseInt(parts[1])-1];
+}
+
+function parseDate(str){
+  // Parsear sin timezone para evitar desfase
+  if(!str)return new Date();
+  var s=String(str).split('T')[0];
+  var parts=s.split('-');
+  if(parts.length<3)return new Date(str);
+  return new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+}
 function showModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function isSavings(acc){return acc&&(acc.type==='savings'||acc.type==='savings_cash');}
@@ -1240,9 +1255,8 @@ function renderDashboard(){
   var now=new Date(),month=now.getMonth(),year=now.getFullYear();
   var savIds=S.accounts.filter(isSavings).map(function(a){return a.id;});
   var txs=S.transactions.filter(function(t){
-    var d=new Date(t.date);
+    var d=parseDate(t.date);
     var inMonth=d.getMonth()===month&&d.getFullYear()===year;
-    // Solo excluir si account_id matchea exactamente un ID de cuenta de ahorro
     var isSav=t.account_id&&savIds.length&&savIds.indexOf(t.account_id)!==-1;
     return inMonth&&!isSav;
   });
