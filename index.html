@@ -667,6 +667,8 @@ function initApp() {
   });
 }
 
+function saveCategoriasLocal() { localStorage.setItem('categories_' + S.user.uid, JSON.stringify(S.categories)); }
+
 function loadAll() {
   return Promise.all([
     api('getTransactions', {uid: S.user.uid}),
@@ -675,14 +677,34 @@ function loadAll() {
     api('getAccounts',     {uid: S.user.uid})
   ]).then(function(results) {
     S.transactions = results[0].transactions || [];
+
+    // Categorias: backend manda las del usuario (ya incluye defaults creados al registrarse)
     var bc = results[1].categories || [];
-    S.categories = defaultCategories().concat(bc.filter(function(c) { return c.type === 'expense' || c.type === 'income'; }));
+    if (bc.length) {
+      // Merge: defaults locales + las del backend (el backend tiene prioridad para ediciones)
+      var defaults = defaultCategories();
+      var merged = defaults.map(function(def) {
+        var backendVersion = bc.find(function(c) { return c.id === def.id; });
+        return backendVersion || def;
+      });
+      // Agregar categorias custom que no son defaults
+      var defaultIds = defaults.map(function(d) { return d.id; });
+      var custom = bc.filter(function(c) { return defaultIds.indexOf(c.id) === -1 && (c.type === 'expense' || c.type === 'income'); });
+      S.categories = merged.concat(custom);
+    } else {
+      // Sin datos del backend, usar local si hay
+      var local = localStorage.getItem('categories_' + S.user.uid);
+      S.categories = local ? JSON.parse(local) : defaultCategories();
+    }
+    saveCategoriasLocal();
+
     S.vacations = results[2].vacations || [];
     var ba = results[3].accounts || [];
     ba.forEach(function(a) { if (!S.accounts.find(function(x) { return x.id === a.id; })) S.accounts.push(a); });
     saveAccountsLocal();
   }).catch(function() {
-    if (!S.categories.length) S.categories = defaultCategories();
+    var local = localStorage.getItem('categories_' + S.user.uid);
+    S.categories = local ? JSON.parse(local) : defaultCategories();
   });
 }
 
@@ -778,6 +800,7 @@ document.getElementById('btn-save-edit-cat').addEventListener('click', function(
   if (!name) { toast('Ingresa un nombre', 'error'); return; }
   cat.name = name; if (icon) cat.icon = icon;
   closeModal('modal-edit-cat'); updateSettingsUI(); renderCatPicker();
+  saveCategoriasLocal();
   toast('Categoria actualizada', 'success');
   api('updateCategory', {category: cat}).catch(function() {});
 });
@@ -805,6 +828,7 @@ document.getElementById('btn-save-cat').addEventListener('click', function() {
   var cat = {id: genId(), uid: S.user.uid, name: name, icon: icon, color: color, type: S.newCatType};
   S.categories.push(cat);
   closeModal('modal-new-cat'); updateSettingsUI();
+  saveCategoriasLocal();
   toast('Categoria creada', 'success');
   api('addCategory', {category: cat}).catch(function() {});
 });
