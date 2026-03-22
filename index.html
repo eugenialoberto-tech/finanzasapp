@@ -640,9 +640,15 @@ document.getElementById('btn-logout').addEventListener('click',function(){
 });
 function loginSuccess(user){S.user=user;localStorage.setItem('session',JSON.stringify(user));initApp();}
 (function(){
-  var saved=localStorage.getItem('session');if(saved){try{loginSuccess(JSON.parse(saved));}catch(e){}}
-  var tc=localStorage.getItem('tc');if(tc){try{S.tc=JSON.parse(tc);}catch(e){}}
-  var accs=localStorage.getItem('accounts');if(accs){try{S.accounts=JSON.parse(accs);}catch(e){}}
+  try {
+    var saved=localStorage.getItem('session');
+    if(saved){
+      var user=JSON.parse(saved);
+      if(user&&user.uid&&user.email) loginSuccess(user);
+    }
+  } catch(e){ localStorage.removeItem('session'); }
+  try { var tc=localStorage.getItem('tc');if(tc)S.tc=JSON.parse(tc); } catch(e){}
+  try { var accs=localStorage.getItem('accounts');if(accs)S.accounts=JSON.parse(accs); } catch(e){}
 })();
 
 // ── APP INIT ─────────────────────────────────────
@@ -653,7 +659,14 @@ function initApp(){
   updateModeUI();updateSettingsUI();
   fetchDolarOficial().then(function(){
     return loadAll();
-  }).then(function(){renderDashboard();});
+  }).then(function(){
+    renderDashboard();
+  }).catch(function(e){
+    console.error('Error al cargar datos:',e);
+    if(!S.categories.length) S.categories=defaultCategories();
+    renderDashboard();
+    toast('No se pudieron cargar los datos del servidor','error');
+  });
 }
 
 function fetchDolarOficial(){
