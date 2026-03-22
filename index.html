@@ -13,6 +13,13 @@
   --radius:12px;--radius-sm:8px;
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden}
+#app-loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s}
+#app-loader.fade-out{opacity:0;pointer-events:none}
+.loader-logo{font-size:40px;margin-bottom:16px}
+.loader-title{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:24px}
+.loader-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+.loader-msg{font-size:13px;color:var(--text2);margin-top:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .hidden{display:none!important}
 #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:100%;max-width:400px}
@@ -131,6 +138,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </style>
 </head>
 <body>
+
+<div id="app-loader">
+  <div class="loader-logo">&#x1F4B0;</div>
+  <div class="loader-title">FinanzasApp</div>
+  <div class="loader-spinner"></div>
+  <div class="loader-msg" id="loader-msg">Cargando...</div>
+</div>
 
 <!-- AUTH -->
 <div id="auth-screen">
@@ -644,6 +658,16 @@ function showToast(msg, type) {
 
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+function hideLoader() {
+  const el = document.getElementById('app-loader');
+  el.classList.add('fade-out');
+  setTimeout(function() { el.style.display = 'none'; }, 400);
+}
+function setLoaderMsg(msg) {
+  const el = document.getElementById('loader-msg');
+  if (el) el.textContent = msg;
+}
+
 // ─── DOLAR ────────────────────────────────────────
 async function fetchDolarOficial() {
   try {
@@ -737,6 +761,12 @@ async function loadAll() {
   document.getElementById('toggle-vac').checked    = vacOn;
   document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
   document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
+  // Update avatar/profile in case name changed
+  const ini = ((S.user.name || S.user.email || '?')[0]).toUpperCase();
+  document.getElementById('user-avatar').textContent   = ini;
+  document.getElementById('config-avatar').textContent = ini;
+  document.getElementById('config-name').textContent   = S.user.name  || '';
+  document.getElementById('config-email').textContent  = S.user.email || '';
   const [catR, txR, accR, vacR] = await Promise.all([
     api('getCategories',   { uid }),
     api('getTransactions', { uid }),
@@ -750,10 +780,11 @@ async function loadAll() {
   // Load vacation items per vacation
   S.vacItems = [];
   for (var i = 0; i < S.vacations.length; i++) {
+    setLoaderMsg('Cargando viaje ' + (i+1) + ' de ' + S.vacations.length + '...');
     const r = await api('getVacationItems', { vacation_id: S.vacations[i].id });
     if (r.ok && r.data) S.vacItems = S.vacItems.concat(r.data);
   }
-  // Check pending couple requests
+  setLoaderMsg('Casi listo...');
   const reqR = await api('getPendingRequests', { uid });
   S.pendingRequests = (reqR.ok && reqR.data) ? reqR.data : [];
 }
@@ -1559,15 +1590,20 @@ async function toggleVacItem(id, done) {
 
 // ─── BOOT ─────────────────────────────────────────
 (async function() {
-  const saved=localStorage.getItem('session');
+  const saved = localStorage.getItem('session');
   if (saved) {
     try {
-      S.user=JSON.parse(saved);
-      if (!S.user||!S.user.uid) throw new Error('invalid');
+      S.user = JSON.parse(saved);
+      if (!S.user || !S.user.uid) throw new Error('invalid');
       await initApp();
-    } catch(e) { localStorage.removeItem('session'); document.getElementById('auth-screen').style.display='flex'; }
+    } catch(e) {
+      localStorage.removeItem('session');
+      hideLoader();
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
   } else {
-    document.getElementById('auth-screen').style.display='flex';
+    hideLoader();
+    document.getElementById('auth-screen').style.display = 'flex';
   }
 })();
 </script>
