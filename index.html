@@ -524,7 +524,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <script>
 // ─── CONFIG ───────────────────────────────────────
 const WORKER = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-const GAS    = 'https://script.google.com/macros/s/AKfycbzvBw4qtrJnWYw4inMhq6W1Xo_oJiCB9bcTD25aD29ET4lcOdBTJyrUW-jMYzQdfMottg/exec';
+const GAS    = 'https://script.google.com/macros/s/AKfycbyNYbc8qbB01Xy5kSSv1sXreD3OXbLZhOXBvYsdRvLBiDuA1PFgtZ52poukLHtVJRka/exec';
 
 // ─── STATE ────────────────────────────────────────
 const S = {
@@ -725,6 +725,18 @@ async function initApp() {
 
 async function loadAll() {
   const uid = S.user.uid;
+  // Refresh user data from backend (partner_uid puede haber cambiado)
+  const userR = await api('getUser', { uid });
+  if (userR.ok && userR.user) {
+    S.user = { ...S.user, ...userR.user };
+    localStorage.setItem('session', JSON.stringify(S.user));
+  }
+  const coupleOn = S.user.mode === 'couple' || S.user.mode === 'both';
+  const vacOn    = S.user.mode === 'vacation' || S.user.mode === 'both';
+  document.getElementById('toggle-couple').checked = coupleOn;
+  document.getElementById('toggle-vac').checked    = vacOn;
+  document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
+  document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
   const [catR, txR, accR, vacR] = await Promise.all([
     api('getCategories',   { uid }),
     api('getTransactions', { uid }),
