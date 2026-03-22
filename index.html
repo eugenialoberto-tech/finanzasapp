@@ -39,7 +39,6 @@ input,select,textarea{font-family:inherit;outline:none}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover{background:#5b52e0}
 .btn-secondary{background:var(--bg3);border:1px solid var(--border);color:var(--text)}
-.btn-danger{background:var(--red);color:#fff}
 .btn-google{background:var(--bg3);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
 .divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text3);font-size:13px}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -196,7 +195,7 @@ input:checked+.slider:before{transform:translateX(20px)}
   .modal{border-radius:24px;margin-bottom:20px}
   .modal-overlay{align-items:center}
   .fab{right:calc(50% - 330px)}
-  .summary-grid{grid-template-columns:repeat(4,1fr)}
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -257,8 +256,6 @@ input:checked+.slider:before{transform:translateX(20px)}
       </div>
     </div>
     <div class="summary-grid">
-      <div class="summary-item"><div class="si-label">En ARS</div><div class="si-val green" id="dash-ars">$0</div></div>
-      <div class="summary-item"><div class="si-label">En USD</div><div class="si-val green" id="dash-usd">U$0</div></div>
       <div class="summary-item"><div class="si-label">Transacciones</div><div class="si-val" id="dash-count">0</div></div>
       <div class="summary-item"><div class="si-label">Categorias</div><div class="si-val" id="dash-cats">0</div></div>
     </div>
@@ -348,7 +345,7 @@ input:checked+.slider:before{transform:translateX(20px)}
   <div class="form-field" id="tc-field" style="display:none">
     <label>Tipo de cambio (ARS x USD)</label>
     <input type="number" id="tx-tc" placeholder="Ej: 1200"/>
-    <p style="font-size:11px;color:var(--text3);margin-top:4px">Se pre-completa con el TC oficial del dia</p>
+    <p style="font-size:11px;color:var(--text3);margin-top:4px">Pre-completado con TC oficial del dia</p>
   </div>
   <div class="form-field"><label>Cuenta</label><select id="tx-account-id"></select></div>
   <div class="form-field"><label>Categoria</label><div class="cat-grid" id="cat-picker"></div></div>
@@ -519,11 +516,11 @@ var WORKER_URL = 'https://finanzas-proxy.eugenialoberto.workers.dev';
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbws126maGhdGEgJe3ZI_NiQxwa1dwoXhVgmbOdLDjRNBY9kVaTJz5s1_jgA6McPq9JFeA/exec';
 
 var ACC_TYPES = {
-  bank:         {label:'Banco',            icon:'B', savings:false},
-  wallet:       {label:'Billetera virtual', icon:'W', savings:false},
-  cash:         {label:'Efectivo',          icon:'$', savings:false},
-  savings:      {label:'Ahorro',            icon:'S', savings:true},
-  savings_cash: {label:'Ahorro efectivo',   icon:'A', savings:true}
+  bank:         {label:'Banco',            savings:false},
+  wallet:       {label:'Billetera virtual', savings:false},
+  cash:         {label:'Efectivo',          savings:false},
+  savings:      {label:'Ahorro',            savings:true},
+  savings_cash: {label:'Ahorro efectivo',   savings:true}
 };
 
 var S = {
@@ -535,56 +532,47 @@ var S = {
   newCatType:'expense', editingTxId:null, editingAccId:null, editingCatId:null
 };
 
-// ── UTILS ────────────────────────────────────────
-function api(action, params) {
-  params = params || {};
-  return fetch(WORKER_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-Target-URL':GAS_URL},
-    body:JSON.stringify(Object.assign({action:action}, params))
-  }).then(function(r){return r.json();}).then(function(d){if(d.error)throw new Error(d.error);return d;});
+function api(action,params){
+  params=params||{};
+  return fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Target-URL':GAS_URL},body:JSON.stringify(Object.assign({action:action},params))})
+    .then(function(r){return r.json();}).then(function(d){if(d.error)throw new Error(d.error);return d;});
 }
 var toastTimer;
 function toast(msg,type){
   var t=document.getElementById('toast');
-  t.textContent=msg; t.className='show'+(type?' '+type:'');
-  clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.className='';},3000);
+  t.textContent=msg;t.className='show'+(type?' '+type:'');
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.className='';},3000);
 }
 function fmt(n){return(n||0).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:2});}
 function todayStr(){return new Date().toISOString().split('T')[0];}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function monthName(m){return['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][m];}
-function fmtDate(str){
-  if(!str)return'';
-  var parts=String(str).split('T')[0].split('-');
-  if(parts.length<3)return str;
-  var months=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  return parts[2]+'-'+months[parseInt(parts[1])-1];
-}
-
 function parseDate(str){
-  // Parsear sin timezone para evitar desfase
   if(!str)return new Date();
   var s=String(str).split('T')[0];
-  var parts=s.split('-');
-  if(parts.length<3)return new Date(str);
-  return new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  var p=s.split('-');
+  if(p.length<3)return new Date(str);
+  return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+}
+function fmtDate(str){
+  if(!str)return'';
+  var p=String(str).split('T')[0].split('-');
+  if(p.length<3)return str;
+  var months=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return p[2]+'-'+months[parseInt(p[1])-1];
 }
 function showModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function isSavings(acc){return acc&&(acc.type==='savings'||acc.type==='savings_cash');}
 function saveAccountsLocal(){localStorage.setItem('accounts_'+S.user.uid,JSON.stringify(S.accounts));}
-function saveCatsLocal(){
-  localStorage.setItem('categories_'+S.user.uid,JSON.stringify(S.categories));
-}
-
+function saveCatsLocal(){localStorage.setItem('categories_'+S.user.uid,JSON.stringify(S.categories));}
 function saveCatOrder(){
   var order=S.categories.map(function(c,i){return{id:c.id,sort_order:i};});
   api('saveCategoryOrder',{order:order}).catch(function(){});
 }
 function getTc(){return S.tc.oficial||1000;}
 
-// ── AUTH ─────────────────────────────────────────
+// AUTH
 document.getElementById('btn-tab-login').addEventListener('click',function(){
   document.getElementById('form-login').style.display='block';
   document.getElementById('form-register').style.display='none';
@@ -630,24 +618,20 @@ function loginSuccess(user){
   try{var tc=localStorage.getItem('tc');if(tc)S.tc=JSON.parse(tc);}catch(e){}
 })();
 
-// ── TC OFICIAL ────────────────────────────────────
+// TC
 function fetchDolarOficial(){
   return fetch('https://dolarapi.com/v1/dolares/oficial')
     .then(function(r){return r.json();})
-    .then(function(d){
-      if(d&&d.compra){
-        S.tc.oficial=d.compra;
-        localStorage.setItem('tc',JSON.stringify(S.tc));
-      }
-    }).catch(function(){});
+    .then(function(d){if(d&&d.compra){S.tc.oficial=d.compra;localStorage.setItem('tc',JSON.stringify(S.tc));}})
+    .catch(function(){});
 }
 
-// ── APP INIT ─────────────────────────────────────
+// APP INIT
 function initApp(){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById('screen-main').classList.add('active');
   document.getElementById('fab').style.display='flex';
-  updateModeUI(); updateSettingsUI();
+  updateModeUI();updateSettingsUI();
   fetchDolarOficial().then(function(){return loadAll();}).then(function(){renderDashboard();}).catch(function(e){
     console.error('Error al cargar:',e);
     if(!S.categories.length){var lc=localStorage.getItem('categories_'+S.user.uid);S.categories=lc?JSON.parse(lc):[];}
@@ -665,7 +649,6 @@ function loadAll(){
     api('getAccounts',{uid:S.user.uid})
   ]).then(function(results){
     S.transactions=results[0].transactions||[];
-
     var bc=results[1].categories||[];
     if(bc.length){
       S.categories=bc.map(function(c){if(!c.type||(c.type!=='expense'&&c.type!=='income'))c.type='expense';return c;});
@@ -673,9 +656,7 @@ function loadAll(){
       var lc=localStorage.getItem('categories_'+S.user.uid);
       S.categories=lc?JSON.parse(lc):[];
     }
-
     S.vacations=results[2].vacations||[];
-
     var ba=results[3].accounts||[];
     if(ba.length){
       S.accounts=ba.map(function(a){a.balance=parseFloat(a.balance)||0;return a;});
@@ -690,7 +671,7 @@ function loadAll(){
   });
 }
 
-// ── TABS ─────────────────────────────────────────
+// TABS
 document.querySelectorAll('.nav-item').forEach(function(btn){
   btn.addEventListener('click',function(){switchTab(btn.getAttribute('data-tab'),btn);});
 });
@@ -715,7 +696,7 @@ document.getElementById('btn-go-settings').addEventListener('click',function(){
   switchTab('settings',document.querySelector('[data-tab="settings"]'));
 });
 
-// ── MODE ──────────────────────────────────────────
+// MODE
 function updateModeUI(){
   if(!S.user)return;
   var c=S.user.mode==='couple'||S.user.mode==='both';
@@ -740,7 +721,7 @@ function toggleMode(mode,checked){
   api('updateUserMode',{uid:S.user.uid,mode:S.user.mode}).catch(function(){});
 }
 
-// ── SETTINGS / CATEGORIAS ────────────────────────
+// SETTINGS
 function updateSettingsUI(){
   if(!S.user)return;
   document.getElementById('settings-name').textContent=S.user.name||'-';
@@ -759,9 +740,9 @@ function renderCatSettings(){
       '<div><div style="font-weight:600;font-size:14px">'+cat.name+'</div>'+
       '<div style="font-size:11px;color:var(--text3)">'+(cat.type==='income'?'Ingreso':'Gasto')+'</div></div></div>'+
       '<div class="row-actions">'+
-      '<span style="width:12px;height:12px;border-radius:50%;background:'+cat.color+';display:inline-block;margin-right:4px;flex-shrink:0"></span>'+
-      '<button class="edit-btn" data-cat-up="'+idx+'" title="Subir">&#x2191;</button>'+
-      '<button class="edit-btn" data-cat-down="'+idx+'" title="Bajar">&#x2193;</button>'+
+      '<span style="width:12px;height:12px;border-radius:50%;background:'+cat.color+';display:inline-block;margin-right:4px"></span>'+
+      '<button class="edit-btn" data-cat-up="'+idx+'">&#x2191;</button>'+
+      '<button class="edit-btn" data-cat-down="'+idx+'">&#x2193;</button>'+
       '<button class="edit-btn" data-edit-cat="'+cat.id+'">&#x270F;</button>'+
       '<button class="edit-btn" style="color:var(--red)" data-del-cat="'+cat.id+'">&#x2715;</button>'+
       '</div></div>';
@@ -774,7 +755,7 @@ function renderCatSettings(){
       var id=btn.getAttribute('data-del-cat');
       if(!confirm('Eliminar esta categoria?'))return;
       S.categories=S.categories.filter(function(c){return c.id!==id;});
-      saveCatsLocal(); renderCatSettings();
+      saveCatsLocal();renderCatSettings();
       toast('Categoria eliminada','success');
       api('deleteCategory',{id:id}).catch(function(){});
     });
@@ -784,7 +765,7 @@ function renderCatSettings(){
       var i=parseInt(btn.getAttribute('data-cat-up'));
       if(i===0)return;
       var tmp=S.categories[i-1];S.categories[i-1]=S.categories[i];S.categories[i]=tmp;
-      saveCatsLocal(); saveCatOrder(); renderCatSettings();
+      saveCatsLocal();saveCatOrder();renderCatSettings();
     });
   });
   list.querySelectorAll('[data-cat-down]').forEach(function(btn){
@@ -792,7 +773,7 @@ function renderCatSettings(){
       var i=parseInt(btn.getAttribute('data-cat-down'));
       if(i===S.categories.length-1)return;
       var tmp=S.categories[i+1];S.categories[i+1]=S.categories[i];S.categories[i]=tmp;
-      saveCatsLocal(); saveCatOrder(); renderCatSettings();
+      saveCatsLocal();saveCatOrder();renderCatSettings();
     });
   });
 }
@@ -809,7 +790,7 @@ document.getElementById('btn-save-edit-cat').addEventListener('click',function()
   var icon=document.getElementById('edit-cat-icon').value.trim();
   if(!name){toast('Ingresa un nombre','error');return;}
   cat.name=name;if(icon)cat.icon=icon;
-  saveCatsLocal(); closeModal('modal-edit-cat'); renderCatSettings(); renderCatPicker();
+  saveCatsLocal();closeModal('modal-edit-cat');renderCatSettings();renderCatPicker();
   toast('Categoria actualizada','success');
   api('updateCategory',{category:cat}).catch(function(){});
 });
@@ -837,14 +818,15 @@ document.getElementById('btn-save-cat').addEventListener('click',function(){
   var icon=document.getElementById('cat-icon').value.trim()||'?';
   var color=document.getElementById('cat-color').value;
   if(!name){toast('Ingresa un nombre','error');return;}
-  var cat={id:genId(),uid:S.user.uid,name:name,icon:icon,color:color,type:S.newCatType};
+  var sortOrder=S.categories.length;
+  var cat={id:genId(),uid:S.user.uid,name:name,icon:icon,color:color,type:S.newCatType,sort_order:sortOrder};
   S.categories.push(cat);
-  saveCatsLocal(); closeModal('modal-new-cat'); renderCatSettings();
+  saveCatsLocal();closeModal('modal-new-cat');renderCatSettings();
   toast('Categoria creada','success');
   api('addCategory',{category:cat}).catch(function(){});
 });
 
-// ── TC MODAL ─────────────────────────────────────
+// TC MODAL
 document.getElementById('btn-open-tc').addEventListener('click',function(){
   document.getElementById('tc-oficial').value=S.tc.oficial;
   fetch('https://dolarapi.com/v1/dolares/oficial')
@@ -855,9 +837,7 @@ document.getElementById('btn-open-tc').addEventListener('click',function(){
         document.getElementById('tc-oficial').value=d.compra;
         document.getElementById('tc-oficial-live').textContent='Oficial hoy: compra $'+d.compra+' - venta $'+(d.venta||'-');
       }
-    }).catch(function(){
-      document.getElementById('tc-oficial-live').textContent='No se pudo actualizar - ingresalo manual';
-    });
+    }).catch(function(){document.getElementById('tc-oficial-live').textContent='No se pudo actualizar - ingresalo manual';});
   showModal('modal-tc');
 });
 document.getElementById('btn-save-tc').addEventListener('click',function(){
@@ -869,7 +849,7 @@ document.getElementById('btn-save-tc').addEventListener('click',function(){
   if(S.activeTab==='accounts')renderAccounts();
 });
 
-// ── CLOSE MODALS ─────────────────────────────────
+// CLOSE MODALS
 document.querySelectorAll('[data-close]').forEach(function(btn){
   btn.addEventListener('click',function(){closeModal(btn.getAttribute('data-close'));});
 });
@@ -877,13 +857,13 @@ document.querySelectorAll('.modal-overlay').forEach(function(o){
   o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
 });
 
-// ── ACCOUNTS ─────────────────────────────────────
+// ACCOUNTS
 function accCardHTML(acc,showActions){
   var cfg=ACC_TYPES[acc.type]||ACC_TYPES.bank;
-  var icon=acc.icon||cfg.icon;
+  var icon=acc.icon||'?';
   var tc=getTc();
   var balStr=acc.currency==='USD'?'U$'+fmt(acc.balance):'$'+fmt(acc.balance);
-  var subStr=acc.currency==='USD'?'= $'+fmt(acc.balance*tc)+' ARS (TC oficial)':'';
+  var subStr=acc.currency==='USD'?'= $'+fmt(acc.balance*tc)+' ARS':'';
   var actions=showActions?'<div style="display:flex;gap:6px;margin-top:12px">'+
     '<button class="btn btn-secondary btn-sm" data-acc-history="'+acc.id+'">Historial</button>'+
     '<button class="btn btn-secondary btn-sm" data-edit-acc="'+acc.id+'">Editar</button>'+
@@ -982,7 +962,7 @@ document.getElementById('btn-save-account').addEventListener('click',function(){
     api('addAccount',{account:newAcc}).catch(function(){});
     toast('Cuenta creada','success');
   }
-  saveAccountsLocal(); closeModal('modal-new-account');
+  saveAccountsLocal();closeModal('modal-new-account');
   if(S.activeTab==='accounts')renderAccounts();
   if(S.activeTab==='savings')renderSavings();
   populateAccountSelect();
@@ -1001,8 +981,7 @@ function showAccHistory(accId){
   var acc=S.accounts.find(function(a){return a.id===accId;});if(!acc)return;
   var txs=S.transactions.filter(function(t){return t.account_id===accId;});
   var overlay=document.createElement('div');overlay.className='modal-overlay open';overlay.style.zIndex='600';
-  overlay.innerHTML='<div class="modal">'+
-    '<div class="modal-handle"></div>'+
+  overlay.innerHTML='<div class="modal"><div class="modal-handle"></div>'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
     '<div class="modal-title" style="margin:0">'+acc.name+'</div>'+
     '<button class="icon-btn" id="close-acc-history">X</button></div>'+
@@ -1037,6 +1016,8 @@ document.getElementById('btn-save-transfer').addEventListener('click',function()
   from.balance=(from.balance||0)-debit;
   to.balance=(to.balance||0)+credit;
   saveAccountsLocal();
+  api('updateAccountBalance',{id:from.id,balance:from.balance}).catch(function(){});
+  api('updateAccountBalance',{id:to.id,balance:to.balance}).catch(function(){});
   var txOut={id:genId(),uid:S.user.uid,date:date,type:'expense',amount:amount,currency:currency,tc:tc,category_id:'other',account_id:fromId,tags:[],description:'Transferencia a '+to.name,note:'',shared:false,payer:'me',split_me:100,created_at:new Date().toISOString()};
   var txIn={id:genId(),uid:S.user.uid,date:date,type:'income',amount:amount,currency:currency,tc:tc,category_id:'other',account_id:toId,tags:[],description:'Transferencia de '+from.name,note:'',shared:false,payer:'me',split_me:100,created_at:new Date().toISOString()};
   S.transactions.unshift(txIn);S.transactions.unshift(txOut);
@@ -1053,7 +1034,7 @@ function populateAccountSelect(){
     :'<option value="">Sin cuentas - crea una primero</option>';
 }
 
-// ── NEW / EDIT TX ────────────────────────────────
+// NEW/EDIT TX
 document.getElementById('fab').addEventListener('click',function(){openTxModal(null);});
 function openTxModal(tx){
   S.editingTxId=tx?tx.id:null;
@@ -1065,8 +1046,7 @@ function openTxModal(tx){
   document.getElementById('tx-date').value=tx?tx.date:todayStr();
   document.getElementById('tx-currency').value=tx?tx.currency:'ARS';
   document.getElementById('tc-field').style.display=(tx&&tx.currency==='USD')?'':'none';
-  if(tx&&tx.currency==='USD')document.getElementById('tx-tc').value=tx.tc;
-  else document.getElementById('tx-tc').value=getTc();
+  document.getElementById('tx-tc').value=(tx&&tx.currency==='USD')?tx.tc:getTc();
   document.getElementById('tx-shared').checked=tx?tx.shared:false;
   document.getElementById('split-section').style.display=(tx&&tx.shared)?'':'none';
   document.getElementById('split-me').value=tx?tx.split_me:50;
@@ -1160,29 +1140,53 @@ document.getElementById('btn-save-tx').addEventListener('click',function(){
   var accountId=document.getElementById('tx-account-id').value;
   if(!desc){toast('Agrega una descripcion','error');return;}
   if(!amount||amount<=0){toast('Ingresa un monto valido','error');return;}
-  var defaultCatId=S.categories.length?(S.txType==='income'?S.categories.filter(function(c){return c.type==='income';})[S.categories.filter(function(c){return c.type==='income';}).length-1]:S.categories.filter(function(c){return c.type==='expense';})[S.categories.filter(function(c){return c.type==='expense';}).length-1]):null;
-  var catId=S.selectedCat||(defaultCatId?defaultCatId.id:'other');
+  var expCats=S.categories.filter(function(c){return c.type==='expense';});
+  var incCats=S.categories.filter(function(c){return c.type==='income';});
+  var defaultCatId=S.txType==='income'?(incCats.length?incCats[incCats.length-1].id:'other'):(expCats.length?expCats[expCats.length-1].id:'other');
+  var catId=S.selectedCat||defaultCatId;
+
   if(S.editingTxId){
     var oldTx=S.transactions.find(function(t){return t.id===S.editingTxId;});
     if(oldTx){
       var oldAcc=S.accounts.find(function(a){return a.id===oldTx.account_id;});
-      if(oldAcc){var rev=oldTx.type==='income'?-oldTx.amount:oldTx.amount;if(oldTx.currency==='USD'&&oldAcc.currency==='ARS')rev*=oldTx.tc;else if(oldTx.currency==='ARS'&&oldAcc.currency==='USD')rev/=oldTx.tc;oldAcc.balance=(oldAcc.balance||0)+rev;}
+      if(oldAcc){
+        var rev=oldTx.type==='income'?-oldTx.amount:oldTx.amount;
+        if(oldTx.currency==='USD'&&oldAcc.currency==='ARS')rev*=oldTx.tc;
+        else if(oldTx.currency==='ARS'&&oldAcc.currency==='USD')rev/=oldTx.tc;
+        oldAcc.balance=(oldAcc.balance||0)+rev;
+        api('updateAccountBalance',{id:oldAcc.id,balance:oldAcc.balance}).catch(function(){});
+      }
       oldTx.description=desc;oldTx.amount=amount;oldTx.currency=currency;oldTx.tc=tc;
       oldTx.date=date;oldTx.note=note;oldTx.shared=shared;oldTx.payer=shared?payer:'me';
       oldTx.split_me=shared?splitMe:100;oldTx.category_id=catId;oldTx.account_id=accountId;oldTx.tags=S.currentTags.slice();
     }
     var newAcc=S.accounts.find(function(a){return a.id===accountId;});
-    if(newAcc){var delta=S.txType==='income'?amount:-amount;if(currency==='USD'&&newAcc.currency==='ARS')delta*=tc;else if(currency==='ARS'&&newAcc.currency==='USD')delta/=tc;newAcc.balance=(newAcc.balance||0)+delta;}
-    saveAccountsLocal();closeModal('modal-new-tx');renderDashboard();
+    if(newAcc){
+      var delta=S.txType==='income'?amount:-amount;
+      if(currency==='USD'&&newAcc.currency==='ARS')delta*=tc;
+      else if(currency==='ARS'&&newAcc.currency==='USD')delta/=tc;
+      newAcc.balance=(newAcc.balance||0)+delta;
+      api('updateAccountBalance',{id:newAcc.id,balance:newAcc.balance}).catch(function(){});
+    }
+    saveAccountsLocal();
+    closeModal('modal-new-tx');renderDashboard();
     if(S.activeTab==='transactions')renderTransactions();
     if(S.activeTab==='accounts')renderAccounts();
     toast('Transaccion actualizada','success');
     api('updateTransaction',{transaction:oldTx}).catch(function(){});
   } else {
     var acc=S.accounts.find(function(a){return a.id===accountId;});
-    if(acc){var d2=S.txType==='income'?amount:-amount;if(currency==='USD'&&acc.currency==='ARS')d2*=tc;else if(currency==='ARS'&&acc.currency==='USD')d2/=tc;acc.balance=(acc.balance||0)+d2;saveAccountsLocal();api('updateAccountBalance',{id:acc.id,balance:acc.balance}).catch(function(){});}
+    if(acc){
+      var d2=S.txType==='income'?amount:-amount;
+      if(currency==='USD'&&acc.currency==='ARS')d2*=tc;
+      else if(currency==='ARS'&&acc.currency==='USD')d2/=tc;
+      acc.balance=(acc.balance||0)+d2;
+      saveAccountsLocal();
+      api('updateAccountBalance',{id:acc.id,balance:acc.balance}).catch(function(){});
+    }
     var newTx={id:genId(),uid:S.user.uid,date:date,type:S.txType,amount:amount,currency:currency,tc:tc,category_id:catId,account_id:accountId,tags:S.currentTags.slice(),description:desc,note:note,shared:shared,payer:shared?payer:'me',split_me:shared?splitMe:100,created_at:new Date().toISOString()};
-    S.transactions.unshift(newTx);closeModal('modal-new-tx');renderDashboard();
+    S.transactions.unshift(newTx);
+    closeModal('modal-new-tx');renderDashboard();
     if(S.activeTab==='transactions')renderTransactions();
     if(S.activeTab==='accounts')renderAccounts();
     toast('Transaccion guardada','success');
@@ -1190,7 +1194,7 @@ document.getElementById('btn-save-tx').addEventListener('click',function(){
   }
 });
 
-// ── TRANSACTIONS ──────────────────────────────────
+// TRANSACTIONS
 document.querySelectorAll('.filter-chip').forEach(function(btn){
   btn.addEventListener('click',function(){
     S.txFilter=btn.getAttribute('data-filter');
@@ -1209,7 +1213,11 @@ function renderTransactions(){
   if(!txs.length){container.innerHTML='<div class="empty"><div class="e-icon">&#x1F4ED;</div><h3>Sin movimientos</h3><p>Toca el + para agregar tu primer transaccion</p></div>';return;}
   container.innerHTML='<div class="tx-list">'+txs.map(function(tx){return txHTML(tx,true);}).join('')+'</div>';
   container.querySelectorAll('[data-edit-tx]').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();var tx=S.transactions.find(function(t){return t.id===btn.getAttribute('data-edit-tx');});if(tx)openTxModal(tx);});
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var tx=S.transactions.find(function(t){return t.id===btn.getAttribute('data-edit-tx');});
+      if(tx)openTxModal(tx);
+    });
   });
   container.querySelectorAll('[data-del-tx]').forEach(function(btn){
     btn.addEventListener('click',function(e){e.stopPropagation();deleteTx(btn.getAttribute('data-del-tx'));});
@@ -1220,7 +1228,14 @@ function deleteTx(txId){
   var tx=S.transactions.find(function(t){return t.id===txId;});
   if(tx){
     var acc=S.accounts.find(function(a){return a.id===tx.account_id;});
-    if(acc){var rev=tx.type==='income'?-tx.amount:tx.amount;if(tx.currency==='USD'&&acc.currency==='ARS')rev*=tx.tc;else if(tx.currency==='ARS'&&acc.currency==='USD')rev/=tx.tc;acc.balance=(acc.balance||0)+rev;saveAccountsLocal();}
+    if(acc){
+      var rev=tx.type==='income'?-tx.amount:tx.amount;
+      if(tx.currency==='USD'&&acc.currency==='ARS')rev*=tx.tc;
+      else if(tx.currency==='ARS'&&acc.currency==='USD')rev/=tx.tc;
+      acc.balance=(acc.balance||0)+rev;
+      saveAccountsLocal();
+      api('updateAccountBalance',{id:acc.id,balance:acc.balance}).catch(function(){});
+    }
   }
   S.transactions=S.transactions.filter(function(t){return t.id!==txId;});
   renderTransactions();renderDashboard();
@@ -1250,7 +1265,7 @@ function txHTML(tx,showActions){
     actions+'</div></div>';
 }
 
-// ── DASHBOARD ─────────────────────────────────────
+// DASHBOARD
 function renderDashboard(){
   var now=new Date(),month=now.getMonth(),year=now.getFullYear();
   var savIds=S.accounts.filter(isSavings).map(function(a){return a.id;});
@@ -1260,19 +1275,16 @@ function renderDashboard(){
     var isSav=t.account_id&&savIds.length&&savIds.indexOf(t.account_id)!==-1;
     return inMonth&&!isSav;
   });
-  var iARS=0,eARS=0,iUSD=0,eUSD=0;
+  var iARS=0,eARS=0;
   txs.forEach(function(t){
     var isIn=t.type==='income';
-    if(t.currency==='ARS'){isIn?(iARS+=t.amount):(eARS+=t.amount);}
-    else{isIn?(iUSD+=t.amount):(eUSD+=t.amount);}
+    var valARS=t.currency==='USD'?t.amount*t.tc:t.amount;
+    if(isIn)iARS+=valARS;else eARS+=valARS;
   });
   document.getElementById('balance-month-label').textContent=monthName(month)+' '+year;
   document.getElementById('balance-main-val').textContent='$'+fmt(iARS-eARS)+' ARS';
   document.getElementById('dash-income').textContent='+$'+fmt(iARS);
   document.getElementById('dash-expense').textContent='-$'+fmt(eARS);
-  var tARS=iARS-eARS,tUSD=iUSD-eUSD;
-  var arsEl=document.getElementById('dash-ars');arsEl.textContent=(tARS>=0?'+':'')+' $'+fmt(tARS);arsEl.className='si-val '+(tARS>=0?'green':'red');
-  var usdEl=document.getElementById('dash-usd');usdEl.textContent=(tUSD>=0?'+':'')+'U$'+fmt(tUSD);usdEl.className='si-val '+(tUSD>=0?'green':'red');
   document.getElementById('dash-count').textContent=txs.length;
   var cats={};txs.forEach(function(t){cats[t.category_id]=true;});
   document.getElementById('dash-cats').textContent=Object.keys(cats).length;
@@ -1286,24 +1298,34 @@ function renderPie(expenses){
   var canvas=document.getElementById('pieChart'),legend=document.getElementById('pie-legend'),ctx=canvas.getContext('2d');
   var W=canvas.offsetWidth||300,H=220;canvas.width=W;canvas.height=H;ctx.clearRect(0,0,W,H);
   var catMap={};
-  expenses.forEach(function(t){var val=t.currency==='USD'?t.amount*t.tc:t.amount;catMap[t.category_id]=(catMap[t.category_id]||0)+val;});
+  expenses.forEach(function(t){
+    var val=t.currency==='USD'?t.amount*t.tc:t.amount;
+    catMap[t.category_id]=(catMap[t.category_id]||0)+val;
+  });
   var entries=Object.keys(catMap).map(function(k){return[k,catMap[k]];}).sort(function(a,b){return b[1]-a[1];});
   var total=entries.reduce(function(s,e){return s+e[1];},0)||1;
   legend.innerHTML='';
-  if(!entries.length){ctx.fillStyle='#ffffff22';ctx.beginPath();ctx.arc(W/2,H/2,80,0,Math.PI*2);ctx.fill();ctx.fillStyle='#9ca3af';ctx.textAlign='center';ctx.font='14px Inter';ctx.fillText('Sin datos',W/2,H/2+5);return;}
+  if(!entries.length){
+    ctx.fillStyle='#ffffff22';ctx.beginPath();ctx.arc(W/2,H/2,80,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#9ca3af';ctx.textAlign='center';ctx.font='14px Inter';
+    ctx.fillText('Sin datos',W/2,H/2+5);return;
+  }
   var cx=W/2,cy=H/2,r=Math.min(cx,cy)-20,startAngle=-Math.PI/2;
   entries.forEach(function(entry){
     var cat=S.categories.find(function(c){return c.id===entry[0];})||{color:'#6b7280',name:'Otros',icon:'?'};
     var slice=(entry[1]/total)*Math.PI*2;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,startAngle,startAngle+slice);ctx.closePath();ctx.fillStyle=cat.color;ctx.fill();ctx.strokeStyle='#1a1d27';ctx.lineWidth=2;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,startAngle,startAngle+slice);
+    ctx.closePath();ctx.fillStyle=cat.color;ctx.fill();
+    ctx.strokeStyle='#1a1d27';ctx.lineWidth=2;ctx.stroke();
     legend.innerHTML+='<div class="legend-item"><div class="legend-dot" style="background:'+cat.color+'"></div>'+cat.icon+' '+cat.name+' '+Math.round(entry[1]/total*100)+'%</div>';
     startAngle+=slice;
   });
   ctx.beginPath();ctx.arc(cx,cy,r*0.5,0,Math.PI*2);ctx.fillStyle='#1a1d27';ctx.fill();
-  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 14px Inter';ctx.fillText('$'+fmt(total),cx,cy+5);
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 14px Inter';
+  ctx.fillText('$'+fmt(total),cx,cy+5);
 }
 
-// ── COUPLE ────────────────────────────────────────
+// COUPLE
 document.getElementById('btn-send-partner').addEventListener('click',function(){
   var email=document.getElementById('partner-email').value.trim();
   if(!email){toast('Ingresa un email','error');return;}
@@ -1317,13 +1339,17 @@ function renderCouple(){
   var c=document.getElementById('couple-content');
   if(!S.user.partner_uid){
     c.innerHTML='<div class="couple-status"><div class="avatar">?</div><div class="couple-info"><h3>'+S.user.name+'</h3><p>Sin pareja vinculada</p></div></div>'+
-      '<div class="empty"><div class="e-icon">&#x1F491;</div><h3>Modo pareja activado</h3><p>Vincula tu cuenta con la de tu pareja para compartir gastos.</p></div>'+
+      '<div class="empty"><div class="e-icon">&#x1F491;</div><h3>Modo pareja activado</h3><p>Vincula tu cuenta con la de tu pareja.</p></div>'+
       '<button class="btn btn-primary" style="margin-top:20px" id="btn-open-link-partner">Vincular pareja</button>';
     document.getElementById('btn-open-link-partner').addEventListener('click',function(){showModal('modal-link-partner');});return;
   }
   var shared=S.transactions.filter(function(t){return t.shared;});
   var iOwe=0,theyOwe=0;
-  shared.forEach(function(t){var val=t.currency==='USD'?t.amount*t.tc:t.amount;var my=val*(t.split_me||50)/100;if(t.payer==='me')theyOwe+=(val-my);else iOwe+=my;});
+  shared.forEach(function(t){
+    var val=t.currency==='USD'?t.amount*t.tc:t.amount;
+    var my=val*(t.split_me||50)/100;
+    if(t.payer==='me')theyOwe+=(val-my);else iOwe+=my;
+  });
   var net=theyOwe-iOwe;
   c.innerHTML='<div class="couple-status"><div class="avatar">?</div><span class="link-icon">+</span><div class="avatar">?</div>'+
     '<div class="couple-info"><h3>'+S.user.name+' & '+(S.user.partner_name||'Pareja')+'</h3><p>Vinculados</p></div></div>'+
@@ -1335,19 +1361,24 @@ function renderCouple(){
     '<div class="tx-list">'+(shared.length?shared.map(function(t){return txHTML(t,false);}).join(''):'<div class="empty"><div class="e-icon">&#x1F91D;</div><h3>Sin gastos compartidos</h3></div>')+'</div>';
 }
 
-// ── VACATIONS ─────────────────────────────────────
+// VACATIONS
 document.getElementById('btn-save-vac').addEventListener('click',function(){
-  var name=document.getElementById('vac-name').value.trim();if(!name){toast('Pone un nombre al viaje','error');return;}
+  var name=document.getElementById('vac-name').value.trim();
+  if(!name){toast('Pone un nombre al viaje','error');return;}
   var vac={id:genId(),uid:S.user.uid,name:name,start_date:document.getElementById('vac-start').value,end_date:document.getElementById('vac-end').value,budget:parseFloat(document.getElementById('vac-budget').value)||0,currency:document.getElementById('vac-currency').value,created_at:new Date().toISOString()};
-  S.vacations.unshift(vac);closeModal('modal-new-vac');renderVacations();toast('Viaje creado','success');api('addVacation',{vacation:vac}).catch(function(){});
+  S.vacations.unshift(vac);closeModal('modal-new-vac');renderVacations();
+  toast('Viaje creado','success');api('addVacation',{vacation:vac}).catch(function(){});
 });
 document.getElementById('btn-save-vexp').addEventListener('click',function(){
-  var desc=document.getElementById('vexp-desc').value.trim(),amount=parseFloat(document.getElementById('vexp-amount').value);
+  var desc=document.getElementById('vexp-desc').value.trim();
+  var amount=parseFloat(document.getElementById('vexp-amount').value);
   if(!desc||!amount){toast('Completa los campos','error');return;}
   var tc=parseFloat(document.getElementById('vexp-tc').value)||getTc();
   var item={id:genId(),vacation_id:S.activeVacId,type:'expense',description:desc,amount:amount,currency:document.getElementById('vexp-currency').value,tc:tc,shared:document.getElementById('vexp-shared').checked,payer:document.getElementById('vexp-payer').value,split_me:parseInt(document.getElementById('vexp-split-me').value)||50,created_at:new Date().toISOString()};
-  if(!S.vacItems[S.activeVacId])S.vacItems[S.activeVacId]=[];S.vacItems[S.activeVacId].unshift(item);
-  closeModal('modal-vac-expense');renderVacations();toast('Gasto guardado','success');api('addVacationItem',{item:item}).catch(function(){});
+  if(!S.vacItems[S.activeVacId])S.vacItems[S.activeVacId]=[];
+  S.vacItems[S.activeVacId].unshift(item);
+  closeModal('modal-vac-expense');renderVacations();
+  toast('Gasto guardado','success');api('addVacationItem',{item:item}).catch(function(){});
 });
 function calcVacSpent(vacId){
   var tc=getTc();
@@ -1356,8 +1387,9 @@ function calcVacSpent(vacId){
 function renderVacations(){
   var c=document.getElementById('vacation-content');
   var btnHtml='<button class="btn btn-primary" style="margin-bottom:16px;width:auto;padding:10px 20px" id="btn-open-new-vac">+ Nuevo viaje</button>';
-  if(!S.vacations.length){c.innerHTML='<div class="empty"><div class="e-icon">&#x2708;</div><h3>Sin viajes</h3><p>Crea tu primer viaje para empezar.</p></div>'+btnHtml;}
-  else{
+  if(!S.vacations.length){
+    c.innerHTML='<div class="empty"><div class="e-icon">&#x2708;</div><h3>Sin viajes</h3><p>Crea tu primer viaje para empezar.</p></div>'+btnHtml;
+  } else {
     var cards=S.vacations.map(function(v){
       var spent=calcVacSpent(v.id),pct=Math.min(100,Math.round(spent/v.budget*100))||0,curr=v.currency==='USD'?'U$':'$';
       return'<div class="vac-card">'+
@@ -1398,7 +1430,8 @@ function openVacationDetail(vacId){
   document.getElementById('checklist-container').addEventListener('click',function(e){
     var item=e.target.closest('.checklist-item');if(!item)return;
     var box=item.querySelector('.check-box'),txt=item.querySelector('.check-text'),iid=item.getAttribute('data-item-id');
-    var vi=(S.vacItems[vacId]||[]).find(function(x){return x.id===iid;});if(vi)vi.done=!vi.done;box.classList.toggle('checked');txt.classList.toggle('done');
+    var vi=(S.vacItems[vacId]||[]).find(function(x){return x.id===iid;});if(vi)vi.done=!vi.done;
+    box.classList.toggle('checked');txt.classList.toggle('done');
   });
   document.getElementById('btn-add-check').addEventListener('click',function(){
     var inp=document.getElementById('new-check-txt'),desc=inp.value.trim();if(!desc)return;
