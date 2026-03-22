@@ -543,7 +543,7 @@ const GAS    = 'https://script.google.com/macros/s/AKfycbxmlXjrekyLNmSXFJGTChlH4
 // ─── STATE ────────────────────────────────────────
 const S = {
   user: null, tx: [], accounts: [], categories: [],
-  vacations: [], vacItems: [],
+  vacations: [], vacItems: [], pendingRequests: [],
   tc: { oficial: 0 },
   txFilter: 'all',
   editTxId: null, editAccId: null, editCatId: null,
@@ -583,7 +583,6 @@ async function api(action, body) {
     });
     const d = await r.json();
     if (d.error) return { ok: false, error: d.error };
-    // Normalise response key to always be { ok, data }
     if (d.transactions !== undefined) return { ok: true, data: d.transactions };
     if (d.categories   !== undefined) return { ok: true, data: d.categories };
     if (d.accounts     !== undefined) return { ok: true, data: d.accounts };
@@ -591,7 +590,7 @@ async function api(action, body) {
     if (d.items        !== undefined) return { ok: true, data: d.items };
     if (d.requests     !== undefined) return { ok: true, data: d.requests };
     if (d.user         !== undefined) return { ok: true, user: d.user };
-    return { ok: true, ...d };
+    return { ok: d.ok !== undefined ? d.ok : true, ...d };
   } catch(e) {
     console.error('API error:', action, e);
     return { ok: false, error: e.message };
@@ -703,8 +702,14 @@ async function doLogin() {
   if (!email || !pass) return showToast('Completa todos los campos', 'error');
   showToast('Ingresando...');
   const r = await api('login', { email, password: pass });
-  if (r.ok && r.user) { S.user = r.user; localStorage.setItem('session', JSON.stringify(r.user)); await initApp(); }
-  else showToast(r.error || 'Error al ingresar', 'error');
+  if (r.ok && r.user) {
+    S.user = r.user;
+    localStorage.setItem('session', JSON.stringify(r.user));
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-loader').style.display = 'flex';
+    document.getElementById('app-loader').style.opacity = '1';
+    await initApp();
+  } else showToast(r.error || 'Error al ingresar', 'error');
 }
 
 async function doRegister() {
@@ -715,8 +720,14 @@ async function doRegister() {
   if (pass.length < 6) return showToast('Minimo 6 caracteres', 'error');
   showToast('Creando cuenta...');
   const r = await api('register', { name, email, password: pass });
-  if (r.ok && r.user) { S.user = r.user; localStorage.setItem('session', JSON.stringify(r.user)); await initApp(); }
-  else showToast(r.error || 'Error al registrarse', 'error');
+  if (r.ok && r.user) {
+    S.user = r.user;
+    localStorage.setItem('session', JSON.stringify(r.user));
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-loader').style.display = 'flex';
+    document.getElementById('app-loader').style.opacity = '1';
+    await initApp();
+  } else showToast(r.error || 'Error al registrarse', 'error');
 }
 
 function doLogout() {
@@ -1599,6 +1610,10 @@ async function toggleVacItem(id, done) {
     try {
       S.user = JSON.parse(saved);
       if (!S.user || !S.user.uid) throw new Error('invalid');
+      hideLoader();
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app-loader').style.display = 'flex';
+      document.getElementById('app-loader').style.opacity = '1';
       await initApp();
     } catch(e) {
       localStorage.removeItem('session');
