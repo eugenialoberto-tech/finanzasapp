@@ -471,10 +471,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Vincular pareja</span>
-      <button class="modal-close" onclick="closeModal('modal-couple')">&#x2715;</button>
+      <button class="modal-close" onclick="cancelCoupleModal()">&#x2715;</button>
     </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Ingresa el email de tu pareja. Le va a aparecer una solicitud para aceptar cuando abra la app.</p>
     <div class="form-group"><label>Email de tu pareja</label><input type="email" id="couple-email" placeholder="pareja@email.com"></div>
-    <button class="btn btn-primary btn-full" onclick="linkCouple()">Vincular</button>
+    <button class="btn btn-primary btn-full" onclick="sendCoupleRequest()">Enviar solicitud</button>
   </div>
 </div>
 
@@ -523,7 +524,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <script>
 // ─── CONFIG ───────────────────────────────────────
 const WORKER = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-const GAS    = 'https://script.google.com/macros/s/AKfycbxE-dAJWG49yKlUycODuIDXxCvPLqF80yk9ECbVY7iWh5AiGBQjeFKjrPMp8gLoHTye9g/exec';
+const GAS    = 'https://script.google.com/macros/s/AKfycbzvBw4qtrJnWYw4inMhq6W1Xo_oJiCB9bcTD25aD29ET4lcOdBTJyrUW-jMYzQdfMottg/exec';
 
 // ─── STATE ────────────────────────────────────────
 const S = {
@@ -574,6 +575,7 @@ async function api(action, body) {
     if (d.accounts     !== undefined) return { ok: true, data: d.accounts };
     if (d.vacations    !== undefined) return { ok: true, data: d.vacations };
     if (d.items        !== undefined) return { ok: true, data: d.items };
+    if (d.requests     !== undefined) return { ok: true, data: d.requests };
     if (d.user         !== undefined) return { ok: true, user: d.user };
     return { ok: true, ...d };
   } catch(e) {
@@ -739,6 +741,9 @@ async function loadAll() {
     const r = await api('getVacationItems', { vacation_id: S.vacations[i].id });
     if (r.ok && r.data) S.vacItems = S.vacItems.concat(r.data);
   }
+  // Check pending couple requests
+  const reqR = await api('getPendingRequests', { uid });
+  S.pendingRequests = (reqR.ok && reqR.data) ? reqR.data : [];
 }
 
 // ─── SCREENS ──────────────────────────────────────
@@ -749,6 +754,7 @@ function updateUI() {
   renderCatConfig();
   renderCouple();
   renderVacations();
+  renderPendingRequests();
 }
 
 function showScreen(name) {
@@ -1300,9 +1306,7 @@ function renderCouple() {
     el.innerHTML='<div class="empty"><div class="empty-icon">&#x1F46B;</div><div>Activa el modo pareja en Configuracion</div></div>'; return;
   }
   if (!S.user.partner_uid) {
-    el.innerHTML='<div class="card"><div class="card-title">Vincular pareja</div>'
-      +'<p style="font-size:13px;color:var(--text2);margin-bottom:12px">Vinculate con la cuenta de tu pareja para ver los gastos compartidos.</p>'
-      +'<button class="btn btn-primary" onclick="document.getElementById(\'modal-couple\').classList.remove(\'hidden\')">+ Vincular pareja</button></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">&#x23F3;</div><div style="margin-top:8px">Solicitud enviada</div><div style="font-size:12px;color:var(--text2);margin-top:4px">Esperando que tu pareja acepte</div></div>';
     return;
   }
   const shared=S.tx.filter(function(t){return t.shared===true||t.shared==='TRUE';});
@@ -1318,27 +1322,91 @@ function renderCouple() {
     +(shared.length?shared.map(function(t){return txItemHTML(t,false);}).join(''):'<div class="empty"><div>Sin gastos compartidos</div></div>')+'</div>';
 }
 
-async function linkCouple() {
+async function sendCoupleRequest() {
   const email = document.getElementById('couple-email').value.trim();
-  if (!email) return showToast('Ingresa el email de tu pareja','error');
-  const r = await api('linkCouple', { uid: S.user.uid, partner_email: email });
+  if (!email) return showToast('Ingresa el email de tu pareja', 'error');
+  const r = await api('sendCoupleRequest', { uid: S.user.uid, partner_email: email });
   if (r.ok) {
-    S.user.partner_uid=r.partner_uid; S.user.partner_name=r.partner_name;
+    closeModal('modal-couple');
+    showToast('Solicitud enviada. Tu pareja la vera al abrir la app.', 'success');
+    renderCouple();
+  } else {
+    showToast(r.error || 'Error al enviar', 'error');
+  }
+}
+
+function cancelCoupleModal() {
+  // Si cancela sin tener pareja vinculada, apagar el toggle y revertir modo
+  if (!S.user.partner_uid) {
+    document.getElementById('toggle-couple').checked = false;
+    document.getElementById('nav-couple').classList.add('hidden');
+    const vacOn = document.getElementById('toggle-vac').checked;
+    S.user.mode = vacOn ? 'vacation' : 'normal';
     localStorage.setItem('session', JSON.stringify(S.user));
-    closeModal('modal-couple'); showToast('Pareja vinculada','success'); renderCouple();
-  } else showToast(r.error||'No se encontro el usuario','error');
+    api('updateUserMode', { uid: S.user.uid, mode: S.user.mode });
+  }
+  closeModal('modal-couple');
+}
+
+function renderPendingRequests() {
+  // Show banner in config screen if there are pending requests
+  const existing = document.getElementById('couple-requests-banner');
+  if (existing) existing.remove();
+  if (!S.pendingRequests || !S.pendingRequests.length) return;
+  const configCard = document.querySelector('#screen-config .card');
+  if (!configCard) return;
+  const banner = document.createElement('div');
+  banner.id = 'couple-requests-banner';
+  banner.className = 'card';
+  banner.style.cssText = 'border-color:var(--accent);margin-bottom:12px';
+  banner.innerHTML = '<div class="card-title" style="color:var(--accent)">&#x1F46B; Solicitudes de vinculacion</div>'
+    + S.pendingRequests.map(function(req) {
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">'
+          +'<div><div style="font-weight:600">'+req.from_name+'</div>'
+          +'<div style="font-size:12px;color:var(--text2)">quiere vincularse como pareja</div></div>'
+          +'<div style="display:flex;gap:6px">'
+          +'<button class="btn btn-primary btn-sm" onclick="respondRequest(\''+req.id+'\',true)">Aceptar</button>'
+          +'<button class="btn btn-secondary btn-sm" onclick="respondRequest(\''+req.id+'\',false)">Rechazar</button>'
+          +'</div></div>';
+      }).join('');
+  // Insert before first card in config
+  document.getElementById('screen-config').insertBefore(banner, configCard);
+}
+
+async function respondRequest(requestId, accept) {
+  const r = await api('respondCoupleRequest', { request_id: requestId, uid: S.user.uid, accept });
+  if (!r.ok) return showToast(r.error || 'Error', 'error');
+  S.pendingRequests = S.pendingRequests.filter(function(x){ return x.id !== requestId; });
+  if (accept && r.accepted) {
+    S.user.partner_uid  = r.partner_uid;
+    S.user.partner_name = r.partner_name;
+    S.user.mode         = r.new_mode;
+    localStorage.setItem('session', JSON.stringify(S.user));
+    document.getElementById('toggle-couple').checked = true;
+    document.getElementById('nav-couple').classList.remove('hidden');
+    showToast('Vinculacion aceptada! Ya estan conectados.', 'success');
+    updateUI();
+  } else {
+    showToast('Solicitud rechazada', '');
+  }
+  renderPendingRequests();
 }
 
 // ─── MODES ────────────────────────────────────────
 async function toggleMode() {
-  const coupleOn=document.getElementById('toggle-couple').checked;
-  const vacOn   =document.getElementById('toggle-vac').checked;
+  const coupleOn = document.getElementById('toggle-couple').checked;
+  const vacOn    = document.getElementById('toggle-vac').checked;
   const mode = coupleOn&&vacOn?'both':coupleOn?'couple':vacOn?'vacation':'normal';
   S.user.mode = mode;
   localStorage.setItem('session', JSON.stringify(S.user));
   document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
   document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
   await api('updateUserMode', { uid: S.user.uid, mode });
+  // Si acaba de activar modo pareja y no tiene pareja vinculada, abrir modal
+  if (coupleOn && !S.user.partner_uid) {
+    document.getElementById('couple-email').value = '';
+    document.getElementById('modal-couple').classList.remove('hidden');
+  }
   updateUI();
 }
 
