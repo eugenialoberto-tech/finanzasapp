@@ -14,6 +14,7 @@
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden}
 .hidden{display:none!important}
+/* AUTH */
 #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:100%;max-width:400px}
 .auth-logo{text-align:center;margin-bottom:24px}
@@ -32,23 +33,30 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
 .btn-secondary:hover{border-color:var(--accent)}
 .btn-danger{background:#c0303a;color:#fff}
+.btn-danger:hover{background:#a02030}
+.btn-green{background:var(--green);color:#000}
 .btn-full{width:100%;justify-content:center}
 .btn-sm{padding:6px 12px;font-size:12px}
+/* APP */
 #app-screen{display:none;flex-direction:column;min-height:100vh}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .topbar-title{font-size:18px;font-weight:700}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer}
 .content{flex:1;padding:16px;max-width:600px;margin:0 auto;width:100%}
+/* NAV */
 .bottom-nav{background:var(--surface);border-top:1px solid var(--border);display:flex;position:sticky;bottom:0;z-index:100}
 .nav-item{flex:1;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--text2);font-size:10px;transition:color .2s}
 .nav-item.active{color:var(--accent)}
 .nav-icon{font-size:20px;line-height:1}
+/* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .card-title{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+/* DASHBOARD */
 .balance-block{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid #4c3fff44;border-radius:var(--radius);padding:20px;margin-bottom:12px}
 .balance-label{font-size:12px;color:#a5b4fc;margin-bottom:4px}
 .balance-amount{font-size:36px;font-weight:800;color:#fff}
+.balance-sub{font-size:14px;color:#a5b4fc;margin-top:4px}
 .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .summary-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .summary-tile-label{font-size:11px;color:var(--text2);margin-bottom:4px}
@@ -58,7 +66,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .savings-tile{background:var(--surface);border:1px solid var(--green);border-radius:var(--radius);padding:14px;margin-bottom:12px}
 .savings-tile-label{font-size:11px;color:var(--green);margin-bottom:4px}
 .savings-tile-val{font-size:20px;font-weight:700;color:var(--green)}
-.chart-wrap{position:relative;height:180px;margin-bottom:4px}
+/* CHART */
+.chart-wrap{position:relative;height:180px;margin-bottom:12px}
+/* TRANSACTIONS */
 .tx-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .tx-item:last-child{border-bottom:none}
 .tx-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -69,12 +79,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tx-amount.income{color:var(--green)}
 .tx-amount.expense{color:var(--red)}
 .tx-actions{display:flex;gap:4px}
+/* FILTERS */
 .filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none}
 .filter-row::-webkit-scrollbar{display:none}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;transition:all .2s}
 .chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+/* FAB */
 .fab{position:fixed;bottom:72px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 20px #7c6ff755;display:flex;align-items:center;justify-content:center;transition:transform .2s}
 .fab:hover{transform:scale(1.05)}
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;justify-content:center;z-index:200;padding:16px}
 .modal-overlay.center{align-items:center}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:20px}
@@ -82,10 +95,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .modal-title{font-size:18px;font-weight:700}
 .modal-close{background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;line-height:1}
+/* TYPE TOGGLE */
 .type-toggle{display:flex;gap:4px;background:var(--surface2);border-radius:var(--radius-sm);padding:4px;margin-bottom:16px}
 .type-btn{flex:1;padding:8px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;color:var(--text2)}
 .type-btn.income.active{background:var(--green);color:#000}
 .type-btn.expense.active{background:var(--red);color:#fff}
+/* CAT PICKER */
 .cat-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .cat-btn{padding:8px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .2s}
 .cat-btn:hover{border-color:var(--accent)}
@@ -93,11 +108,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .cat-btn span:first-child{font-size:22px}
 .cat-btn span:last-child{font-size:10px;color:var(--text2);text-align:center;line-height:1.2}
 .cat-btn-new{border-style:dashed;color:var(--accent)}
+/* TAGS */
 .tags-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm)}
 .tag{background:var(--accent);color:#fff;padding:3px 8px;border-radius:12px;font-size:12px;display:flex;align-items:center;gap:4px}
 .tag-remove{cursor:pointer;opacity:.7}
 .tag-remove:hover{opacity:1}
 .tags-input{border:none;background:none;color:var(--text);font-size:13px;outline:none;min-width:80px}
+/* ACCOUNTS */
 .account-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .account-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .account-info{flex:1;min-width:0}
@@ -105,8 +122,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .account-type{font-size:12px;color:var(--text2)}
 .account-balance{font-size:18px;font-weight:700;text-align:right}
 .account-balance-sub{font-size:11px;color:var(--text2);text-align:right}
+/* VACACIONES */
 .vac-progress{height:8px;background:var(--surface2);border-radius:4px;margin-top:8px;overflow:hidden}
 .vac-progress-bar{height:100%;border-radius:4px;background:var(--accent);transition:width .5s}
+/* CATEGORIAS */
 .cat-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .cat-row:last-child{border-bottom:none}
 .cat-row-icon{font-size:22px;width:32px;text-align:center}
@@ -114,16 +133,23 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .cat-row-name{font-size:14px;font-weight:600}
 .cat-row-type{font-size:11px;color:var(--text2)}
 .cat-row-actions{display:flex;gap:4px}
+/* TC BADGE */
 .tc-badge{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text2)}
 .tc-badge:hover{border-color:var(--accent)}
-.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;z-index:999;box-shadow:0 4px 20px #0006;transition:opacity .3s;pointer-events:none}
+/* TOAST */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;z-index:999;box-shadow:0 4px 20px #0006;transition:opacity .3s}
 .toast.error{border-color:var(--red);color:var(--red)}
 .toast.success{border-color:var(--green);color:var(--green)}
+/* SECTION HEADER */
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .section-title{font-size:16px;font-weight:700}
+/* EMPTY */
 .empty{text-align:center;padding:40px 20px;color:var(--text2)}
 .empty-icon{font-size:48px;margin-bottom:12px}
+/* COUPLE */
+.couple-card{border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .couple-balance{font-size:22px;font-weight:800;margin-top:8px}
+/* RESPONSIVE */
 @media(min-width:600px){
   .content{padding:24px}
   .summary-grid{grid-template-columns:repeat(4,1fr)}
@@ -161,19 +187,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <!-- APP -->
 <div id="app-screen">
   <div class="topbar">
-    <span class="topbar-title" id="topbar-title">Inicio</span>
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
     <div class="topbar-right">
       <span class="tc-badge" id="tc-badge" onclick="showTcModal()">USD $&#x2014;</span>
       <div class="avatar" id="user-avatar" onclick="showScreen('config')">?</div>
     </div>
   </div>
 
+  <!-- SCREENS -->
   <div class="content">
     <!-- DASHBOARD -->
     <div id="screen-dashboard">
       <div class="balance-block">
         <div class="balance-label">Balance del mes</div>
         <div class="balance-amount" id="dash-balance">$0</div>
+        <div class="balance-sub" id="dash-balance-sub"></div>
       </div>
       <div id="dash-savings-block" class="hidden savings-tile">
         <div class="savings-tile-label">&#x1F4B0; Ahorrado este mes</div>
@@ -218,12 +246,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <span class="section-title">Mis cuentas</span>
         <button class="btn btn-secondary btn-sm" onclick="showTransferModal()">&#x21C4; Transferir</button>
       </div>
-      <div class="card" style="margin-bottom:12px">
+      <div id="dash-total-block" class="card" style="margin-bottom:12px">
         <div class="card-title">Total disponible</div>
         <div id="accounts-total" style="font-size:28px;font-weight:800">$0</div>
       </div>
       <div id="accounts-list"></div>
-      <button class="btn btn-primary btn-full" onclick="showAddAccountModal('')" style="margin-top:8px">+ Nueva cuenta</button>
+      <button class="btn btn-primary btn-full" onclick="showAddAccountModal()" style="margin-top:8px">+ Nueva cuenta</button>
 
       <div class="section-header" style="margin-top:24px">
         <span class="section-title">&#x1F4B0; Ahorros</span>
@@ -279,25 +307,26 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
               <div style="font-weight:600">Modo pareja</div>
               <div style="font-size:12px;color:var(--text2)">Vincula tu cuenta con la de tu pareja</div>
             </div>
-            <input type="checkbox" id="toggle-couple" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer">
+            <input type="checkbox" id="toggle-couple" onchange="toggleMode('couple')" style="width:20px;height:20px;cursor:pointer">
           </label>
           <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
             <div>
               <div style="font-weight:600">Modo vacaciones</div>
               <div style="font-size:12px;color:var(--text2)">Activa el seguimiento de viajes</div>
             </div>
-            <input type="checkbox" id="toggle-vac" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer">
+            <input type="checkbox" id="toggle-vac" onchange="toggleMode('vacation')" style="width:20px;height:20px;cursor:pointer">
           </label>
         </div>
       </div>
       <div class="card">
         <div class="card-title">Categorias</div>
         <div id="cat-list-config"></div>
-        <button class="btn btn-secondary btn-sm btn-full" onclick="showAddCatModal('')" style="margin-top:12px">+ Nueva categoria</button>
+        <button class="btn btn-secondary btn-sm btn-full" onclick="showAddCatModal()" style="margin-top:12px">+ Nueva categoria</button>
       </div>
     </div>
   </div>
 
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="nav-item active" id="nav-dashboard" onclick="showScreen('dashboard')">
       <span class="nav-icon">&#x1F3E0;</span><span>Inicio</span>
@@ -319,11 +348,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </button>
   </nav>
 
-  <button class="fab" id="fab-btn" onclick="showAddTxModal({})">+</button>
+  <!-- FAB -->
+  <button class="fab" id="fab-btn" onclick="showAddTxModal()">+</button>
 </div>
 
 <!-- MODALS -->
-<!-- Transaction -->
+<!-- Add Transaction -->
 <div class="modal-overlay hidden" id="modal-tx">
   <div class="modal">
     <div class="modal-header">
@@ -339,7 +369,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <input type="text" id="tx-desc" placeholder="Ej: Almuerzo">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="form-group"><label>Monto</label><input type="number" id="tx-amount" placeholder="0"></div>
+      <div class="form-group">
+        <label>Monto</label>
+        <input type="number" id="tx-amount" placeholder="0">
+      </div>
       <div class="form-group">
         <label>Moneda</label>
         <select id="tx-currency" onchange="onCurrencyChange()">
@@ -352,8 +385,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <label>Tipo de cambio (1 USD = ? ARS)</label>
       <input type="number" id="tx-tc" placeholder="0">
     </div>
-    <div class="form-group"><label>Fecha</label><input type="date" id="tx-date"></div>
-    <div class="form-group"><label>Cuenta</label><select id="tx-account"></select></div>
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" id="tx-date">
+    </div>
+    <div class="form-group">
+      <label>Cuenta</label>
+      <select id="tx-account"></select>
+    </div>
     <div class="form-group">
       <label>Categoria</label>
       <div class="cat-picker" id="tx-cat-picker"></div>
@@ -376,15 +415,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <span style="font-size:13px">Compartido con pareja</span>
       </label>
       <div id="shared-details" class="hidden">
-        <div class="form-group"><label>Quien pago</label><select id="tx-payer"></select></div>
-        <div class="form-group"><label>Mi porcentaje (%)</label><input type="number" id="tx-split" value="50" min="0" max="100"></div>
+        <div class="form-group">
+          <label>Quien pago</label>
+          <select id="tx-payer"></select>
+        </div>
+        <div class="form-group">
+          <label>Mi porcentaje (%)</label>
+          <input type="number" id="tx-split" value="50" min="0" max="100">
+        </div>
       </div>
     </div>
     <button class="btn btn-primary btn-full" style="margin-top:8px" id="save-tx-btn" onclick="saveTx()">Guardar</button>
   </div>
 </div>
 
-<!-- Account -->
+<!-- Add Account -->
 <div class="modal-overlay hidden" id="modal-account">
   <div class="modal">
     <div class="modal-header">
@@ -402,7 +447,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <option value="saving_cash">Ahorro en efectivo</option>
       </select>
     </div>
-    <div class="form-group"><label>Moneda</label><select id="acc-currency"><option value="ARS">ARS</option><option value="USD">USD</option></select></div>
+    <div class="form-group">
+      <label>Moneda</label>
+      <select id="acc-currency"><option value="ARS">ARS</option><option value="USD">USD</option></select>
+    </div>
     <div class="form-group"><label>Saldo inicial</label><input type="number" id="acc-balance" value="0"></div>
     <div class="form-group"><label>Emoji / Icono</label><input type="text" id="acc-icon" value="&#x1F4B3;" maxlength="4"></div>
     <div class="form-group"><label>Color</label><input type="color" id="acc-color" value="#7c6ff7" style="width:60px;height:36px;padding:2px;border:none;border-radius:6px;cursor:pointer;background:none"></div>
@@ -417,16 +465,25 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <span class="modal-title">Transferencia</span>
       <button class="modal-close" onclick="closeModal('modal-transfer')">&#x2715;</button>
     </div>
-    <div class="form-group"><label>Desde</label><select id="transfer-from"></select></div>
-    <div class="form-group"><label>Hacia</label><select id="transfer-to"></select></div>
+    <div class="form-group">
+      <label>Desde</label>
+      <select id="transfer-from"></select>
+    </div>
+    <div class="form-group">
+      <label>Hacia</label>
+      <select id="transfer-to"></select>
+    </div>
     <div class="form-group"><label>Monto</label><input type="number" id="transfer-amount" placeholder="0"></div>
-    <div class="form-group"><label>Moneda</label><select id="transfer-currency"><option value="ARS">ARS</option><option value="USD">USD</option></select></div>
+    <div class="form-group">
+      <label>Moneda</label>
+      <select id="transfer-currency"><option value="ARS">ARS</option><option value="USD">USD</option></select>
+    </div>
     <div class="form-group"><label>Nota (opcional)</label><input type="text" id="transfer-note" placeholder="Ej: Ahorro mensual"></div>
     <button class="btn btn-primary btn-full" onclick="doTransfer()">Transferir</button>
   </div>
 </div>
 
-<!-- Category -->
+<!-- Add Category -->
 <div class="modal-overlay center hidden" id="modal-cat">
   <div class="modal">
     <div class="modal-header">
@@ -438,17 +495,20 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="form-group"><label>Color</label><input type="color" id="cat-color" value="#7c6ff7" style="width:60px;height:36px;padding:2px;border:none;border-radius:6px;cursor:pointer;background:none"></div>
     <div class="form-group">
       <label>Tipo</label>
-      <select id="cat-type"><option value="expense">Gasto</option><option value="income">Ingreso</option></select>
+      <select id="cat-type">
+        <option value="expense">Gasto</option>
+        <option value="income">Ingreso</option>
+      </select>
     </div>
     <button class="btn btn-primary btn-full" onclick="saveCat()">Guardar</button>
   </div>
 </div>
 
-<!-- Vacation -->
+<!-- Add Vacation -->
 <div class="modal-overlay hidden" id="modal-vac">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Nuevo viaje</span>
+      <span class="modal-title" id="modal-vac-title">Nuevo viaje</span>
       <button class="modal-close" onclick="closeModal('modal-vac')">&#x2715;</button>
     </div>
     <div class="form-group"><label>Nombre del viaje</label><input type="text" id="vac-name" placeholder="Ej: Europa 2026"></div>
@@ -464,31 +524,37 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
-<!-- TC -->
+<!-- TC Modal -->
 <div class="modal-overlay center hidden" id="modal-tc">
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Tipo de cambio</span>
       <button class="modal-close" onclick="closeModal('modal-tc')">&#x2715;</button>
     </div>
-    <div style="margin-bottom:16px">
+    <div style="margin-bottom:12px">
       <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Dolar oficial (automatico)</div>
-      <div id="tc-oficial-display" style="font-size:28px;font-weight:800;color:var(--green)">Cargando...</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px">Se actualiza al abrir la app</div>
+      <div id="tc-oficial-display" style="font-size:24px;font-weight:800;color:var(--green)">Cargando...</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px" id="tc-update-info">Actualizado al abrir la app</div>
     </div>
-    <div class="form-group"><label>Editar manualmente (si la API falla)</label><input type="number" id="tc-manual" placeholder="Ej: 1050"></div>
+    <div class="form-group">
+      <label>Editar manualmente (si la API falla)</label>
+      <input type="number" id="tc-manual" placeholder="Ej: 1050">
+    </div>
     <button class="btn btn-primary btn-full" onclick="saveTc()">Guardar</button>
   </div>
 </div>
 
-<!-- Couple -->
+<!-- Couple invite -->
 <div class="modal-overlay center hidden" id="modal-couple">
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Vincular pareja</span>
       <button class="modal-close" onclick="closeModal('modal-couple')">&#x2715;</button>
     </div>
-    <div class="form-group"><label>Email de tu pareja</label><input type="email" id="couple-email" placeholder="pareja@email.com"></div>
+    <div class="form-group">
+      <label>Email de tu pareja</label>
+      <input type="email" id="couple-email" placeholder="pareja@email.com">
+    </div>
     <button class="btn btn-primary btn-full" onclick="linkCouple()">Vincular</button>
   </div>
 </div>
@@ -525,7 +591,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <div class="form-group"><label>Monto</label><input type="number" id="vac-item-amount" placeholder="0"></div>
         <div class="form-group"><label>Moneda</label><select id="vac-item-currency"><option value="ARS">ARS</option><option value="USD">USD</option></select></div>
       </div>
-      <div class="form-group"><label>Dia</label><input type="number" id="vac-item-day" value="1" min="1"></div>
+      <div class="form-group"><label>Dia (Dia 1, 2, etc.)</label><input type="number" id="vac-item-day" value="1" min="1"></div>
     </div>
     <div id="vac-item-shared-section" class="hidden">
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer">
@@ -538,138 +604,105 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────
+// CONFIG
 const WORKER = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-const GAS    = 'https://script.google.com/macros/s/AKfycbyKgnqsJ72hjyStLnbU2Q-dWHdSd1osBU7HepmzV8ZfON7WGNrX2Ux3RI4iwrGuKMXB4w/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbyKgnqsJ72hjyStLnbU2Q-dWHdSd1osBU7HepmzV8ZfON7WGNrX2Ux3RI4iwrGuKMXB4w/exec';
 
-// ─── STATE ────────────────────────────────────────
+// STATE
 const S = {
-  user: null, tx: [], accounts: [], categories: [],
-  vacations: [], vacItems: [],
+  user: null,
+  tx: [],
+  accounts: [],
+  categories: [],
+  vacations: [],
+  vacItems: [],
   tc: { oficial: 0 },
   txFilter: 'all',
-  editTxId: null, editAccId: null, editCatId: null,
-  currentVacId: null, fromCatPicker: false,
-  txTags: [], _txType: 'expense', _selectedCatId: ''
+  editTxId: null,
+  editAccId: null,
+  editCatId: null,
+  editVacId: null,
+  currentVacId: null,
+  fromCatPicker: false,
+  addingForSavingType: null,
+  txTags: []
 };
 
-// ─── API ──────────────────────────────────────────
-// Wrapper: maps frontend action names to what GAS expects,
-// and wraps payloads in the correct key.
-async function api(action, body) {
-  body = body || {};
-  // Remap action names to match GAS switch
-  const actionMap = { linkCouple: 'linkPartner' };
-  const gasAction = actionMap[action] || action;
-
-  // Wrap payload in the key GAS expects per action
-  const wrapMap = {
-    addTransaction:   'transaction',
-    updateTransaction:'transaction',
-    addAccount:       'account',
-    updateAccount:    'account',
-    addCategory:      'category',
-    updateCategory:   'category',
-    addVacation:      'vacation',
-    addVacationItem:  'item'
-  };
-  const wrapKey = wrapMap[action];
-  let payload;
-  if (wrapKey) {
-    // Keep uid at top level too (GAS doesn't need it there but harmless)
-    const { uid, ...rest } = body;
-    payload = { action: gasAction, uid };
-    payload[wrapKey] = rest;
-  } else {
-    payload = { action: gasAction, ...body };
-  }
-
+// API
+async function api(action, body={}) {
   try {
     const r = await fetch(WORKER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Target-URL': GAS },
-      body: JSON.stringify(payload)
+      headers: {'Content-Type':'application/json','X-Target-URL': GAS},
+      body: JSON.stringify({action, ...body})
     });
-    const d = await r.json();
-    // Normalise response: GAS returns different top-level keys per action
-    if (d.transactions !== undefined) return { ok: true, data: d.transactions };
-    if (d.categories   !== undefined) return { ok: true, data: d.categories };
-    if (d.accounts     !== undefined) return { ok: true, data: d.accounts };
-    if (d.vacations    !== undefined) return { ok: true, data: d.vacations };
-    if (d.items        !== undefined) return { ok: true, data: d.items };
-    if (d.user         !== undefined) return { ok: true, user: d.user };
-    if (d.ok !== undefined) return d;
-    if (d.error) return { ok: false, error: d.error };
-    return { ok: true, ...d };
+    return await r.json();
   } catch(e) {
     console.error('API error:', action, e);
-    return { ok: false, error: e.message };
+    return {ok: false, error: e.message};
   }
 }
 
-// ─── UTILS ────────────────────────────────────────
+// UTILS
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-function fmtMoney(n, cur) {
-  cur = cur || 'ARS';
-  const abs = Math.abs(n || 0);
-  const sign = (n || 0) < 0 ? '-' : '';
+function fmtMoney(n, cur='ARS') {
+  const abs = Math.abs(n);
+  const sign = n < 0 ? '-' : '';
   if (cur === 'USD') return sign + 'U$S ' + abs.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
   return sign + '$' + abs.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = parseDate(d);
+  if (!dt || isNaN(dt)) return d;
+  return dt.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
 }
 function parseDate(d) {
   if (!d) return null;
   if (d instanceof Date) return d;
   const s = String(d).trim();
+  // ISO format YYYY-MM-DD
   const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (iso) return new Date(parseInt(iso[1]), parseInt(iso[2])-1, parseInt(iso[3]));
   return new Date(s);
-}
-function fmtDate(d) {
-  if (!d) return '';
-  const dt = parseDate(d);
-  if (!dt || isNaN(dt)) return String(d);
-  return dt.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
 }
 function today() {
   const n = new Date();
   return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
 }
 function toARS(amount, currency, tc) {
-  if (currency === 'USD') return (amount || 0) * (tc || S.tc.oficial || 1);
-  return amount || 0;
+  if (currency === 'USD') return amount * (tc || S.tc.oficial || 1);
+  return amount;
 }
-function isSaving(accId) {
-  const a = S.accounts.find(x => x.id === accId);
+function showToast(msg, type='') {
+  let t = document.getElementById('global-toast');
+  if (!t) { t = document.createElement('div'); t.id = 'global-toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
+function getCat(id) { return S.categories.find(c => c.id === id) || {icon:'?', name:'Sin cat', color:'#666'}; }
+function getAccount(id) { return S.accounts.find(a => a.id === id); }
+function isSavingAccount(id) {
+  const a = getAccount(id);
   return a && (a.type === 'saving' || a.type === 'saving_cash');
 }
 function accTypeLabel(t) {
   return {bank:'Banco', wallet:'Billetera virtual', cash:'Efectivo', saving:'Ahorro', saving_cash:'Ahorro en efectivo'}[t] || t;
 }
-function getCat(id) {
-  return S.categories.find(c => c.id === id) || { icon: '?', name: 'Sin cat', color: '#666' };
-}
-function showToast(msg, type) {
-  type = type || '';
-  let t = document.getElementById('_toast');
-  if (!t) { t = document.createElement('div'); t.id = '_toast'; t.className = 'toast'; document.body.appendChild(t); }
-  t.textContent = msg;
-  t.className = 'toast ' + type;
-  t.style.opacity = '1';
-  clearTimeout(t._t);
-  t._t = setTimeout(function() { t.style.opacity = '0'; }, 3000);
-}
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-// ─── DOLAR OFICIAL ────────────────────────────────
+// DOLAR
 async function fetchDolarOficial() {
   try {
     const r = await fetch('https://dolarapi.com/v1/dolares/oficial');
     const d = await r.json();
     if (d && d.compra) {
       S.tc.oficial = d.compra;
-      localStorage.setItem('tc_oficial', String(d.compra));
+      localStorage.setItem('tc_oficial', d.compra);
       updateTcBadge();
-      return;
+      return d.compra;
     }
   } catch(e) {}
   const saved = localStorage.getItem('tc_oficial');
@@ -680,7 +713,7 @@ function updateTcBadge() {
   if (el && S.tc.oficial) el.textContent = 'USD $' + S.tc.oficial.toLocaleString('es-AR');
 }
 
-// ─── AUTH ─────────────────────────────────────────
+// AUTH
 function switchAuthTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-register').classList.toggle('active', tab === 'register');
@@ -689,23 +722,33 @@ function switchAuthTab(tab) {
 }
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-pass').value;
+  const pass = document.getElementById('login-pass').value;
   if (!email || !pass) return showToast('Completa todos los campos', 'error');
   showToast('Ingresando...');
-  const r = await api('login', { email, password: pass });
-  if (r.ok && r.user) { S.user = r.user; localStorage.setItem('session', JSON.stringify(r.user)); await initApp(); }
-  else showToast(r.error || 'Error al ingresar', 'error');
+  const r = await api('login', {email, password: pass});
+  if (r.ok) {
+    S.user = r.user;
+    localStorage.setItem('session', JSON.stringify(r.user));
+    await initApp();
+  } else {
+    showToast(r.error || 'Error al ingresar', 'error');
+  }
 }
 async function doRegister() {
-  const name  = document.getElementById('reg-name').value.trim();
+  const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
-  const pass  = document.getElementById('reg-pass').value;
+  const pass = document.getElementById('reg-pass').value;
   if (!name || !email || !pass) return showToast('Completa todos los campos', 'error');
-  if (pass.length < 6) return showToast('Minimo 6 caracteres', 'error');
+  if (pass.length < 6) return showToast('La contrasena debe tener al menos 6 caracteres', 'error');
   showToast('Creando cuenta...');
-  const r = await api('register', { name, email, password: pass });
-  if (r.ok && r.user) { S.user = r.user; localStorage.setItem('session', JSON.stringify(r.user)); await initApp(); }
-  else showToast(r.error || 'Error al registrarse', 'error');
+  const r = await api('register', {name, email, password: pass});
+  if (r.ok) {
+    S.user = r.user;
+    localStorage.setItem('session', JSON.stringify(r.user));
+    await initApp();
+  } else {
+    showToast(r.error || 'Error al registrarse', 'error');
+  }
 }
 function doLogout() {
   localStorage.removeItem('session');
@@ -714,57 +757,69 @@ function doLogout() {
   document.getElementById('app-screen').style.display = 'none';
 }
 
-// ─── INIT ─────────────────────────────────────────
+// INIT
 async function initApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'flex';
   fetchDolarOficial();
   await loadAll();
   updateUI();
-  const ini = ((S.user.name || S.user.email || '?')[0]).toUpperCase();
+  // update avatar
+  const ini = (S.user.name || S.user.email || '?')[0].toUpperCase();
   document.getElementById('user-avatar').textContent = ini;
   document.getElementById('config-avatar').textContent = ini;
-  document.getElementById('config-name').textContent  = S.user.name  || '';
+  document.getElementById('config-name').textContent = S.user.name || '';
   document.getElementById('config-email').textContent = S.user.email || '';
-  const coupleOn = S.user.mode === 'couple' || S.user.mode === 'both';
-  const vacOn    = S.user.mode === 'vacation' || S.user.mode === 'both';
-  document.getElementById('toggle-couple').checked = coupleOn;
-  document.getElementById('toggle-vac').checked    = vacOn;
-  document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
-  document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
+  // modes
+  document.getElementById('toggle-couple').checked = S.user.mode === 'couple' || S.user.mode === 'both';
+  document.getElementById('toggle-vac').checked = S.user.mode === 'vacation' || S.user.mode === 'both';
+  document.getElementById('nav-couple').classList.toggle('hidden', !(S.user.mode === 'couple' || S.user.mode === 'both'));
+  document.getElementById('nav-vac').classList.toggle('hidden', !(S.user.mode === 'vacation' || S.user.mode === 'both'));
 }
 
 async function loadAll() {
   const uid = S.user.uid;
-  const [catR, txR, accR, vacR] = await Promise.all([
-    api('getCategories',  { uid }),
-    api('getTransactions',{ uid }),
-    api('getAccounts',    { uid }),
-    api('getVacations',   { uid })
+  const [catR, txR, accR, vacR, viR] = await Promise.all([
+    api('getCategories', {uid}),
+    api('getTransactions', {uid}),
+    api('getAccounts', {uid}),
+    api('getVacations', {uid}),
+    api('getVacationItems', {uid})
   ]);
-
-  // Categories
   if (catR.ok && catR.data && catR.data.length > 0) {
     S.categories = catR.data;
   } else {
-    // Backend returned empty (new user shouldn't happen since GAS creates defaults on register)
-    // Keep previous or set empty
-    if (!S.categories.length) S.categories = [];
+    // load defaults and save to backend
+    S.categories = getDefaultCats();
+    for (const c of S.categories) {
+      await api('addCategory', {uid, ...c});
+    }
   }
-
-  S.tx       = txR.ok  ? (txR.data  || []) : [];
+  S.tx = txR.ok ? (txR.data || []) : [];
   S.accounts = accR.ok ? (accR.data || []) : [];
-  S.vacations= vacR.ok ? (vacR.data || []) : [];
-
-  // Vacation items: load per vacation
-  S.vacItems = [];
-  for (const v of S.vacations) {
-    const r = await api('getVacationItems', { vacation_id: v.id });
-    if (r.ok && r.data) S.vacItems = S.vacItems.concat(r.data);
-  }
+  S.vacations = vacR.ok ? (vacR.data || []) : [];
+  S.vacItems = viR.ok ? (viR.data || []) : [];
 }
 
-// ─── UI ───────────────────────────────────────────
+function getDefaultCats() {
+  return [
+    {id: genId(), type:'expense', name:'Comida', icon:'\uD83C\uDF54', color:'#f97316'},
+    {id: genId(), type:'expense', name:'Transporte', icon:'\uD83D\uDE97', color:'#3b82f6'},
+    {id: genId(), type:'expense', name:'Supermercado', icon:'\uD83D\uDED2', color:'#10b981'},
+    {id: genId(), type:'expense', name:'Salud', icon:'\u2764\uFE0F', color:'#ef4444'},
+    {id: genId(), type:'expense', name:'Entretenimiento', icon:'\uD83C\uDFAC', color:'#8b5cf6'},
+    {id: genId(), type:'expense', name:'Ropa', icon:'\uD83D\uDC55', color:'#ec4899'},
+    {id: genId(), type:'expense', name:'Servicios', icon:'\uD83D\uDD27', color:'#6b7280'},
+    {id: genId(), type:'expense', name:'Viaje', icon:'\u2708\uFE0F', color:'#0ea5e9'},
+    {id: genId(), type:'expense', name:'Otros gastos', icon:'\uD83D\uDCB8', color:'#9ca3af'},
+    {id: genId(), type:'income', name:'Salario', icon:'\uD83D\uDCB0', color:'#22c55e'},
+    {id: genId(), type:'income', name:'Reintegro', icon:'\uD83D\uDCB5', color:'#84cc16'},
+    {id: genId(), type:'income', name:'Intereses', icon:'\uD83D\uDCC8', color:'#eab308'},
+    {id: genId(), type:'income', name:'Otros ingresos', icon:'\u2B50', color:'#f59e0b'}
+  ];
+}
+
+// UPDATE UI
 function updateUI() {
   renderDashboard();
   renderTxList();
@@ -773,8 +828,11 @@ function updateUI() {
   renderCouple();
   renderVacations();
 }
+
+// SCREENS
 function showScreen(name) {
-  ['dashboard','tx','accounts','couple','vac','config'].forEach(function(s) {
+  const screens = ['dashboard','tx','accounts','couple','vac','config'];
+  screens.forEach(s => {
     document.getElementById('screen-' + s).classList.toggle('hidden', s !== name);
     const nav = document.getElementById('nav-' + s);
     if (nav) nav.classList.toggle('active', s === name);
@@ -785,33 +843,43 @@ function showScreen(name) {
   document.getElementById('fab-btn').classList.toggle('hidden', hideFab.includes(name));
 }
 
-// ─── DASHBOARD ────────────────────────────────────
+// DASHBOARD
 function renderDashboard() {
   const now = new Date();
-  const curM = now.getMonth(), curY = now.getFullYear();
+  const curMonth = now.getMonth();
+  const curYear = now.getFullYear();
+
   let income = 0, expense = 0, savedThisMonth = 0;
 
-  S.tx.forEach(function(t) {
+  S.tx.forEach(t => {
     const d = parseDate(t.date);
-    if (!d || isNaN(d) || d.getMonth() !== curM || d.getFullYear() !== curY) return;
-    // Transfer to savings → ahorrado
+    if (!d || d.getMonth() !== curMonth || d.getFullYear() !== curYear) return;
+
+    // Check if transfer to savings
     if (t.transfer_to) {
-      if (isSaving(t.transfer_to)) {
-        savedThisMonth += toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
+      if (isSavingAccount(t.transfer_to)) {
+        const amt = t.currency === 'USD' ? toARS(parseFloat(t.amount||0), 'USD', t.tc||S.tc.oficial) : parseFloat(t.amount||0);
+        savedThisMonth += amt;
+        return; // don't count as expense
       }
-      return;
+      return; // other transfers not counted
     }
-    if (t.transfer_from) return;
-    if (isSaving(t.account_id)) return;
-    const amt = toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
+    if (t.transfer_from) return; // transfer inflow not counted
+
+    // Skip savings account transactions
+    if (isSavingAccount(t.account_id)) return;
+
+    const amt = t.currency === 'USD' ? toARS(parseFloat(t.amount||0), 'USD', t.tc||S.tc.oficial) : parseFloat(t.amount||0);
     if (t.type === 'income') income += amt;
     else expense += amt;
   });
 
-  document.getElementById('dash-balance').textContent = fmtMoney(income - expense);
-  document.getElementById('dash-income').textContent  = fmtMoney(income);
+  const balance = income - expense;
+  document.getElementById('dash-balance').textContent = fmtMoney(balance);
+  document.getElementById('dash-income').textContent = fmtMoney(income);
   document.getElementById('dash-expense').textContent = fmtMoney(expense);
 
+  // savings block
   const savBlock = document.getElementById('dash-savings-block');
   if (savedThisMonth > 0) {
     savBlock.classList.remove('hidden');
@@ -820,23 +888,30 @@ function renderDashboard() {
     savBlock.classList.add('hidden');
   }
 
-  // Pie
+  // pie chart
   const catTotals = {};
-  S.tx.forEach(function(t) {
+  S.tx.forEach(t => {
     const d = parseDate(t.date);
-    if (!d || isNaN(d) || d.getMonth() !== curM || d.getFullYear() !== curY) return;
-    if (t.type !== 'expense' || t.transfer_to || t.transfer_from || isSaving(t.account_id)) return;
-    const amt = toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
-    catTotals[t.category_id] = (catTotals[t.category_id]||0) + amt;
+    if (!d || d.getMonth() !== curMonth || d.getFullYear() !== curYear) return;
+    if (t.type !== 'expense') return;
+    if (t.transfer_to || t.transfer_from) return;
+    if (isSavingAccount(t.account_id)) return;
+    const amt = t.currency === 'USD' ? toARS(parseFloat(t.amount||0), 'USD', t.tc||S.tc.oficial) : parseFloat(t.amount||0);
+    catTotals[t.category_id] = (catTotals[t.category_id] || 0) + amt;
   });
   drawPie(catTotals);
 
-  // Recent
-  const recent = S.tx.slice().sort(function(a,b) {
-    return (parseDate(b.date)||0) - (parseDate(a.date)||0);
+  // recent
+  const recent = [...S.tx].sort((a,b) => {
+    const da = parseDate(a.date), db = parseDate(b.date);
+    return (db||0) - (da||0);
   }).slice(0,5);
   const el = document.getElementById('dash-recent');
-  el.innerHTML = recent.length ? recent.map(function(t) { return txItemHTML(t,false); }).join('') : '<div class="empty"><div>Sin movimientos</div></div>';
+  if (recent.length === 0) {
+    el.innerHTML = '<div class="empty"><div>Sin movimientos</div></div>';
+  } else {
+    el.innerHTML = recent.map(t => txItemHTML(t, false)).join('');
+  }
 }
 
 function drawPie(catTotals) {
@@ -846,92 +921,121 @@ function drawPie(catTotals) {
   const W = canvas.offsetWidth || 300;
   canvas.width = W; canvas.height = 180;
   ctx.clearRect(0,0,W,180);
-  const entries = Object.entries(catTotals).filter(function(e) { return e[1] > 0; });
-  if (!entries.length) {
-    ctx.fillStyle = '#9090a8'; ctx.font = '13px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('Sin gastos este mes', W/2, 90); return;
+
+  const entries = Object.entries(catTotals).filter(([,v]) => v > 0);
+  if (entries.length === 0) {
+    ctx.fillStyle = '#9090a8';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sin gastos este mes', W/2, 90);
+    return;
   }
-  const total = entries.reduce(function(s,e) { return s+e[1]; }, 0);
+  const total = entries.reduce((s,[,v]) => s+v, 0);
   const cx = 80, cy = 90, r = 70;
   let angle = -Math.PI/2;
-  entries.forEach(function(e) {
-    const cat = getCat(e[0]);
-    const slice = (e[1]/total)*Math.PI*2;
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,angle,angle+slice); ctx.closePath();
-    ctx.fillStyle = cat.color || '#7c6ff7'; ctx.fill();
+  entries.forEach(([catId, val]) => {
+    const cat = getCat(catId);
+    const slice = (val/total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle+slice);
+    ctx.closePath();
+    ctx.fillStyle = cat.color || '#7c6ff7';
+    ctx.fill();
     angle += slice;
   });
-  ctx.beginPath(); ctx.arc(cx,cy,r*0.55,0,Math.PI*2); ctx.fillStyle='#1a1a24'; ctx.fill();
+  // center hole
+  ctx.beginPath();
+  ctx.arc(cx, cy, r*0.55, 0, Math.PI*2);
+  ctx.fillStyle = '#1a1a24';
+  ctx.fill();
+
+  // legend
   let ly = 20;
-  entries.slice().sort(function(a,b){return b[1]-a[1];}).slice(0,6).forEach(function(e) {
-    const cat = getCat(e[0]);
-    const pct = Math.round(e[1]/total*100);
-    ctx.fillStyle = cat.color||'#7c6ff7'; ctx.fillRect(170,ly-10,12,12);
-    ctx.fillStyle = '#e8e8f0'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
-    ctx.fillText(cat.name + ' ' + pct + '%', 188, ly); ly += 20;
+  const legendEntries = entries.sort((a,b)=>b[1]-a[1]).slice(0,6);
+  legendEntries.forEach(([catId, val]) => {
+    const cat = getCat(catId);
+    const pct = Math.round(val/total*100);
+    ctx.fillStyle = cat.color || '#7c6ff7';
+    ctx.fillRect(170, ly-10, 12, 12);
+    ctx.fillStyle = '#e8e8f0';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(cat.name + ' ' + pct + '%', 188, ly);
+    ly += 20;
   });
 }
 
-// ─── TX LIST ──────────────────────────────────────
+// TX LIST
 function renderTxList() {
   const el = document.getElementById('tx-list');
   if (!el) return;
-  const list = S.tx.filter(function(t) {
+  let list = [...S.tx].filter(t => {
     if (!t || t.transfer_to || t.transfer_from) return false;
-    if (S.txFilter === 'income')  return t.type === 'income';
+    if (S.txFilter === 'income') return t.type === 'income';
     if (S.txFilter === 'expense') return t.type === 'expense';
-    if (S.txFilter === 'shared')  return t.shared === true || t.shared === 'true' || t.shared === 'TRUE';
-    if (S.txFilter === 'ARS')     return t.currency === 'ARS';
-    if (S.txFilter === 'USD')     return t.currency === 'USD';
+    if (S.txFilter === 'shared') return t.shared == true || t.shared === 'true';
+    if (S.txFilter === 'ARS') return t.currency === 'ARS';
+    if (S.txFilter === 'USD') return t.currency === 'USD';
     return true;
-  }).sort(function(a,b) { return (parseDate(b.date)||0)-(parseDate(a.date)||0); });
-  el.innerHTML = list.length ? list.map(function(t){return txItemHTML(t,true);}).join('')
-    : '<div class="empty"><div class="empty-icon">&#x1F4C4;</div><div>Sin movimientos</div></div>';
+  }).sort((a,b) => {
+    const da = parseDate(a.date), db = parseDate(b.date);
+    return (db||0) - (da||0);
+  });
+
+  if (list.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">&#x1F4C4;</div><div>Sin movimientos</div></div>';
+    return;
+  }
+  el.innerHTML = list.map(t => txItemHTML(t, true)).join('');
 }
 
-function txItemHTML(t, actions) {
+function txItemHTML(t, actions=false) {
   const cat = getCat(t.category_id);
-  const isInc = t.type === 'income';
+  const isIncome = t.type === 'income';
   const amt = parseFloat(t.amount||0);
   const amtStr = fmtMoney(amt, t.currency);
-  const amtARS = t.currency === 'USD' && S.tc.oficial
-    ? ' ~ ' + fmtMoney(toARS(amt,'USD',t.tc||S.tc.oficial)) : '';
-  const actHTML = actions
-    ? '<div class="tx-actions"><button class="btn btn-secondary btn-sm" onclick="editTx(\''+t.id+'\')">&#x270F;</button><button class="btn btn-danger btn-sm" onclick="deleteTx(\''+t.id+'\')">&#x1F5D1;</button></div>'
-    : '';
-  return '<div class="tx-item">'
-    + '<div class="tx-icon" style="background:'+(cat.color||'#7c6ff7')+'22">'+(cat.icon||'?')+'</div>'
-    + '<div class="tx-info"><div class="tx-desc">'+(t.description||'Sin descripcion')+'</div>'
-    + '<div class="tx-meta">'+cat.name+' &bull; '+fmtDate(t.date)+(t.note?' &bull; '+t.note:'')+'</div></div>'
-    + '<div><div class="tx-amount '+(isInc?'income':'expense')+'">'+(isInc?'+':'-')+amtStr+'</div>'
-    + (amtARS?'<div style="font-size:10px;color:var(--text2);text-align:right">'+amtARS+'</div>':'')+'</div>'
-    + actHTML + '</div>';
+  const amtARS = t.currency === 'USD' ? (' ~ ' + fmtMoney(toARS(amt,'USD',t.tc||S.tc.oficial))) : '';
+  const actHTML = actions ? `<div class="tx-actions"><button class="btn btn-secondary btn-sm" onclick="editTx('${t.id}')">&#x270F;</button><button class="btn btn-danger btn-sm" onclick="deleteTx('${t.id}')">&#x1F5D1;</button></div>` : '';
+  return `<div class="tx-item">
+    <div class="tx-icon" style="background:${cat.color||'#7c6ff7'}22">${cat.icon||'?'}</div>
+    <div class="tx-info">
+      <div class="tx-desc">${t.description||'Sin descripcion'}</div>
+      <div class="tx-meta">${cat.name} &bull; ${fmtDate(t.date)}${t.note ? ' &bull; '+t.note : ''}</div>
+    </div>
+    <div>
+      <div class="tx-amount ${isIncome?'income':'expense'}">${isIncome?'+':'-'}${amtStr}</div>
+      ${amtARS ? '<div style="font-size:10px;color:var(--text2);text-align:right">'+amtARS+'</div>' : ''}
+    </div>
+    ${actHTML}
+  </div>`;
 }
 
 function setTxFilter(f, el) {
   S.txFilter = f;
-  document.querySelectorAll('#tx-filters .chip').forEach(function(c){c.classList.remove('active');});
+  document.querySelectorAll('#tx-filters .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   renderTxList();
 }
 
-// ─── ADD / EDIT TX ────────────────────────────────
-function showAddTxModal(prefill) {
-  prefill = prefill || {};
-  S.editTxId = null; S.txTags = [];
+// ADD TX MODAL
+function showAddTxModal(prefill={}) {
+  S.editTxId = null;
+  S.txTags = [];
   document.getElementById('modal-tx-title').textContent = 'Nueva transaccion';
   document.getElementById('save-tx-btn').textContent = 'Guardar';
-  document.getElementById('tx-desc').value     = prefill.description || '';
-  document.getElementById('tx-amount').value   = prefill.amount || '';
+  document.getElementById('tx-desc').value = prefill.description || '';
+  document.getElementById('tx-amount').value = prefill.amount || '';
   document.getElementById('tx-currency').value = prefill.currency || 'ARS';
-  document.getElementById('tx-date').value     = prefill.date || today();
-  document.getElementById('tx-note').value     = '';
-  document.getElementById('tx-tc').value       = S.tc.oficial || '';
-  document.getElementById('tc-group').classList.add('hidden');
-  S.txTags = []; renderTagsUI();
+  document.getElementById('tx-date').value = prefill.date || today();
+  document.getElementById('tx-note').value = '';
+  document.getElementById('tx-tc').value = S.tc.oficial || '';
+  document.getElementById('tc-group').classList.toggle('hidden', (prefill.currency||'ARS') !== 'USD');
+  S.txTags = [];
+  renderTagsUI();
   setTxTypeUI(prefill.type || 'expense');
-  renderAccountSelect('tx-account', false, prefill.account_id || '');
-  renderCatPicker(prefill.category_id || '');
+  renderAccountSelect('tx-account', false, prefill.account_id);
+  renderCatPicker(prefill.category_id);
   document.getElementById('shared-section').classList.toggle('hidden', !(S.user.mode === 'couple' || S.user.mode === 'both'));
   document.getElementById('tx-shared').checked = false;
   document.getElementById('shared-details').classList.add('hidden');
@@ -939,40 +1043,39 @@ function showAddTxModal(prefill) {
 }
 
 function editTx(id) {
-  const t = S.tx.find(function(x){return x.id===id;});
+  const t = S.tx.find(x => x.id === id);
   if (!t) return;
   S.editTxId = id;
-  S.txTags = t.tags ? (Array.isArray(t.tags) ? t.tags : String(t.tags).split(',').filter(Boolean)) : [];
+  S.txTags = t.tags ? (typeof t.tags === 'string' ? t.tags.split(',').filter(Boolean) : t.tags) : [];
   document.getElementById('modal-tx-title').textContent = 'Editar transaccion';
   document.getElementById('save-tx-btn').textContent = 'Guardar cambios';
-  document.getElementById('tx-desc').value     = t.description || '';
-  document.getElementById('tx-amount').value   = t.amount || '';
+  document.getElementById('tx-desc').value = t.description || '';
+  document.getElementById('tx-amount').value = t.amount || '';
   document.getElementById('tx-currency').value = t.currency || 'ARS';
-  document.getElementById('tx-date').value     = t.date ? String(t.date).slice(0,10) : today();
-  document.getElementById('tx-note').value     = t.note || '';
-  document.getElementById('tx-tc').value       = t.tc || S.tc.oficial || '';
+  document.getElementById('tx-date').value = t.date ? String(t.date).slice(0,10) : today();
+  document.getElementById('tx-note').value = t.note || '';
+  document.getElementById('tx-tc').value = t.tc || S.tc.oficial || '';
   document.getElementById('tc-group').classList.toggle('hidden', t.currency !== 'USD');
   renderTagsUI();
   setTxTypeUI(t.type || 'expense');
-  renderAccountSelect('tx-account', false, t.account_id || '');
-  renderCatPicker(t.category_id || '');
-  const hasCouple = S.user.mode === 'couple' || S.user.mode === 'both';
-  document.getElementById('shared-section').classList.toggle('hidden', !hasCouple);
-  const isShared = t.shared === true || t.shared === 'true' || t.shared === 'TRUE';
-  document.getElementById('tx-shared').checked = isShared;
-  document.getElementById('shared-details').classList.toggle('hidden', !isShared);
-  if (isShared) {
-    renderPayerSelect(t.payer || '');
+  renderAccountSelect('tx-account', false, t.account_id);
+  renderCatPicker(t.category_id);
+  document.getElementById('shared-section').classList.toggle('hidden', !(S.user.mode === 'couple' || S.user.mode === 'both'));
+  document.getElementById('tx-shared').checked = t.shared == true || t.shared === 'true';
+  document.getElementById('shared-details').classList.toggle('hidden', !(t.shared == true || t.shared === 'true'));
+  if (t.shared) {
+    const payerSel = document.getElementById('tx-payer');
+    if (payerSel) payerSel.value = t.payer || '';
     document.getElementById('tx-split').value = t.split_me || 50;
   }
   document.getElementById('modal-tx').classList.remove('hidden');
 }
 
 function setTxTypeUI(type) {
-  S._txType = type;
   document.getElementById('type-btn-expense').classList.toggle('active', type === 'expense');
   document.getElementById('type-btn-income').classList.toggle('active', type === 'income');
-  renderCatPicker(S._selectedCatId || '');
+  S._txType = type;
+  renderCatPicker();
 }
 function setTxType(type) { setTxTypeUI(type); }
 
@@ -982,32 +1085,32 @@ function onCurrencyChange() {
   if (cur === 'USD' && S.tc.oficial) document.getElementById('tx-tc').value = S.tc.oficial;
 }
 
-function renderAccountSelect(selectId, includeSavings, selectedId) {
+function renderAccountSelect(selectId, includeSavings=false, selectedId='') {
   const sel = document.getElementById(selectId);
   if (!sel) return;
-  const accs = S.accounts.filter(function(a) {
-    return includeSavings ? true : (a.type !== 'saving' && a.type !== 'saving_cash');
-  });
-  sel.innerHTML = '<option value="">Sin cuenta</option>'
-    + accs.map(function(a) {
-      return '<option value="'+a.id+'"'+(a.id===selectedId?' selected':'')+'>'+(a.icon||'')+' '+a.name+' ('+fmtMoney(a.balance||0,a.currency)+')</option>';
-    }).join('');
+  const accs = S.accounts.filter(a => includeSavings ? true : (a.type !== 'saving' && a.type !== 'saving_cash'));
+  sel.innerHTML = '<option value="">Sin cuenta</option>' + accs.map(a =>
+    `<option value="${a.id}" ${a.id === selectedId ? 'selected' : ''}>${a.icon||''} ${a.name} (${fmtMoney(a.balance||0, a.currency)})</option>`
+  ).join('');
 }
 
-function renderCatPicker(selectedId) {
-  selectedId = selectedId || '';
-  S._selectedCatId = selectedId;
+function renderCatPicker(selectedId='') {
+  const type = S._txType || 'expense';
   const el = document.getElementById('tx-cat-picker');
   if (!el) return;
-  const cats = S.categories.filter(function(c) { return !c.type || c.type === S._txType; });
-  el.innerHTML = cats.map(function(c) {
-    const sel = c.id === selectedId;
-    return '<button class="cat-btn'+(sel?' selected':'')+'" onclick="selectCat(\''+c.id+'\')" style="'+(sel?'border-color:'+(c.color||'var(--accent)')+';':'')+'">'
-      + '<span>'+(c.icon||'?')+'</span><span>'+c.name+'</span></button>';
-  }).join('') + '<button class="cat-btn cat-btn-new" onclick="openCatFromPicker()"><span>+</span><span>Nueva</span></button>';
+  const cats = S.categories.filter(c => !c.type || c.type === type);
+  el.innerHTML = cats.map(c =>
+    `<button class="cat-btn ${c.id === selectedId ? 'selected' : ''}" onclick="selectCat('${c.id}')" style="border-color:${c.id===selectedId?(c.color||'var(--accent)'):''}">
+      <span>${c.icon||'?'}</span><span>${c.name}</span>
+    </button>`
+  ).join('') + `<button class="cat-btn cat-btn-new" onclick="openCatFromPicker()"><span>+</span><span>Nueva</span></button>`;
+  S._selectedCatId = selectedId;
 }
 
-function selectCat(id) { S._selectedCatId = id; renderCatPicker(id); }
+function selectCat(id) {
+  S._selectedCatId = id;
+  renderCatPicker(id);
+}
 
 function openCatFromPicker() {
   S.fromCatPicker = true;
@@ -1019,90 +1122,100 @@ function handleTagKey(e) {
   if (e.key === 'Enter') {
     e.preventDefault();
     const val = e.target.value.trim();
-    if (val && !S.txTags.includes(val)) { S.txTags.push(val); renderTagsUI(); }
+    if (val && !S.txTags.includes(val)) {
+      S.txTags.push(val);
+      renderTagsUI();
+    }
     e.target.value = '';
   }
 }
-function removeTag(tag) { S.txTags = S.txTags.filter(function(t){return t!==tag;}); renderTagsUI(); }
+function removeTag(tag) {
+  S.txTags = S.txTags.filter(t => t !== tag);
+  renderTagsUI();
+}
 function renderTagsUI() {
   const wrap = document.getElementById('tx-tags-wrap');
+  if (!wrap) return;
   const input = document.getElementById('tx-tags-input');
-  if (!wrap || !input) return;
-  wrap.innerHTML = S.txTags.map(function(t) {
-    return '<span class="tag">'+t+' <span class="tag-remove" onclick="removeTag(\''+t+'\')">x</span></span>';
-  }).join('');
+  wrap.innerHTML = S.txTags.map(t =>
+    `<span class="tag">${t} <span class="tag-remove" onclick="removeTag('${t}')">x</span></span>`
+  ).join('');
   wrap.appendChild(input);
-}
-
-function renderPayerSelect(selectedPayer) {
-  const sel = document.getElementById('tx-payer');
-  if (!sel) return;
-  sel.innerHTML = '<option value="'+S.user.uid+'"'+(selectedPayer===S.user.uid?' selected':'')+'>'+S.user.name+' (yo)</option>';
-  if (S.user.partner_uid) {
-    sel.innerHTML += '<option value="'+S.user.partner_uid+'"'+(selectedPayer===S.user.partner_uid?' selected':'')+'>'+(S.user.partner_name||'Pareja')+'</option>';
-  }
 }
 
 function onSharedChange() {
   const checked = document.getElementById('tx-shared').checked;
   document.getElementById('shared-details').classList.toggle('hidden', !checked);
-  if (checked) renderPayerSelect('');
+  if (checked) {
+    const payer = document.getElementById('tx-payer');
+    if (payer) {
+      payer.innerHTML = `<option value="${S.user.uid}">${S.user.name} (yo)</option>`;
+      if (S.user.partner_uid) payer.innerHTML += `<option value="${S.user.partner_uid}">${S.user.partner_name||'Pareja'}</option>`;
+    }
+  }
 }
 
 async function saveTx() {
-  const desc  = document.getElementById('tx-desc').value.trim();
-  const amt   = parseFloat(document.getElementById('tx-amount').value);
-  const cur   = document.getElementById('tx-currency').value;
-  const date  = document.getElementById('tx-date').value;
+  const desc = document.getElementById('tx-desc').value.trim();
+  const amt = parseFloat(document.getElementById('tx-amount').value);
+  const cur = document.getElementById('tx-currency').value;
+  const date = document.getElementById('tx-date').value;
   const accId = document.getElementById('tx-account').value;
-  const note  = document.getElementById('tx-note').value.trim();
-  const type  = S._txType || 'expense';
-  const tc    = cur === 'USD' ? parseFloat(document.getElementById('tx-tc').value || S.tc.oficial) : S.tc.oficial;
-  if (!desc)           return showToast('Agrega una descripcion', 'error');
-  if (!amt || amt <= 0) return showToast('Monto invalido', 'error');
-  if (!date)           return showToast('Selecciona una fecha', 'error');
+  const catId = S._selectedCatId || '';
+  const tc = cur === 'USD' ? parseFloat(document.getElementById('tx-tc').value || S.tc.oficial) : S.tc.oficial;
+  const note = document.getElementById('tx-note').value.trim();
+  const type = S._txType || 'expense';
 
-  const isShared = document.getElementById('tx-shared').checked;
-  const payer    = isShared ? document.getElementById('tx-payer').value : '';
-  const split    = isShared ? parseFloat(document.getElementById('tx-split').value||50) : 100;
+  if (!desc) return showToast('Agrega una descripcion', 'error');
+  if (!amt || amt <= 0) return showToast('Agrega un monto valido', 'error');
+  if (!date) return showToast('Selecciona una fecha', 'error');
+
+  const shared = document.getElementById('tx-shared').checked;
+  const payer = shared ? document.getElementById('tx-payer').value : '';
+  const split = shared ? parseFloat(document.getElementById('tx-split').value||50) : 100;
 
   const txData = {
-    id: S.editTxId || genId(),
-    uid: S.user.uid, type, description: desc,
-    amount: amt, currency: cur, tc: tc||0, date,
-    category_id: S._selectedCatId || '', tags: S.txTags,
-    note, shared: isShared, payer, split_me: split,
-    account_id: accId, created_at: new Date().toISOString()
+    uid: S.user.uid, type, description: desc, amount: amt, currency: cur,
+    tc: tc || 0, date, category_id: catId, tags: S.txTags.join(','),
+    note, shared, payer, split_me: split, account_id: accId
   };
 
   let r;
   if (S.editTxId) {
-    // Revert old balance
-    const old = S.tx.find(function(x){return x.id===S.editTxId;});
+    // revert old balance
+    const old = S.tx.find(x => x.id === S.editTxId);
     if (old && old.account_id) {
-      const oldAcc = S.accounts.find(function(a){return a.id===old.account_id;});
+      const oldAcc = getAccount(old.account_id);
       if (oldAcc) {
-        const revert = old.type === 'income' ? -parseFloat(old.amount||0) : parseFloat(old.amount||0);
+        const oldAmt = parseFloat(old.amount||0);
+        const revert = old.type === 'income' ? -oldAmt : oldAmt;
         oldAcc.balance = (parseFloat(oldAcc.balance)||0) + revert;
-        await api('updateAccount', { uid: S.user.uid, id: oldAcc.id, name: oldAcc.name, type: oldAcc.type, balance: oldAcc.balance, currency: oldAcc.currency, icon: oldAcc.icon, color: oldAcc.color });
+        await api('updateAccount', {uid: S.user.uid, ...oldAcc});
       }
     }
-    r = await api('updateTransaction', { uid: S.user.uid, ...txData });
-    if (r.ok) { const i = S.tx.findIndex(function(x){return x.id===S.editTxId;}); if(i>=0) S.tx[i]=txData; }
+    r = await api('updateTransaction', {uid: S.user.uid, id: S.editTxId, ...txData});
+    if (r.ok) {
+      const idx = S.tx.findIndex(x => x.id === S.editTxId);
+      if (idx >= 0) S.tx[idx] = {id: S.editTxId, ...txData};
+    }
   } else {
-    r = await api('addTransaction', { uid: S.user.uid, ...txData });
+    txData.id = genId();
+    r = await api('addTransaction', txData);
     if (r.ok) S.tx.push(txData);
   }
+
   if (!r.ok) return showToast('Error al guardar', 'error');
 
-  // Apply new balance
+  // update account balance
   if (accId) {
-    const acc = S.accounts.find(function(a){return a.id===accId;});
+    const acc = getAccount(accId);
     if (acc) {
-      acc.balance = (parseFloat(acc.balance)||0) + (type === 'income' ? amt : -amt);
-      await api('updateAccount', { uid: S.user.uid, id: acc.id, name: acc.name, type: acc.type, balance: acc.balance, currency: acc.currency, icon: acc.icon, color: acc.color });
+      const delta = type === 'income' ? amt : -amt;
+      acc.balance = (parseFloat(acc.balance)||0) + delta;
+      await api('updateAccount', {uid: S.user.uid, ...acc});
     }
   }
+
   closeModal('modal-tx');
   showToast('Guardado', 'success');
   updateUI();
@@ -1110,442 +1223,555 @@ async function saveTx() {
 
 async function deleteTx(id) {
   if (!confirm('Eliminar esta transaccion?')) return;
-  const t = S.tx.find(function(x){return x.id===id;});
+  const t = S.tx.find(x => x.id === id);
   if (t && t.account_id) {
-    const acc = S.accounts.find(function(a){return a.id===t.account_id;});
+    const acc = getAccount(t.account_id);
     if (acc) {
-      acc.balance = (parseFloat(acc.balance)||0) + (t.type==='income' ? -parseFloat(t.amount||0) : parseFloat(t.amount||0));
-      await api('updateAccount', { uid: S.user.uid, id: acc.id, name: acc.name, type: acc.type, balance: acc.balance, currency: acc.currency, icon: acc.icon, color: acc.color });
+      const revert = t.type === 'income' ? -parseFloat(t.amount||0) : parseFloat(t.amount||0);
+      acc.balance = (parseFloat(acc.balance)||0) + revert;
+      await api('updateAccount', {uid: S.user.uid, ...acc});
     }
   }
-  const r = await api('deleteTransaction', { uid: S.user.uid, id });
-  if (r.ok) { S.tx = S.tx.filter(function(x){return x.id!==id;}); showToast('Eliminado','success'); updateUI(); }
-  else showToast('Error al eliminar','error');
+  const r = await api('deleteTransaction', {uid: S.user.uid, id});
+  if (r.ok) {
+    S.tx = S.tx.filter(x => x.id !== id);
+    showToast('Eliminado', 'success');
+    updateUI();
+  } else showToast('Error al eliminar', 'error');
 }
 
-// ─── ACCOUNTS ─────────────────────────────────────
+// ACCOUNTS
 function renderAccounts() {
-  const normal  = S.accounts.filter(function(a){return a.type!=='saving'&&a.type!=='saving_cash';});
-  const savings = S.accounts.filter(function(a){return a.type==='saving'||a.type==='saving_cash';});
+  const normalAccs = S.accounts.filter(a => a.type !== 'saving' && a.type !== 'saving_cash');
+  const savingAccs = S.accounts.filter(a => a.type === 'saving' || a.type === 'saving_cash');
+
   let totalARS = 0;
-  normal.forEach(function(a){ totalARS += toARS(parseFloat(a.balance||0), a.currency, S.tc.oficial); });
-  const totEl = document.getElementById('accounts-total');
-  if (totEl) totEl.textContent = fmtMoney(totalARS);
+  normalAccs.forEach(a => {
+    totalARS += toARS(parseFloat(a.balance||0), a.currency, S.tc.oficial);
+  });
+  const el = document.getElementById('accounts-total');
+  if (el) el.textContent = fmtMoney(totalARS);
+
   const accList = document.getElementById('accounts-list');
-  if (accList) accList.innerHTML = normal.length ? normal.map(accountCardHTML).join('') : '<div class="empty"><div>Sin cuentas</div></div>';
+  if (accList) {
+    accList.innerHTML = normalAccs.length === 0
+      ? '<div class="empty"><div>Sin cuentas</div></div>'
+      : normalAccs.map(a => accountCardHTML(a)).join('');
+  }
+
   const savList = document.getElementById('savings-list');
-  if (savList) savList.innerHTML = savings.length ? savings.map(accountCardHTML).join('') : '<div class="empty"><div>Sin cuentas de ahorro</div></div>';
+  if (savList) {
+    savList.innerHTML = savingAccs.length === 0
+      ? '<div class="empty"><div>Sin cuentas de ahorro</div></div>'
+      : savingAccs.map(a => accountCardHTML(a)).join('');
+  }
+
   let savARS = 0, savUSD = 0;
-  savings.forEach(function(a) {
-    const b = parseFloat(a.balance||0);
-    if (a.currency==='USD') { savUSD += b; savARS += toARS(b,'USD',S.tc.oficial); } else { savARS += b; }
+  savingAccs.forEach(a => {
+    if (a.currency === 'USD') {
+      savUSD += parseFloat(a.balance||0);
+      savARS += toARS(parseFloat(a.balance||0), 'USD', S.tc.oficial);
+    } else {
+      savARS += parseFloat(a.balance||0);
+    }
   });
   const stARS = document.getElementById('savings-total-ars');
   const stUSD = document.getElementById('savings-total-usd');
   if (stARS) stARS.textContent = fmtMoney(savARS);
-  if (stUSD) stUSD.textContent = fmtMoney(savUSD,'USD');
+  if (stUSD) stUSD.textContent = fmtMoney(savUSD, 'USD');
 }
 
 function accountCardHTML(a) {
   const bal = parseFloat(a.balance||0);
-  const sub = a.currency==='USD' && S.tc.oficial
-    ? '<div class="account-balance-sub">~ '+fmtMoney(bal*S.tc.oficial)+'</div>' : '';
-  return '<div class="account-card">'
-    + '<div class="account-icon" style="background:'+(a.color||'#7c6ff7')+'33">'+(a.icon||'&#x1F4B3;')+'</div>'
-    + '<div class="account-info"><div class="account-name">'+a.name+'</div><div class="account-type">'+accTypeLabel(a.type)+'</div></div>'
-    + '<div><div class="account-balance" style="color:'+(a.color||'var(--accent)')+'">'+fmtMoney(bal,a.currency)+'</div>'+sub+'</div>'
-    + '<div style="display:flex;gap:4px;margin-left:4px">'
-    + '<button class="btn btn-secondary btn-sm" onclick="editAccount(\''+a.id+'\')">&#x270F;</button>'
-    + '<button class="btn btn-danger btn-sm" onclick="deleteAccount(\''+a.id+'\')">&#x1F5D1;</button>'
-    + '</div></div>';
+  const isSav = a.type === 'saving' || a.type === 'saving_cash';
+  const subBal = a.currency === 'USD' && S.tc.oficial
+    ? '<div class="account-balance-sub">~ ' + fmtMoney(bal * S.tc.oficial) + '</div>'
+    : '';
+  return `<div class="account-card">
+    <div class="account-icon" style="background:${a.color||'#7c6ff7'}33">${a.icon||'&#x1F4B3;'}</div>
+    <div class="account-info">
+      <div class="account-name">${a.name}</div>
+      <div class="account-type">${accTypeLabel(a.type)}</div>
+    </div>
+    <div>
+      <div class="account-balance" style="color:${a.color||'var(--accent)'}">${fmtMoney(bal, a.currency)}</div>
+      ${subBal}
+    </div>
+    <div style="display:flex;gap:4px;margin-left:4px">
+      <button class="btn btn-secondary btn-sm" onclick="editAccount('${a.id}')">&#x270F;</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteAccount('${a.id}')">&#x1F5D1;</button>
+    </div>
+  </div>`;
 }
 
-function showAddAccountModal(type) {
+function showAddAccountModal(type='') {
   S.editAccId = null;
   document.getElementById('modal-account-title').textContent = 'Nueva cuenta';
-  document.getElementById('acc-name').value     = '';
-  document.getElementById('acc-type').value     = type || 'bank';
+  document.getElementById('acc-name').value = '';
+  document.getElementById('acc-type').value = type || 'bank';
   document.getElementById('acc-currency').value = 'ARS';
-  document.getElementById('acc-balance').value  = '0';
-  document.getElementById('acc-icon').value     = '\uD83D\uDCB3';
-  document.getElementById('acc-color').value    = '#7c6ff7';
+  document.getElementById('acc-balance').value = '0';
+  document.getElementById('acc-icon').value = '\uD83D\uDCB3';
+  document.getElementById('acc-color').value = '#7c6ff7';
   document.getElementById('modal-account').classList.remove('hidden');
 }
+
 function editAccount(id) {
-  const a = S.accounts.find(function(x){return x.id===id;});
+  const a = getAccount(id);
   if (!a) return;
   S.editAccId = id;
   document.getElementById('modal-account-title').textContent = 'Editar cuenta';
-  document.getElementById('acc-name').value     = a.name||'';
-  document.getElementById('acc-type').value     = a.type||'bank';
-  document.getElementById('acc-currency').value = a.currency||'ARS';
-  document.getElementById('acc-balance').value  = a.balance||0;
-  document.getElementById('acc-icon').value     = a.icon||'';
-  document.getElementById('acc-color').value    = a.color||'#7c6ff7';
+  document.getElementById('acc-name').value = a.name || '';
+  document.getElementById('acc-type').value = a.type || 'bank';
+  document.getElementById('acc-currency').value = a.currency || 'ARS';
+  document.getElementById('acc-balance').value = a.balance || 0;
+  document.getElementById('acc-icon').value = a.icon || '';
+  document.getElementById('acc-color').value = a.color || '#7c6ff7';
   document.getElementById('modal-account').classList.remove('hidden');
 }
+
 async function saveAccount() {
   const name = document.getElementById('acc-name').value.trim();
-  if (!name) return showToast('Agrega un nombre','error');
+  if (!name) return showToast('Agrega un nombre', 'error');
   const accData = {
-    uid: S.user.uid, name,
-    type:     document.getElementById('acc-type').value,
+    uid: S.user.uid,
+    name,
+    type: document.getElementById('acc-type').value,
     currency: document.getElementById('acc-currency').value,
-    balance:  parseFloat(document.getElementById('acc-balance').value)||0,
-    icon:     document.getElementById('acc-icon').value,
-    color:    document.getElementById('acc-color').value,
-    created_at: new Date().toISOString()
+    balance: parseFloat(document.getElementById('acc-balance').value)||0,
+    icon: document.getElementById('acc-icon').value,
+    color: document.getElementById('acc-color').value
   };
   let r;
   if (S.editAccId) {
-    r = await api('updateAccount', { id: S.editAccId, ...accData });
-    if (r.ok) { const i = S.accounts.findIndex(function(a){return a.id===S.editAccId;}); if(i>=0) S.accounts[i]={id:S.editAccId,...accData}; }
+    r = await api('updateAccount', {id: S.editAccId, ...accData});
+    if (r.ok) {
+      const idx = S.accounts.findIndex(a => a.id === S.editAccId);
+      if (idx >= 0) S.accounts[idx] = {id: S.editAccId, ...accData};
+    }
   } else {
     accData.id = genId();
-    r = await api('addAccount', { ...accData });
+    r = await api('addAccount', accData);
     if (r.ok) S.accounts.push(accData);
   }
-  if (!r.ok) return showToast('Error al guardar cuenta','error');
+  if (!r.ok) return showToast('Error al guardar cuenta', 'error');
   closeModal('modal-account');
-  showToast('Cuenta guardada','success');
+  showToast('Cuenta guardada', 'success');
   renderAccounts();
 }
+
 async function deleteAccount(id) {
   if (!confirm('Eliminar esta cuenta?')) return;
-  const r = await api('deleteAccount', { uid: S.user.uid, id });
-  if (r.ok) { S.accounts = S.accounts.filter(function(a){return a.id!==id;}); showToast('Eliminada','success'); renderAccounts(); }
-  else showToast('Error al eliminar','error');
+  const r = await api('deleteAccount', {uid: S.user.uid, id});
+  if (r.ok) {
+    S.accounts = S.accounts.filter(a => a.id !== id);
+    showToast('Cuenta eliminada', 'success');
+    renderAccounts();
+  } else showToast('Error al eliminar', 'error');
 }
+
 function showTransferModal() {
   document.getElementById('transfer-amount').value = '';
-  document.getElementById('transfer-note').value   = '';
+  document.getElementById('transfer-note').value = '';
   document.getElementById('transfer-currency').value = 'ARS';
-  renderAccountSelect('transfer-from', true, '');
-  renderAccountSelect('transfer-to',   true, '');
+  renderAccountSelect('transfer-from', true);
+  renderAccountSelect('transfer-to', true);
   document.getElementById('modal-transfer').classList.remove('hidden');
 }
+
 async function doTransfer() {
   const fromId = document.getElementById('transfer-from').value;
-  const toId   = document.getElementById('transfer-to').value;
-  const amt    = parseFloat(document.getElementById('transfer-amount').value);
-  const cur    = document.getElementById('transfer-currency').value;
-  const note   = document.getElementById('transfer-note').value.trim();
-  if (!fromId||!toId)  return showToast('Selecciona ambas cuentas','error');
-  if (fromId===toId)   return showToast('Las cuentas deben ser distintas','error');
-  if (!amt||amt<=0)    return showToast('Monto invalido','error');
-  const fromAcc = S.accounts.find(function(a){return a.id===fromId;});
-  const toAcc   = S.accounts.find(function(a){return a.id===toId;});
-  if (!fromAcc||!toAcc) return showToast('Cuenta no encontrada','error');
-  const grp = genId();
-  const txOut = { id:genId(), uid:S.user.uid, type:'expense', description:'Transferencia a '+toAcc.name, amount:amt, currency:cur, tc:S.tc.oficial, date:today(), category_id:'', tags:[], note, shared:false, payer:'', split_me:100, account_id:fromId, transfer_to:toId, transfer_group:grp, created_at:new Date().toISOString() };
-  const txIn  = { id:genId(), uid:S.user.uid, type:'income',  description:'Transferencia desde '+fromAcc.name, amount:amt, currency:cur, tc:S.tc.oficial, date:today(), category_id:'', tags:[], note, shared:false, payer:'', split_me:100, account_id:toId, transfer_from:fromId, transfer_group:grp, created_at:new Date().toISOString() };
-  await api('addTransaction', { uid:S.user.uid, ...txOut });
-  await api('addTransaction', { uid:S.user.uid, ...txIn  });
+  const toId = document.getElementById('transfer-to').value;
+  const amt = parseFloat(document.getElementById('transfer-amount').value);
+  const cur = document.getElementById('transfer-currency').value;
+  const note = document.getElementById('transfer-note').value.trim();
+
+  if (!fromId || !toId) return showToast('Selecciona ambas cuentas', 'error');
+  if (fromId === toId) return showToast('Las cuentas deben ser distintas', 'error');
+  if (!amt || amt <= 0) return showToast('Monto invalido', 'error');
+
+  const fromAcc = getAccount(fromId);
+  const toAcc = getAccount(toId);
+  if (!fromAcc || !toAcc) return showToast('Cuenta no encontrada', 'error');
+
+  // Create transfer transactions
+  const transferId = genId();
+  const txOut = {id: genId(), uid: S.user.uid, type:'expense', description:'Transferencia a ' + toAcc.name, amount: amt, currency: cur, tc: S.tc.oficial, date: today(), category_id:'', tags:'', note, shared: false, payer:'', split_me:100, account_id: fromId, transfer_to: toId, transfer_group: transferId};
+  const txIn = {id: genId(), uid: S.user.uid, type:'income', description:'Transferencia desde ' + fromAcc.name, amount: amt, currency: cur, tc: S.tc.oficial, date: today(), category_id:'', tags:'', note, shared: false, payer:'', split_me:100, account_id: toId, transfer_from: fromId, transfer_group: transferId};
+
+  await api('addTransaction', txOut);
+  await api('addTransaction', txIn);
   S.tx.push(txOut); S.tx.push(txIn);
+
   fromAcc.balance = (parseFloat(fromAcc.balance)||0) - amt;
-  toAcc.balance   = (parseFloat(toAcc.balance)||0)   + amt;
-  await api('updateAccount', { uid:S.user.uid, id:fromAcc.id, name:fromAcc.name, type:fromAcc.type, balance:fromAcc.balance, currency:fromAcc.currency, icon:fromAcc.icon, color:fromAcc.color });
-  await api('updateAccount', { uid:S.user.uid, id:toAcc.id,   name:toAcc.name,   type:toAcc.type,   balance:toAcc.balance,   currency:toAcc.currency,   icon:toAcc.icon,   color:toAcc.color   });
+  toAcc.balance = (parseFloat(toAcc.balance)||0) + amt;
+  await api('updateAccount', {uid: S.user.uid, ...fromAcc});
+  await api('updateAccount', {uid: S.user.uid, ...toAcc});
+
   closeModal('modal-transfer');
-  showToast('Transferencia realizada','success');
+  showToast('Transferencia realizada', 'success');
   updateUI();
 }
 
-// ─── CATEGORIES ───────────────────────────────────
+// CATEGORIES
 function renderCatConfig() {
   const el = document.getElementById('cat-list-config');
   if (!el) return;
-  if (!S.categories.length) { el.innerHTML='<div class="empty"><div>Sin categorias</div></div>'; return; }
-  el.innerHTML = S.categories.map(function(c,i) {
-    return '<div class="cat-row">'
-      + '<div class="cat-row-icon" style="color:'+(c.color||'inherit')+'">'+(c.icon||'?')+'</div>'
-      + '<div class="cat-row-info"><div class="cat-row-name">'+c.name+'</div><div class="cat-row-type">'+(c.type==='income'?'Ingreso':'Gasto')+'</div></div>'
-      + '<div class="cat-row-actions">'
-      + (i>0 ? '<button class="btn btn-secondary btn-sm" onclick="moveCat('+i+',-1)">&#x2191;</button>' : '<button class="btn btn-secondary btn-sm" disabled style="opacity:.3">&#x2191;</button>')
-      + (i<S.categories.length-1 ? '<button class="btn btn-secondary btn-sm" onclick="moveCat('+i+',1)">&#x2193;</button>' : '<button class="btn btn-secondary btn-sm" disabled style="opacity:.3">&#x2193;</button>')
-      + '<button class="btn btn-secondary btn-sm" onclick="editCat(\''+c.id+'\')">&#x270F;</button>'
-      + '<button class="btn btn-danger btn-sm" onclick="deleteCat(\''+c.id+'\')">&#x1F5D1;</button>'
-      + '</div></div>';
-  }).join('');
+  if (S.categories.length === 0) {
+    el.innerHTML = '<div class="empty"><div>Sin categorias</div></div>';
+    return;
+  }
+  el.innerHTML = S.categories.map((c, i) => `
+    <div class="cat-row">
+      <div class="cat-row-icon" style="color:${c.color||'inherit'}">${c.icon||'?'}</div>
+      <div class="cat-row-info">
+        <div class="cat-row-name">${c.name}</div>
+        <div class="cat-row-type">${c.type === 'income' ? 'Ingreso' : 'Gasto'}</div>
+      </div>
+      <div class="cat-row-actions">
+        ${i > 0 ? `<button class="btn btn-secondary btn-sm" onclick="moveCat(${i},-1)">&#x2191;</button>` : '<button class="btn btn-secondary btn-sm" disabled style="opacity:.3">&#x2191;</button>'}
+        ${i < S.categories.length-1 ? `<button class="btn btn-secondary btn-sm" onclick="moveCat(${i},1)">&#x2193;</button>` : '<button class="btn btn-secondary btn-sm" disabled style="opacity:.3">&#x2193;</button>'}
+        <button class="btn btn-secondary btn-sm" onclick="editCat('${c.id}')">&#x270F;</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCat('${c.id}')">&#x1F5D1;</button>
+      </div>
+    </div>`).join('');
 }
-function showAddCatModal(preType) {
+
+function showAddCatModal(preType='') {
   S.editCatId = null;
   document.getElementById('modal-cat-title').textContent = 'Nueva categoria';
-  document.getElementById('cat-name').value  = '';
-  document.getElementById('cat-icon').value  = '\u2B50';
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-icon').value = '\u2B50';
   document.getElementById('cat-color').value = '#7c6ff7';
-  document.getElementById('cat-type').value  = preType || 'expense';
+  document.getElementById('cat-type').value = preType || 'expense';
   document.getElementById('modal-cat').classList.remove('hidden');
 }
+
 function editCat(id) {
-  const c = S.categories.find(function(x){return x.id===id;});
+  const c = S.categories.find(x => x.id === id);
   if (!c) return;
   S.editCatId = id;
   document.getElementById('modal-cat-title').textContent = 'Editar categoria';
-  document.getElementById('cat-name').value  = c.name||'';
-  document.getElementById('cat-icon').value  = c.icon||'';
-  document.getElementById('cat-color').value = c.color||'#7c6ff7';
-  document.getElementById('cat-type').value  = c.type||'expense';
+  document.getElementById('cat-name').value = c.name || '';
+  document.getElementById('cat-icon').value = c.icon || '';
+  document.getElementById('cat-color').value = c.color || '#7c6ff7';
+  document.getElementById('cat-type').value = c.type || 'expense';
   document.getElementById('modal-cat').classList.remove('hidden');
 }
+
 async function saveCat() {
   const name = document.getElementById('cat-name').value.trim();
-  if (!name) return showToast('Agrega un nombre','error');
+  if (!name) return showToast('Agrega un nombre', 'error');
   const catData = {
     uid: S.user.uid, name,
-    icon:  document.getElementById('cat-icon').value,
+    icon: document.getElementById('cat-icon').value,
     color: document.getElementById('cat-color').value,
-    type:  document.getElementById('cat-type').value,
-    created_at: new Date().toISOString()
+    type: document.getElementById('cat-type').value
   };
-  let r, newId;
+  let r;
   if (S.editCatId) {
-    catData.id = S.editCatId;
-    r = await api('updateCategory', { ...catData });
-    if (r.ok) { const i=S.categories.findIndex(function(c){return c.id===S.editCatId;}); if(i>=0) S.categories[i]={...catData}; }
-    newId = S.editCatId;
+    r = await api('updateCategory', {id: S.editCatId, ...catData});
+    if (r.ok) {
+      const idx = S.categories.findIndex(c => c.id === S.editCatId);
+      if (idx >= 0) S.categories[idx] = {id: S.editCatId, ...catData};
+    }
   } else {
     catData.id = genId();
-    catData.sort_order = S.categories.length;
-    r = await api('addCategory', { ...catData });
+    r = await api('addCategory', catData);
     if (r.ok) S.categories.push(catData);
-    newId = catData.id;
   }
-  if (!r.ok) return showToast('Error al guardar','error');
+  if (!r.ok) return showToast('Error al guardar', 'error');
   await saveCatOrder();
   closeModal('modal-cat');
-  showToast('Categoria guardada','success');
+  showToast('Categoria guardada', 'success');
   renderCatConfig();
+  // if came from tx picker, reopen tx modal
   if (S.fromCatPicker) {
     S.fromCatPicker = false;
-    showAddTxModal({ type: catData.type, category_id: newId });
-    selectCat(newId);
+    const newCatId = S.editCatId || catData.id;
+    showAddTxModal({category_id: newCatId, type: catData.type});
+    selectCat(newCatId);
   }
 }
+
 async function deleteCat(id) {
-  if (!confirm('Eliminar categoria?')) return;
-  const r = await api('deleteCategory', { uid: S.user.uid, id });
-  if (r.ok) { S.categories=S.categories.filter(function(c){return c.id!==id;}); showToast('Eliminada','success'); renderCatConfig(); }
-  else showToast('Error al eliminar','error');
+  if (!confirm('Eliminar esta categoria?')) return;
+  const r = await api('deleteCategory', {uid: S.user.uid, id});
+  if (r.ok) {
+    S.categories = S.categories.filter(c => c.id !== id);
+    showToast('Categoria eliminada', 'success');
+    renderCatConfig();
+  } else showToast('Error al eliminar', 'error');
 }
+
 async function moveCat(idx, dir) {
-  const ni = idx+dir;
-  if (ni<0||ni>=S.categories.length) return;
-  const tmp=S.categories[idx]; S.categories[idx]=S.categories[ni]; S.categories[ni]=tmp;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= S.categories.length) return;
+  const tmp = S.categories[idx];
+  S.categories[idx] = S.categories[newIdx];
+  S.categories[newIdx] = tmp;
   renderCatConfig();
   await saveCatOrder();
 }
+
 async function saveCatOrder() {
-  const order = S.categories.map(function(c,i){return {id:c.id,sort_order:i};});
-  await api('saveCategoryOrder', { uid: S.user.uid, order });
+  const order = S.categories.map((c,i) => ({id: c.id, sort_order: i}));
+  await api('saveCategoryOrder', {uid: S.user.uid, order});
 }
 
-// ─── COUPLE ───────────────────────────────────────
+// COUPLE
 function renderCouple() {
   const el = document.getElementById('couple-content');
   if (!el) return;
-  const on = S.user.mode==='couple'||S.user.mode==='both';
-  if (!on) { el.innerHTML='<div class="empty"><div class="empty-icon">&#x1F46B;</div><div>Activa el modo pareja en Configuracion</div></div>'; return; }
-  if (!S.user.partner_uid) {
-    el.innerHTML='<div class="card"><div class="card-title">Vincular pareja</div>'
-      +'<p style="font-size:13px;color:var(--text2);margin-bottom:12px">Vinculate con la cuenta de tu pareja para ver los gastos compartidos.</p>'
-      +'<button class="btn btn-primary" onclick="document.getElementById(\'modal-couple\').classList.remove(\'hidden\')">+ Vincular pareja</button></div>';
+  if (!(S.user.mode === 'couple' || S.user.mode === 'both')) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">&#x1F46B;</div><div>Activa el modo pareja en Configuracion</div></div>';
     return;
   }
-  const shared = S.tx.filter(function(t){return t.shared===true||t.shared==='true'||t.shared==='TRUE';});
-  let myTotal=0, partnerTotal=0;
-  shared.forEach(function(t) {
-    const amt = toARS(parseFloat(t.amount||0),t.currency,t.tc||S.tc.oficial);
-    const pct = parseFloat(t.split_me||50)/100;
-    if (t.payer===S.user.uid) partnerTotal += amt*(1-pct);
-    else myTotal += amt*pct;
+  if (!S.user.partner_uid) {
+    el.innerHTML = `<div class="card"><div class="card-title">Vincular pareja</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Vinculate con la cuenta de tu pareja para ver los gastos compartidos.</p>
+      <button class="btn btn-primary" onclick="document.getElementById('modal-couple').classList.remove('hidden')">+ Vincular pareja</button>
+    </div>`;
+    return;
+  }
+  const sharedTx = S.tx.filter(t => t.shared == true || t.shared === 'true');
+  let myTotal = 0, partnerTotal = 0;
+  sharedTx.forEach(t => {
+    const amt = toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
+    const myPct = parseFloat(t.split_me||50) / 100;
+    if (t.payer === S.user.uid) {
+      myTotal += amt * (1 - myPct);
+    } else {
+      partnerTotal += amt * myPct;
+    }
   });
-  const bal = partnerTotal - myTotal;
-  el.innerHTML='<div class="card"><div class="card-title">Balance con '+(S.user.partner_name||'tu pareja')+'</div>'
-    +'<div class="couple-balance" style="color:'+(bal>=0?'var(--green)':'var(--red)')+'">'+( bal>=0?'Te deben ':'Debes ')+fmtMoney(Math.abs(bal))+'</div></div>'
-    +'<div class="card"><div class="card-title">Gastos compartidos ('+shared.length+')</div>'
-    +(shared.length?shared.map(function(t){return txItemHTML(t,false);}).join(''):'<div class="empty"><div>Sin gastos compartidos</div></div>')+'</div>';
+  const balance = myTotal - partnerTotal;
+  el.innerHTML = `<div class="card">
+    <div class="card-title">Balance con ${S.user.partner_name||'tu pareja'}</div>
+    <div class="couple-balance" style="color:${balance>=0?'var(--green)':'var(--red)'}">
+      ${balance >= 0 ? 'Te deben ' : 'Debes '} ${fmtMoney(Math.abs(balance))}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Gastos compartidos (${sharedTx.length})</div>
+    ${sharedTx.length === 0 ? '<div class="empty"><div>Sin gastos compartidos</div></div>' : sharedTx.map(t => txItemHTML(t, false)).join('')}
+  </div>`;
 }
+
 async function linkCouple() {
   const email = document.getElementById('couple-email').value.trim();
-  if (!email) return showToast('Ingresa el email de tu pareja','error');
-  // GAS uses partner_email (after our remap to linkPartner)
-  const r = await api('linkCouple', { uid: S.user.uid, partner_email: email });
+  if (!email) return showToast('Ingresa el email de tu pareja', 'error');
+  const r = await api('linkCouple', {uid: S.user.uid, partnerEmail: email});
   if (r.ok) {
-    S.user.partner_uid  = r.partner_uid;
+    S.user.partner_uid = r.partner_uid;
     S.user.partner_name = r.partner_name;
     localStorage.setItem('session', JSON.stringify(S.user));
     closeModal('modal-couple');
-    showToast('Pareja vinculada','success');
+    showToast('Pareja vinculada', 'success');
     renderCouple();
-  } else showToast(r.error||'No se encontro el usuario','error');
+  } else showToast(r.error || 'No se encontro el usuario', 'error');
 }
 
-// ─── MODES ────────────────────────────────────────
-async function toggleMode() {
-  const coupleOn = document.getElementById('toggle-couple').checked;
-  const vacOn    = document.getElementById('toggle-vac').checked;
-  let mode = 'normal';
-  if (coupleOn&&vacOn) mode='both';
-  else if (coupleOn) mode='couple';
-  else if (vacOn)    mode='vacation';
-  S.user.mode = mode;
-  localStorage.setItem('session', JSON.stringify(S.user));
-  document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
-  document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
-  await api('updateUserMode', { uid: S.user.uid, mode });
-  updateUI();
-}
-
-// ─── TC ───────────────────────────────────────────
-function showTcModal() {
-  document.getElementById('tc-oficial-display').textContent = S.tc.oficial ? fmtMoney(S.tc.oficial) : 'No disponible';
-  document.getElementById('tc-manual').value = S.tc.oficial || '';
-  document.getElementById('modal-tc').classList.remove('hidden');
-}
-function saveTc() {
-  const val = parseFloat(document.getElementById('tc-manual').value);
-  if (val>0) { S.tc.oficial=val; localStorage.setItem('tc_oficial',String(val)); updateTcBadge(); }
-  closeModal('modal-tc');
-  showToast('TC actualizado','success');
-}
-
-// ─── VACATIONS ────────────────────────────────────
+// VACATIONS
 function renderVacations() {
   const el = document.getElementById('vac-list');
   if (!el) return;
-  if (!S.vacations.length) { el.innerHTML='<div class="empty"><div class="empty-icon">&#x2708;</div><div>Sin viajes</div></div>'; return; }
-  el.innerHTML = S.vacations.map(function(v) {
-    const items = S.vacItems.filter(function(i){return i.vacation_id===v.id&&i.type==='expense';});
-    const spent = items.reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
-    const budget = toARS(parseFloat(v.budget||0),v.currency,S.tc.oficial);
-    const pct = budget>0?Math.min(100,Math.round(spent/budget*100)):0;
-    return '<div class="card" style="cursor:pointer" onclick="showVacDetail(\''+v.id+'\')">'
-      +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
-      +'<div><div style="font-size:16px;font-weight:700">&#x2708; '+v.name+'</div>'
-      +'<div style="font-size:12px;color:var(--text2);margin-top:2px">'+fmtDate(v.start_date)+' - '+fmtDate(v.end_date)+'</div></div>'
-      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700">'+fmtMoney(spent)+' / '+fmtMoney(parseFloat(v.budget||0),v.currency)+'</div>'
-      +'<div style="font-size:11px;color:var(--text2)">'+pct+'% del presupuesto</div></div></div>'
-      +'<div class="vac-progress"><div class="vac-progress-bar" style="width:'+pct+'%;background:'+(pct>80?'var(--red)':'var(--accent)')+'"></div></div></div>';
+  if (S.vacations.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">&#x2708;</div><div>Sin viajes</div></div>';
+    return;
+  }
+  el.innerHTML = S.vacations.map(v => {
+    const items = S.vacItems.filter(i => i.vacation_id === v.id && i.type === 'expense');
+    const spent = items.reduce((s, i) => s + toARS(parseFloat(i.amount||0), i.currency, i.tc||S.tc.oficial), 0);
+    const budget = toARS(parseFloat(v.budget||0), v.currency, S.tc.oficial);
+    const pct = budget > 0 ? Math.min(100, Math.round(spent/budget*100)) : 0;
+    return `<div class="card" style="cursor:pointer" onclick="showVacDetail('${v.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:16px;font-weight:700">&#x2708; ${v.name}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">${fmtDate(v.start_date)} - ${fmtDate(v.end_date)}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:700">${fmtMoney(spent)} / ${fmtMoney(parseFloat(v.budget||0), v.currency)}</div>
+          <div style="font-size:11px;color:var(--text2)">${pct}% del presupuesto</div>
+        </div>
+      </div>
+      <div class="vac-progress"><div class="vac-progress-bar" style="width:${pct}%;background:${pct>80?'var(--red)':'var(--accent)'}"></div></div>
+    </div>`;
   }).join('');
 }
+
 function showAddVacModal() {
-  document.getElementById('vac-name').value     = '';
-  document.getElementById('vac-start').value    = today();
-  document.getElementById('vac-end').value      = today();
-  document.getElementById('vac-budget').value   = '';
+  S.editVacId = null;
+  document.getElementById('modal-vac-title').textContent = 'Nuevo viaje';
+  document.getElementById('vac-name').value = '';
+  document.getElementById('vac-start').value = today();
+  document.getElementById('vac-end').value = today();
+  document.getElementById('vac-budget').value = '';
   document.getElementById('vac-currency').value = 'ARS';
   document.getElementById('modal-vac').classList.remove('hidden');
 }
+
 async function saveVac() {
   const name = document.getElementById('vac-name').value.trim();
-  if (!name) return showToast('Agrega un nombre','error');
+  if (!name) return showToast('Agrega un nombre', 'error');
   const vacData = {
-    id: genId(), uid: S.user.uid, name,
+    uid: S.user.uid, name,
     start_date: document.getElementById('vac-start').value,
-    end_date:   document.getElementById('vac-end').value,
-    budget:     parseFloat(document.getElementById('vac-budget').value)||0,
-    currency:   document.getElementById('vac-currency').value,
-    created_at: new Date().toISOString()
+    end_date: document.getElementById('vac-end').value,
+    budget: parseFloat(document.getElementById('vac-budget').value)||0,
+    currency: document.getElementById('vac-currency').value,
+    id: genId()
   };
-  const r = await api('addVacation', { uid: S.user.uid, ...vacData });
-  if (!r.ok) return showToast('Error al guardar','error');
+  const r = await api('addVacation', vacData);
+  if (!r.ok) return showToast('Error al guardar', 'error');
   S.vacations.push(vacData);
   closeModal('modal-vac');
-  showToast('Viaje guardado','success');
+  showToast('Viaje guardado', 'success');
   renderVacations();
 }
+
 function showVacDetail(id) {
   S.currentVacId = id;
-  const v = S.vacations.find(function(x){return x.id===id;});
+  const v = S.vacations.find(x => x.id === id);
   if (!v) return;
   document.getElementById('vac-detail-title').textContent = v.name;
   renderVacDetail(id);
   document.getElementById('modal-vac-detail').classList.remove('hidden');
 }
+
 function renderVacDetail(id) {
-  const items    = S.vacItems.filter(function(i){return i.vacation_id===id;});
-  const expenses = items.filter(function(i){return i.type==='expense';});
-  const checks   = items.filter(function(i){return i.type==='checklist';});
+  const items = S.vacItems.filter(i => i.vacation_id === id);
+  const expenses = items.filter(i => i.type === 'expense');
+  const checklist = items.filter(i => i.type === 'checklist');
   const el = document.getElementById('vac-detail-content');
   if (!el) return;
+
   const byDay = {};
-  expenses.forEach(function(i){const d=i.day||1;if(!byDay[d])byDay[d]=[];byDay[d].push(i);});
-  let html = '';
-  Object.keys(byDay).sort(function(a,b){return a-b;}).forEach(function(day) {
-    const dayTotal = byDay[day].reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
-    html += '<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia '+day+' &mdash; '+fmtMoney(dayTotal)+'</div>'
-      + byDay[day].map(function(i){
-          return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div>'
-            +'<div class="tx-info"><div class="tx-desc">'+i.description+'</div>'
-            +'<div class="tx-meta">'+i.currency+(i.shared?' &#x1F46B;':'')+'</div></div>'
-            +'<div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div></div>';
-        }).join('') + '</div>';
+  expenses.forEach(i => {
+    const day = i.day || 1;
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(i);
   });
-  if (checks.length) {
-    html += '<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Checklist</div>'
-      + checks.map(function(i){
-          const done = i.done===true||i.done==='true'||i.done==='TRUE';
-          return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">'
-            +'<input type="checkbox"'+(done?' checked':'')
-            +' onchange="toggleVacItem(\''+i.id+'\',this.checked)" style="width:18px;height:18px;cursor:pointer">'
-            +'<span style="font-size:14px;'+(done?'text-decoration:line-through;color:var(--text2)':'')+'">'
-            +i.description+'</span></div>';
-        }).join('') + '</div>';
+
+  let html = '';
+  Object.keys(byDay).sort((a,b)=>a-b).forEach(day => {
+    const dayTotal = byDay[day].reduce((s,i) => s + toARS(parseFloat(i.amount||0), i.currency, i.tc||S.tc.oficial), 0);
+    html += `<div style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia ${day} &mdash; ${fmtMoney(dayTotal)}</div>
+      ${byDay[day].map(i => `<div class="tx-item">
+        <div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div>
+        <div class="tx-info"><div class="tx-desc">${i.description}</div>
+        <div class="tx-meta">${i.currency} ${i.shared?'&#x1F46B;':''}</div></div>
+        <div class="tx-amount expense">-${fmtMoney(parseFloat(i.amount||0), i.currency)}</div>
+      </div>`).join('')}
+    </div>`;
+  });
+
+  if (checklist.length > 0) {
+    html += `<div style="margin-top:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Checklist</div>
+      ${checklist.map(i => `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <input type="checkbox" ${i.done=='true'||i.done===true?'checked':''} onchange="toggleVacItem('${i.id}',this.checked)" style="width:18px;height:18px;cursor:pointer">
+        <span style="font-size:14px;${i.done=='true'||i.done===true?'text-decoration:line-through;color:var(--text2)':''}">${i.description}</span>
+      </div>`).join('')}
+    </div>`;
   }
-  el.innerHTML = html || '<div class="empty"><div>Sin items. Agrega gastos o checklist.</div></div>';
+
+  el.innerHTML = html || '<div class="empty"><div>Sin items</div></div>';
 }
+
 function showAddVacItemModal() {
-  document.getElementById('vac-item-type').value     = 'expense';
-  document.getElementById('vac-item-desc').value     = '';
-  document.getElementById('vac-item-amount').value   = '';
+  document.getElementById('vac-item-type').value = 'expense';
+  document.getElementById('vac-item-desc').value = '';
+  document.getElementById('vac-item-amount').value = '';
   document.getElementById('vac-item-currency').value = 'ARS';
-  document.getElementById('vac-item-day').value      = '1';
+  document.getElementById('vac-item-day').value = '1';
   document.getElementById('vac-item-expense-fields').classList.remove('hidden');
-  const hasCouple = S.user.partner_uid && (S.user.mode==='both'||S.user.mode==='couple');
-  document.getElementById('vac-item-shared-section').classList.toggle('hidden', !hasCouple);
+  const sharedSec = document.getElementById('vac-item-shared-section');
+  sharedSec.classList.toggle('hidden', !(S.user.mode === 'both' || (S.user.mode === 'couple' && S.user.partner_uid)));
   document.getElementById('modal-vac-item').classList.remove('hidden');
 }
+
 function onVacItemTypeChange() {
-  const isExp = document.getElementById('vac-item-type').value==='expense';
+  const isExp = document.getElementById('vac-item-type').value === 'expense';
   document.getElementById('vac-item-expense-fields').classList.toggle('hidden', !isExp);
 }
+
 async function saveVacItem() {
   const desc = document.getElementById('vac-item-desc').value.trim();
-  if (!desc) return showToast('Agrega una descripcion','error');
+  if (!desc) return showToast('Agrega una descripcion', 'error');
   const type = document.getElementById('vac-item-type').value;
   const itemData = {
-    id: genId(), vacation_id: S.currentVacId, type, description: desc, done: false,
-    amount:   type==='expense' ? parseFloat(document.getElementById('vac-item-amount').value)||0 : 0,
-    currency: type==='expense' ? document.getElementById('vac-item-currency').value : 'ARS',
-    tc: S.tc.oficial,
-    day:    type==='expense' ? parseInt(document.getElementById('vac-item-day').value)||1 : 0,
-    shared: document.getElementById('vac-item-shared').checked,
-    payer: '', split_me: 100,
-    created_at: new Date().toISOString()
+    id: genId(), vacation_id: S.currentVacId, uid: S.user.uid,
+    type, description: desc, done: false,
+    amount: type === 'expense' ? parseFloat(document.getElementById('vac-item-amount').value)||0 : 0,
+    currency: type === 'expense' ? document.getElementById('vac-item-currency').value : 'ARS',
+    tc: S.tc.oficial, day: type === 'expense' ? parseInt(document.getElementById('vac-item-day').value)||1 : 0,
+    shared: document.getElementById('vac-item-shared').checked
   };
-  const r = await api('addVacationItem', { uid: S.user.uid, ...itemData });
-  if (!r.ok) return showToast('Error al guardar','error');
+  const r = await api('addVacationItem', itemData);
+  if (!r.ok) return showToast('Error al guardar', 'error');
   S.vacItems.push(itemData);
   closeModal('modal-vac-item');
   renderVacDetail(S.currentVacId);
   renderVacations();
-  showToast('Guardado','success');
+  showToast('Guardado', 'success');
 }
+
 async function toggleVacItem(id, done) {
-  const item = S.vacItems.find(function(i){return i.id===id;});
-  if (item) item.done = done;
-  // GAS doesn't have updateVacationItem yet — just update locally for now
+  const item = S.vacItems.find(i => i.id === id);
+  if (!item) return;
+  item.done = done;
+  await api('updateVacationItem', {uid: S.user.uid, id, done});
   renderVacDetail(S.currentVacId);
 }
 
-// ─── BOOT ─────────────────────────────────────────
-(async function() {
+// MODES
+async function toggleMode(mode) {
+  const coupleOn = document.getElementById('toggle-couple').checked;
+  const vacOn = document.getElementById('toggle-vac').checked;
+  let newMode = 'normal';
+  if (coupleOn && vacOn) newMode = 'both';
+  else if (coupleOn) newMode = 'couple';
+  else if (vacOn) newMode = 'vacation';
+  S.user.mode = newMode;
+  localStorage.setItem('session', JSON.stringify(S.user));
+  document.getElementById('nav-couple').classList.toggle('hidden', !(coupleOn));
+  document.getElementById('nav-vac').classList.toggle('hidden', !(vacOn));
+  await api('updateUserMode', {uid: S.user.uid, mode: newMode});
+  updateUI();
+}
+
+// TC MODAL
+function showTcModal() {
+  document.getElementById('tc-oficial-display').textContent = S.tc.oficial ? fmtMoney(S.tc.oficial) : 'No disponible';
+  document.getElementById('tc-manual').value = S.tc.oficial || '';
+  document.getElementById('modal-tc').classList.remove('hidden');
+}
+
+function saveTc() {
+  const val = parseFloat(document.getElementById('tc-manual').value);
+  if (val > 0) {
+    S.tc.oficial = val;
+    localStorage.setItem('tc_oficial', val);
+    updateTcBadge();
+  }
+  closeModal('modal-tc');
+  showToast('TC actualizado', 'success');
+}
+
+// CLOSE MODAL
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
+// BOOT
+(async () => {
   const saved = localStorage.getItem('session');
   if (saved) {
     try {
       S.user = JSON.parse(saved);
-      if (!S.user || !S.user.uid) throw new Error('invalid');
       await initApp();
     } catch(e) {
       localStorage.removeItem('session');
