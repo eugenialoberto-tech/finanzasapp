@@ -678,21 +678,15 @@ function loadAll() {
   ]).then(function(results) {
     S.transactions = results[0].transactions || [];
 
-    // Categorias: backend manda las del usuario (ya incluye defaults creados al registrarse)
     var bc = results[1].categories || [];
     if (bc.length) {
-      // Merge: defaults locales + las del backend (el backend tiene prioridad para ediciones)
-      var defaults = defaultCategories();
-      var merged = defaults.map(function(def) {
-        var backendVersion = bc.find(function(c) { return c.id === def.id; });
-        return backendVersion || def;
+      // Usar directamente las del backend, asignando type='expense' si viene vacio
+      S.categories = bc.map(function(c) {
+        if (!c.type || (c.type !== 'expense' && c.type !== 'income')) c.type = 'expense';
+        return c;
       });
-      // Agregar categorias custom que no son defaults
-      var defaultIds = defaults.map(function(d) { return d.id; });
-      var custom = bc.filter(function(c) { return defaultIds.indexOf(c.id) === -1 && (c.type === 'expense' || c.type === 'income'); });
-      S.categories = merged.concat(custom);
     } else {
-      // Sin datos del backend, usar local si hay
+      // Sin datos del backend: usar local o defaults
       var local = localStorage.getItem('categories_' + S.user.uid);
       S.categories = local ? JSON.parse(local) : defaultCategories();
     }
