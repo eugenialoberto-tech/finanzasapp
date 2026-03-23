@@ -1146,9 +1146,9 @@ function renderCouple() {
   // Vac balance
   var vacBalanceHTML='';
   S.vacations.forEach(function(v){
-    const {balance}=calcVacBalance(v.id);
+    const {balance,currency}=calcVacBalance(v.id);
     if(balance!==0){
-      const lbl=balance>0?'Te debe '+fmtMoney(balance):'Le debes '+fmtMoney(Math.abs(balance));
+      const lbl=balance>0?'Te debe '+fmtMoney(balance,currency):'Le debes '+fmtMoney(Math.abs(balance),currency);
       const col=balance>0?'var(--green)':'var(--red)';
       vacBalanceHTML+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">'
         +'<div style="font-size:13px">&#x2708; '+v.name+'</div>'
@@ -1324,48 +1324,46 @@ function showVacDetail(id) {
   renderVacDetail(id);document.getElementById('modal-vac-detail').classList.remove('hidden');
 }
 function calcVacBalance(id) {
-  // Returns { myTotal, theirTotal, iOwe, theyOwe } all in original currency of each item
-  // We work in ARS equivalent for balance
+  const v=S.vacations.find(function(x){return x.id===id;});
+  const vacCur=(v&&v.currency)||'ARS';
   var myTotal=0, balance=0;
   S.vacItems.filter(function(i){return i.vacation_id===id&&i.type==='expense';}).forEach(function(i){
-    const amt=toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);
+    // Convert amount to vacation currency
+    var amt=parseFloat(i.amount||0);
+    if(i.currency!==vacCur){
+      if(vacCur==='ARS') amt=toARS(amt,i.currency,i.tc||S.tc.oficial);
+      else amt=amt/(i.tc||S.tc.oficial||1); // to USD
+    }
     const isShared=i.shared===true||i.shared==='TRUE';
     const splitMe=parseFloat(i.split_me||100)/100;
-    if(!isShared) {
-      // Only counts for whoever loaded it — assume current user loaded all non-shared
+    if(!isShared){
       myTotal+=amt;
     } else {
-      const myShare=amt*splitMe;
-      const theirShare=amt*(1-splitMe);
-      myTotal+=myShare;
-      if(i.payer===S.user.uid) {
-        // I paid the full amount, they owe me their share
-        balance+=theirShare;
-      } else {
-        // They paid, I owe them my share
-        balance-=myShare;
-      }
+      myTotal+=amt*splitMe;
+      if(i.payer===S.user.uid) balance+=amt*(1-splitMe);
+      else balance-=amt*splitMe;
     }
   });
-  return { myTotal, balance };
+  return { myTotal, balance, currency: vacCur };
 }
 
 function renderVacDetail(id) {
+  const v=S.vacations.find(function(x){return x.id===id;});
+  const vacCur=(v&&v.currency)||'ARS';
   const items=S.vacItems.filter(function(i){return i.vacation_id===id;});
   const expenses=items.filter(function(i){return i.type==='expense';});
   const checks=items.filter(function(i){return i.type==='checklist';});
   const el=document.getElementById('vac-detail-content');if(!el) return;
 
-  // Balance block
   const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
   var balanceHTML='';
-  if(hasCouple) {
-    const {myTotal, balance}=calcVacBalance(id);
-    const balanceLabel=balance>0?'Te debe '+fmtMoney(balance):balance<0?'Le debes '+fmtMoney(Math.abs(balance)):'Estamos a mano';
+  if(hasCouple){
+    const {myTotal,balance,currency}=calcVacBalance(id);
+    const balanceLabel=balance>0?'Te debe '+fmtMoney(balance,currency):balance<0?'Le debes '+fmtMoney(Math.abs(balance),currency):'Estamos a mano';
     const balanceColor=balance>0?'var(--green)':balance<0?'var(--red)':'var(--text2)';
     balanceHTML='<div style="background:var(--surface2);border-radius:var(--radius);padding:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">'
       +'<div><div style="font-size:11px;color:var(--text2)">Mi gasto en el viaje</div>'
-      +'<div style="font-size:18px;font-weight:700">'+fmtMoney(myTotal)+'</div></div>'
+      +'<div style="font-size:18px;font-weight:700">'+fmtMoney(myTotal,currency)+'</div></div>'
       +'<div style="text-align:right"><div style="font-size:11px;color:var(--text2)">Balance con '+(S.user.partner_name||'pareja')+'</div>'
       +'<div style="font-size:16px;font-weight:700;color:'+balanceColor+'">'+balanceLabel+'</div></div>'
       +'</div>';
@@ -1375,8 +1373,16 @@ function renderVacDetail(id) {
   expenses.forEach(function(i){const d=i.day||1;if(!byDay[d])byDay[d]=[];byDay[d].push(i);});
   var html=balanceHTML;
   Object.keys(byDay).sort(function(a,b){return a-b;}).forEach(function(day){
-    const dayTotal=byDay[day].reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
-    html+='<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia '+day+' &mdash; '+fmtMoney(dayTotal)+'</div>'
+    // Day total in vacation currency
+    const dayTotal=byDay[day].reduce(function(s,i){
+      var amt=parseFloat(i.amount||0);
+      if(i.currency!==vacCur){
+        if(vacCur==='ARS') amt=toARS(amt,i.currency,i.tc||S.tc.oficial);
+        else amt=amt/(i.tc||S.tc.oficial||1);
+      }
+      return s+amt;
+    },0);
+    html+='<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia '+day+' &mdash; '+fmtMoney(dayTotal,vacCur)+'</div>'
       +byDay[day].map(function(i){
         const isShared=i.shared===true||i.shared==='TRUE';
         const sharedTag=isShared?(' <span style="font-size:10px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:8px">'+Math.round(parseFloat(i.split_me||50))+'% yo</span>'):'';
