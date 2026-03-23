@@ -512,7 +512,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <script>
 const WORKER = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-const GAS    = 'https://script.google.com/macros/s/AKfycbw4XjAOeidftHWM4TOgMXBY93i9rWa0hgBU5x3xVRPbvFFaC-EmaRPqMMWKW4w5lQ_-Bg/exec';
+const GAS    = 'https://script.google.com/macros/s/AKfycbycNYzIFyhrn5G5Yjg1AwET6O-rErf6QHye2d_OnOLUrCP0XGNAv9-ibW-6lS0fHnB8eA/exec';
 
 const S = {
   user: null, tx: [], accounts: [], categories: [],
@@ -1231,31 +1231,67 @@ function renderVacations() {
     const spent=items.reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
     const budget=toARS(parseFloat(v.budget||0),v.currency,S.tc.oficial);
     const pct=budget>0?Math.min(100,Math.round(spent/budget*100)):0;
-    return '<div class="card" style="cursor:pointer" onclick="showVacDetail(\''+v.id+'\')">'
-      +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+    return '<div class="card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer" onclick="showVacDetail(\''+v.id+'\')">'
       +'<div><div style="font-size:16px;font-weight:700">&#x2708; '+v.name+'</div>'
       +'<div style="font-size:12px;color:var(--text2);margin-top:2px">'+fmtDate(v.start_date)+' - '+fmtDate(v.end_date)+'</div></div>'
       +'<div style="text-align:right"><div style="font-size:13px;font-weight:700">'+fmtMoney(spent)+' / '+fmtMoney(parseFloat(v.budget||0),v.currency)+'</div>'
       +'<div style="font-size:11px;color:var(--text2)">'+pct+'% del presupuesto</div></div></div>'
-      +'<div class="vac-progress"><div class="vac-progress-bar" style="width:'+pct+'%;background:'+(pct>80?'var(--red)':'var(--accent)')+'"></div></div></div>';
+      +'<div class="vac-progress" onclick="showVacDetail(\''+v.id+'\')"><div class="vac-progress-bar" style="width:'+pct+'%;background:'+(pct>80?'var(--red)':'var(--accent)')+'"></div></div>'
+      +'<div style="display:flex;gap:6px;margin-top:10px">'
+      +'<button class="btn btn-secondary btn-sm" onclick="editVac(\''+v.id+'\')">&#x270F; Editar</button>'
+      +'<button class="btn btn-danger btn-sm" onclick="deleteVac(\''+v.id+'\')">&#x1F5D1; Eliminar</button>'
+      +'</div></div>';
   }).join('');
 }
 function showAddVacModal() {
+  S.editVacId = null;
   document.getElementById('vac-name').value='';document.getElementById('vac-start').value=today();
   document.getElementById('vac-end').value=today();document.getElementById('vac-budget').value='';
   document.getElementById('vac-currency').value='ARS';document.getElementById('modal-vac').classList.remove('hidden');
 }
+
+function editVac(id) {
+  const v=S.vacations.find(function(x){return x.id===id;});if(!v) return;
+  S.editVacId = id;
+  document.getElementById('vac-name').value=v.name||'';
+  document.getElementById('vac-start').value=v.start_date?String(v.start_date).slice(0,10):'';
+  document.getElementById('vac-end').value=v.end_date?String(v.end_date).slice(0,10):'';
+  document.getElementById('vac-budget').value=v.budget||'';
+  document.getElementById('vac-currency').value=v.currency||'ARS';
+  document.getElementById('modal-vac').classList.remove('hidden');
+}
+
+async function deleteVac(id) {
+  if(!confirm('Eliminar este viaje y todos sus gastos?')) return;
+  const r=await api('deleteVacation',{uid:S.user.uid, id});
+  if(r.ok){
+    S.vacations=S.vacations.filter(function(v){return v.id!==id;});
+    S.vacItems=S.vacItems.filter(function(i){return i.vacation_id!==id;});
+    showToast('Viaje eliminado','success');renderVacations();
+  } else showToast('Error al eliminar','error');
+}
 async function saveVac() {
   const name=document.getElementById('vac-name').value.trim();if(!name) return showToast('Agrega un nombre','error');
-  const vacData={ id:genId(), name,
+  const vacData={
+    id: S.editVacId || genId(), name,
     start_date:document.getElementById('vac-start').value,
-    end_date:  document.getElementById('vac-end').value,
-    budget:    parseFloat(document.getElementById('vac-budget').value)||0,
-    currency:  document.getElementById('vac-currency').value,
-    created_at:new Date().toISOString() };
-  const r=await api('addVacation',{ uid: S.user.uid, ...vacData });
+    end_date:   document.getElementById('vac-end').value,
+    budget:     parseFloat(document.getElementById('vac-budget').value)||0,
+    currency:   document.getElementById('vac-currency').value,
+    created_at: new Date().toISOString()
+  };
+  let r;
+  if(S.editVacId) {
+    r=await api('updateVacation',{uid:S.user.uid, vacation: vacData});
+    if(r.ok){const i=S.vacations.findIndex(function(v){return v.id===S.editVacId;});if(i>=0)S.vacations[i]={...S.vacations[i],...vacData};}
+  } else {
+    r=await api('addVacation',{ uid: S.user.uid, ...vacData });
+    if(r.ok) S.vacations.push({...vacData, uid: S.user.uid});
+  }
   if(!r.ok) return showToast('Error al guardar','error');
-  S.vacations.push(vacData);closeModal('modal-vac');showToast('Viaje guardado','success');renderVacations();
+  S.editVacId=null;
+  closeModal('modal-vac');showToast('Viaje guardado','success');renderVacations();
 }
 function showVacDetail(id) {
   S.currentVacId=id;
@@ -1274,7 +1310,7 @@ function renderVacDetail(id) {
   Object.keys(byDay).sort(function(a,b){return a-b;}).forEach(function(day){
     const dayTotal=byDay[day].reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
     html+='<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia '+day+' &mdash; '+fmtMoney(dayTotal)+'</div>'
-      +byDay[day].map(function(i){return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div><div class="tx-info"><div class="tx-desc">'+i.description+'</div><div class="tx-meta">'+i.currency+(i.shared?' &#x1F46B;':'')+'</div></div><div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div></div>';}).join('')+'</div>';
+      +byDay[day].map(function(i){return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div><div class="tx-info"><div class="tx-desc">'+i.description+'</div><div class="tx-meta">'+i.currency+(i.shared?' &#x1F46B;':'')+'</div></div><div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div><div style="display:flex;gap:4px"><button class="btn btn-secondary btn-sm" onclick="editVacItem(\''+i.id+'\')">&#x270F;</button><button class="btn btn-danger btn-sm" onclick="deleteVacItem(\''+i.id+'\')">&#x1F5D1;</button></div></div>';}).join('')+'</div>';
   });
   if(checks.length){
     html+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Checklist</div>'
@@ -1283,23 +1319,69 @@ function renderVacDetail(id) {
   el.innerHTML=html||'<div class="empty"><div>Sin items.</div></div>';
 }
 function showAddVacItemModal() {
-  document.getElementById('vac-item-type').value='expense';document.getElementById('vac-item-desc').value='';
-  document.getElementById('vac-item-amount').value='';document.getElementById('vac-item-currency').value='ARS';
-  document.getElementById('vac-item-day').value='1';document.getElementById('vac-item-expense-fields').classList.remove('hidden');
+  S.editVacItemId = null;
+  document.getElementById('vac-item-type').value='expense';
+  document.getElementById('vac-item-desc').value='';
+  document.getElementById('vac-item-amount').value='';
+  document.getElementById('vac-item-currency').value='ARS';
+  document.getElementById('vac-item-day').value='1';
+  document.getElementById('vac-item-expense-fields').classList.remove('hidden');
   const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
   document.getElementById('vac-item-shared-section').classList.toggle('hidden',!hasCouple);
   document.getElementById('vac-item-shared').checked=false;
+  document.getElementById('modal-vac-item').classList.remove('hidden');
+}
+
+function editVacItem(id) {
+  const item=S.vacItems.find(function(i){return i.id===id;});if(!item) return;
+  S.editVacItemId = id;
+  document.getElementById('vac-item-type').value=item.type||'expense';
+  document.getElementById('vac-item-desc').value=item.description||'';
+  document.getElementById('vac-item-amount').value=item.amount||'';
+  document.getElementById('vac-item-currency').value=item.currency||'ARS';
+  document.getElementById('vac-item-day').value=item.day||1;
+  document.getElementById('vac-item-expense-fields').classList.toggle('hidden',item.type!=='expense');
+  const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
+  document.getElementById('vac-item-shared-section').classList.toggle('hidden',!hasCouple);
+  document.getElementById('vac-item-shared').checked=item.shared===true||item.shared==='TRUE';
   document.getElementById('modal-vac-item').classList.remove('hidden');
 }
 function onVacItemTypeChange(){document.getElementById('vac-item-expense-fields').classList.toggle('hidden',document.getElementById('vac-item-type').value!=='expense');}
 async function saveVacItem() {
   const desc=document.getElementById('vac-item-desc').value.trim();if(!desc) return showToast('Agrega una descripcion','error');
   const type=document.getElementById('vac-item-type').value;
-  const itemData={id:genId(),vacation_id:S.currentVacId,type,description:desc,done:false,amount:type==='expense'?parseFloat(document.getElementById('vac-item-amount').value)||0:0,currency:type==='expense'?document.getElementById('vac-item-currency').value:'ARS',tc:S.tc.oficial,day:type==='expense'?parseInt(document.getElementById('vac-item-day').value)||1:0,shared:document.getElementById('vac-item-shared').checked,payer:'',split_me:100,created_at:new Date().toISOString()};
-  const r=await api('addVacationItem',{uid:S.user.uid,...itemData});
+  const itemData={
+    id: S.editVacItemId || genId(),
+    vacation_id:S.currentVacId, type, description:desc,
+    amount:  type==='expense'?parseFloat(document.getElementById('vac-item-amount').value)||0:0,
+    currency:type==='expense'?document.getElementById('vac-item-currency').value:'ARS',
+    tc:S.tc.oficial, day:type==='expense'?parseInt(document.getElementById('vac-item-day').value)||1:0,
+    shared:document.getElementById('vac-item-shared').checked, payer:'', split_me:100,
+    created_at:new Date().toISOString()
+  };
+  let r;
+  if(S.editVacItemId) {
+    r=await api('updateVacationItem',{id:itemData.id, done: false, ...itemData});
+    if(r.ok){const i=S.vacItems.findIndex(function(x){return x.id===S.editVacItemId;});if(i>=0)S.vacItems[i]=itemData;}
+  } else {
+    r=await api('addVacationItem',{uid:S.user.uid,...itemData});
+    if(r.ok) S.vacItems.push(itemData);
+  }
   if(!r.ok) return showToast('Error al guardar','error');
-  S.vacItems.push(itemData);closeModal('modal-vac-item');renderVacDetail(S.currentVacId);renderVacations();showToast('Guardado','success');
+  S.editVacItemId=null;
+  closeModal('modal-vac-item');renderVacDetail(S.currentVacId);renderVacations();showToast('Guardado','success');
 }
+async function deleteVacItem(id) {
+  if(!confirm('Eliminar este item?')) return;
+  const r=await api('deleteVacationItem',{uid:S.user.uid, id});
+  if(r.ok){
+    S.vacItems=S.vacItems.filter(function(i){return i.id!==id;});
+    showToast('Eliminado','success');
+    renderVacDetail(S.currentVacId);
+    renderVacations();
+  } else showToast('Error al eliminar','error');
+}
+
 async function toggleVacItem(id,done) {
   const item=S.vacItems.find(function(i){return i.id===id;});if(item)item.done=done;
   await api('updateVacationItem',{id,done});renderVacDetail(S.currentVacId);
