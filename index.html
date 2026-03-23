@@ -635,10 +635,6 @@ function showSkeletons() {
   if(r) r.innerHTML=skeletonBlocks(3);
   var tl=document.getElementById('tx-list');
   if(tl) tl.innerHTML=skeletonBlocks(4);
-  var cl=document.getElementById('cat-list-config');
-  if(cl) cl.innerHTML=skeletonBlocks(4);
-  var mc=document.getElementById('modos-content');
-  if(mc) mc.innerHTML=skeletonLines(4);
   var al=document.getElementById('accounts-list');
   if(al) al.innerHTML=skeletonBlocks(2);
 }
@@ -697,50 +693,61 @@ async function initApp() {
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app-screen').style.display='flex';
   fetchDolarOficial();
-  showScreen('dashboard');
-  showSkeletons();
-  await loadAll();
-  updateUI();
-}
-
-async function loadAll() {
-  const uid=S.user.uid;
-  const userR=await api('getUser',{uid});
-  if(userR.ok&&userR.user){
-    S.user={...S.user,...userR.user};
-    localStorage.setItem('session',JSON.stringify(S.user));
-  }
+  // Set UI from cached session immediately
+  const ini=((S.user.name||S.user.email||'?')[0]).toUpperCase();
+  document.getElementById('user-avatar').textContent=ini;
+  document.getElementById('config-avatar').textContent=ini;
+  document.getElementById('config-name').textContent=S.user.name||'';
+  document.getElementById('config-email').textContent=S.user.email||'';
   const coupleOn=S.user.mode==='couple'||S.user.mode==='both';
   const vacOn=S.user.mode==='vacation'||S.user.mode==='both';
   document.getElementById('toggle-couple').checked=coupleOn;
   document.getElementById('toggle-vac').checked=vacOn;
   document.getElementById('nav-couple').classList.toggle('hidden',!coupleOn);
   document.getElementById('nav-vac').classList.toggle('hidden',!vacOn);
-  const ini=((S.user.name||S.user.email||'?')[0]).toUpperCase();
-  document.getElementById('user-avatar').textContent=ini;
-  document.getElementById('config-avatar').textContent=ini;
-  document.getElementById('config-name').textContent=S.user.name||'';
-  document.getElementById('config-email').textContent=S.user.email||'';
+  showScreen('dashboard');
+  // Load all data in background, then update UI
+  loadAll().then(function(){ updateUI(); });
+}
 
-  const [catR,txR,accR,vacR]=await Promise.all([
+async function loadAll() {
+  const uid=S.user.uid;
+  // All main calls in parallel
+  const [userR,catR,txR,accR,vacR]=await Promise.all([
+    api('getUser',{uid}),
     api('getCategories',{uid}),
     api('getTransactions',{uid}),
     api('getAccounts',{uid}),
     api('getVacations',{uid})
   ]);
+  if(userR.ok&&userR.user){
+    S.user={...S.user,...userR.user};
+    localStorage.setItem('session',JSON.stringify(S.user));
+    const ini=((S.user.name||S.user.email||'?')[0]).toUpperCase();
+    document.getElementById('user-avatar').textContent=ini;
+    document.getElementById('config-avatar').textContent=ini;
+    document.getElementById('config-name').textContent=S.user.name||'';
+    document.getElementById('config-email').textContent=S.user.email||'';
+    const coupleOn=S.user.mode==='couple'||S.user.mode==='both';
+    const vacOn=S.user.mode==='vacation'||S.user.mode==='both';
+    document.getElementById('toggle-couple').checked=coupleOn;
+    document.getElementById('toggle-vac').checked=vacOn;
+    document.getElementById('nav-couple').classList.toggle('hidden',!coupleOn);
+    document.getElementById('nav-vac').classList.toggle('hidden',!vacOn);
+  }
   S.categories=(catR.ok&&catR.data)?catR.data:[];
   S.tx        =(txR.ok &&txR.data) ?txR.data :[];
   S.accounts  =(accR.ok&&accR.data)?accR.data:[];
   S.vacations =(vacR.ok&&vacR.data)?vacR.data:[];
+  // Vacation items
   S.vacItems=[];
   for(var i=0;i<S.vacations.length;i++){
     const r=await api('getVacationItems',{vacation_id:S.vacations[i].id});
     if(r.ok&&r.data) S.vacItems=S.vacItems.concat(r.data);
   }
-  try {
-    const reqR=await api('getPendingRequests',{uid});
-    S.pendingRequests=(reqR.ok&&reqR.data)?reqR.data:[];
-  } catch(e){ S.pendingRequests=[]; }
+  // Pending couple requests
+  const reqR=await api('getPendingRequests',{uid});
+  S.pendingRequests=(reqR.ok&&reqR.data)?reqR.data:[];
 }
 
 // ─── SCREENS ──────────────────────────────────────
@@ -1150,8 +1157,7 @@ async function saveCat() {
   if(!r.ok) return showToast('Error al guardar','error');
   await saveCatOrder();closeModal('modal-cat');showToast('Categoria guardada','success');renderCatConfig();
   if(S.fromCatPicker){S.fromCatPicker=false;showAddTxModal({type:catData.type,category_id:newId});selectCat(newId);}
-}
-async function deleteCat(id) {
+}async function deleteCat(id) {
   if(!confirm('Eliminar categoria?')) return;
   const r=await api('deleteCategory',{uid:S.user.uid,id});
   if(r.ok){S.categories=S.categories.filter(function(c){return c.id!==id;});showToast('Eliminada','success');renderCatConfig();}
