@@ -1228,14 +1228,21 @@ function renderVacations() {
   if(!S.vacations.length){el.innerHTML='<div class="empty"><div class="empty-icon">&#x2708;</div><div>Sin viajes</div></div>';return;}
   el.innerHTML=S.vacations.map(function(v){
     const items=S.vacItems.filter(function(i){return i.vacation_id===v.id&&i.type==='expense';});
-    const spent=items.reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
-    const budget=toARS(parseFloat(v.budget||0),v.currency,S.tc.oficial);
+    const budgetCur=v.currency||'ARS';
+    const spent=items.reduce(function(s,i){
+      // Convert each item to the vacation's budget currency
+      if(i.currency===budgetCur) return s+parseFloat(i.amount||0);
+      if(budgetCur==='ARS') return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);
+      // budget is USD, item is ARS → convert to USD
+      return s+(parseFloat(i.amount||0)/(i.tc||S.tc.oficial||1));
+    },0);
+    const budget=parseFloat(v.budget||0);
     const pct=budget>0?Math.min(100,Math.round(spent/budget*100)):0;
     return '<div class="card">'
       +'<div style="display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer" onclick="showVacDetail(\''+v.id+'\')">'
       +'<div><div style="font-size:16px;font-weight:700">&#x2708; '+v.name+'</div>'
       +'<div style="font-size:12px;color:var(--text2);margin-top:2px">'+fmtDate(v.start_date)+' - '+fmtDate(v.end_date)+'</div></div>'
-      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700">'+fmtMoney(spent)+' / '+fmtMoney(parseFloat(v.budget||0),v.currency)+'</div>'
+      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700">'+fmtMoney(spent,budgetCur)+' / '+fmtMoney(budget,budgetCur)+'</div>'
       +'<div style="font-size:11px;color:var(--text2)">'+pct+'% del presupuesto</div></div></div>'
       +'<div class="vac-progress" onclick="showVacDetail(\''+v.id+'\')"><div class="vac-progress-bar" style="width:'+pct+'%;background:'+(pct>80?'var(--red)':'var(--accent)')+'"></div></div>'
       +'<div style="display:flex;gap:6px;margin-top:10px">'
