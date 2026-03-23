@@ -123,11 +123,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .section-title{font-size:16px;font-weight:700}
 .empty{text-align:center;padding:40px 20px;color:var(--text2)}
 .empty-icon{font-size:48px;margin-bottom:12px}
-/* SKELETON */
-.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:6px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.skel-line{height:14px;margin-bottom:8px}
-.skel-block{height:60px;margin-bottom:10px;border-radius:var(--radius)}
 @media(min-width:600px){
   .content{padding:24px}
   .summary-grid{grid-template-columns:repeat(4,1fr)}
@@ -276,23 +271,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       </div>
       <div class="card">
         <div class="card-title">Modos</div>
-        <div id="modos-content">
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
-              <div>
-                <div style="font-weight:600">Modo pareja</div>
-                <div style="font-size:12px;color:var(--text2)">Vincula tu cuenta con la de tu pareja</div>
-              </div>
-              <input type="checkbox" id="toggle-couple" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer">
-            </label>
-            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
-              <div>
-                <div style="font-weight:600">Modo vacaciones</div>
-                <div style="font-size:12px;color:var(--text2)">Activa el seguimiento de viajes</div>
-              </div>
-              <input type="checkbox" id="toggle-vac" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer">
-            </label>
-          </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <div>
+              <div style="font-weight:600">Modo pareja</div>
+              <div style="font-size:12px;color:var(--text2)">Vincula tu cuenta con la de tu pareja</div>
+            </div>
+            <input type="checkbox" id="toggle-couple" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer">
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <div>
+              <div style="font-weight:600">Modo vacaciones</div>
+              <div style="font-size:12px;color:var(--text2)">Activa el seguimiento de viajes</div>
+            </div>
+            <input type="checkbox" id="toggle-vac" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer">
+          </label>
         </div>
       </div>
       <div class="card">
@@ -343,7 +336,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="form-group"><label>Monto</label><input type="number" id="tx-amount" placeholder="0"></div>
       <div class="form-group">
         <label>Moneda</label>
-        <select id="tx-currency" onchange="onCurrencyChange()"><option value="ARS">ARS</option><option value="USD">USD</option></select>
+        <select id="tx-currency" onchange="onCurrencyChange()">
+          <option value="ARS">ARS</option>
+          <option value="USD">USD</option>
+        </select>
       </div>
     </div>
     <div class="form-group hidden" id="tc-group">
@@ -355,7 +351,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="form-group"><label>Categoria</label><div class="cat-picker" id="tx-cat-picker"></div></div>
     <div class="form-group">
       <label>Tags (Enter para agregar)</label>
-      <div class="tags-wrap" id="tx-tags-wrap"><input class="tags-input" id="tx-tags-input" placeholder="+ tag" onkeydown="handleTagKey(event)"></div>
+      <div class="tags-wrap" id="tx-tags-wrap">
+        <input class="tags-input" id="tx-tags-input" placeholder="+ tag" onkeydown="handleTagKey(event)">
+      </div>
     </div>
     <div class="form-group">
       <label>Nota (opcional)</label>
@@ -426,7 +424,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="form-group"><label>Nombre</label><input type="text" id="cat-name" placeholder="Ej: Salud"></div>
     <div class="form-group"><label>Emoji</label><input type="text" id="cat-icon" value="&#x2B50;" maxlength="4"></div>
     <div class="form-group"><label>Color</label><input type="color" id="cat-color" value="#7c6ff7" style="width:60px;height:36px;padding:2px;border:none;border-radius:6px;cursor:pointer;background:none"></div>
-    <div class="form-group"><label>Tipo</label><select id="cat-type"><option value="expense">Gasto</option><option value="income">Ingreso</option></select></div>
+    <div class="form-group">
+      <label>Tipo</label>
+      <select id="cat-type"><option value="expense">Gasto</option><option value="income">Ingreso</option></select>
+    </div>
     <button class="btn btn-primary btn-full" onclick="saveCat()">Guardar</button>
   </div>
 </div>
@@ -497,7 +498,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </div>
     <div class="form-group">
       <label>Tipo</label>
-      <select id="vac-item-type" onchange="onVacItemTypeChange()"><option value="expense">Gasto</option><option value="checklist">Checklist</option></select>
+      <select id="vac-item-type" onchange="onVacItemTypeChange()">
+        <option value="expense">Gasto</option>
+        <option value="checklist">Checklist</option>
+      </select>
     </div>
     <div class="form-group"><label>Descripcion</label><input type="text" id="vac-item-desc" placeholder="Ej: Hotel"></div>
     <div id="vac-item-expense-fields">
@@ -518,29 +522,34 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <script>
+// ─── CONFIG ───────────────────────────────────────
 const WORKER = 'https://finanzas-proxy.eugenialoberto.workers.dev';
 const GAS    = 'https://script.google.com/macros/s/AKfycbxmlXjrekyLNmSXFJGTChlH48xuDjOhoaL1iHRtJkat1vyXhJDdrkpI7jis4eITIX_idw/exec';
 
+// ─── STATE ────────────────────────────────────────
 const S = {
   user: null, tx: [], accounts: [], categories: [],
-  vacations: [], vacItems: [], pendingRequests: [],
-  tc: { oficial: 0 }, txFilter: 'all',
+  vacations: [], vacItems: [],
+  tc: { oficial: 0 },
+  txFilter: 'all',
   editTxId: null, editAccId: null, editCatId: null,
   currentVacId: null, fromCatPicker: false,
-  txTags: [], _txType: 'expense', _selectedCatId: '',
-  loading: false
+  txTags: [], _txType: 'expense', _selectedCatId: ''
 };
 
 // ─── API ──────────────────────────────────────────
 async function api(action, body) {
   body = body || {};
+  // Remap action names to GAS switch names
   const actionMap = { linkCouple: 'linkPartner' };
   const gasAction = actionMap[action] || action;
+
+  // Wrap payload in the key GAS expects
   const wrapMap = {
-    addTransaction:'transaction', updateTransaction:'transaction',
-    addAccount:'account', updateAccount:'account',
-    addCategory:'category', updateCategory:'category',
-    addVacation:'vacation', addVacationItem:'item'
+    addTransaction: 'transaction', updateTransaction: 'transaction',
+    addAccount: 'account',         updateAccount: 'account',
+    addCategory: 'category',       updateCategory: 'category',
+    addVacation: 'vacation',       addVacationItem: 'item'
   };
   const wrapKey = wrapMap[action];
   let payload;
@@ -551,303 +560,324 @@ async function api(action, body) {
   } else {
     payload = { action: gasAction, ...body };
   }
+
   try {
     const r = await fetch(WORKER, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Target-URL':GAS},
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Target-URL': GAS },
       body: JSON.stringify(payload)
     });
     const d = await r.json();
-    if (d.error) return { ok:false, error:d.error };
-    if (d.transactions !== undefined) return { ok:true, data:d.transactions };
-    if (d.categories   !== undefined) return { ok:true, data:d.categories };
-    if (d.accounts     !== undefined) return { ok:true, data:d.accounts };
-    if (d.vacations    !== undefined) return { ok:true, data:d.vacations };
-    if (d.items        !== undefined) return { ok:true, data:d.items };
-    if (d.requests     !== undefined) return { ok:true, data:d.requests };
-    if (d.user         !== undefined) return { ok:true, user:d.user };
-    return { ok: d.ok !== undefined ? d.ok : true, ...d };
+    if (d.error) return { ok: false, error: d.error };
+    // Normalise response key to always be { ok, data }
+    if (d.transactions !== undefined) return { ok: true, data: d.transactions };
+    if (d.categories   !== undefined) return { ok: true, data: d.categories };
+    if (d.accounts     !== undefined) return { ok: true, data: d.accounts };
+    if (d.vacations    !== undefined) return { ok: true, data: d.vacations };
+    if (d.items        !== undefined) return { ok: true, data: d.items };
+    if (d.requests     !== undefined) return { ok: true, data: d.requests };
+    if (d.user         !== undefined) return { ok: true, user: d.user };
+    return { ok: true, ...d };
   } catch(e) {
     console.error('API error:', action, e);
-    return { ok:false, error:e.message };
+    return { ok: false, error: e.message };
   }
 }
 
 // ─── UTILS ────────────────────────────────────────
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
 function fmtMoney(n, cur) {
   cur = cur || 'ARS';
-  const abs = Math.abs(n||0), sign = (n||0)<0?'-':'';
-  if (cur==='USD') return sign+'U$S '+abs.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  return sign+'$'+abs.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0});
+  const abs = Math.abs(n || 0);
+  const sign = (n || 0) < 0 ? '-' : '';
+  if (cur === 'USD') return sign + 'U$S ' + abs.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  return sign + '$' + abs.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
+
 function parseDate(d) {
   if (!d) return null;
   if (d instanceof Date) return d;
   const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (m) return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
+  if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
   return new Date(d);
 }
-function fmtDate(d) {
-  const dt=parseDate(d);
-  if (!dt||isNaN(dt)) return String(d||'');
-  return dt.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
-}
-function today() {
-  const n=new Date();
-  return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
-}
-function toARS(amount,currency,tc) {
-  if (currency==='USD') return (amount||0)*(tc||S.tc.oficial||1);
-  return amount||0;
-}
-function isSaving(accId) {
-  const a=S.accounts.find(function(x){return x.id===accId;});
-  return a&&(a.type==='saving'||a.type==='saving_cash');
-}
-function accTypeLabel(t) {
-  return {bank:'Banco',wallet:'Billetera virtual',cash:'Efectivo',saving:'Ahorro',saving_cash:'Ahorro en efectivo'}[t]||t;
-}
-function getCat(id) {
-  return S.categories.find(function(c){return c.id===id;})||{icon:'?',name:'Sin cat',color:'#666'};
-}
-function showToast(msg,type) {
-  let t=document.getElementById('_toast');
-  if (!t){t=document.createElement('div');t.id='_toast';t.className='toast';document.body.appendChild(t);}
-  t.textContent=msg; t.className='toast '+(type||''); t.style.opacity='1';
-  clearTimeout(t._t); t._t=setTimeout(function(){t.style.opacity='0';},3000);
-}
-function closeModal(id){document.getElementById(id).classList.add('hidden');}
 
-// Skeleton helpers
-function skeletonLines(n) {
-  var h='';
-  for(var i=0;i<n;i++) h+='<div class="skeleton skel-line" style="width:'+(60+Math.random()*35)+'%"></div>';
-  return h;
+function fmtDate(d) {
+  const dt = parseDate(d);
+  if (!dt || isNaN(dt)) return String(d || '');
+  return dt.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
 }
-function skeletonBlocks(n) {
-  var h='';
-  for(var i=0;i<n;i++) h+='<div class="skeleton skel-block"></div>';
-  return h;
+
+function today() {
+  const n = new Date();
+  return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
 }
-function showSkeletons() {
-  var r=document.getElementById('dash-recent');
-  if(r) r.innerHTML=skeletonBlocks(3);
-  var tl=document.getElementById('tx-list');
-  if(tl) tl.innerHTML=skeletonBlocks(4);
-  var al=document.getElementById('accounts-list');
-  if(al) al.innerHTML=skeletonBlocks(2);
+
+function toARS(amount, currency, tc) {
+  if (currency === 'USD') return (amount || 0) * (tc || S.tc.oficial || 1);
+  return amount || 0;
 }
+
+function isSaving(accId) {
+  const a = S.accounts.find(function(x) { return x.id === accId; });
+  return a && (a.type === 'saving' || a.type === 'saving_cash');
+}
+
+function accTypeLabel(t) {
+  return { bank:'Banco', wallet:'Billetera virtual', cash:'Efectivo', saving:'Ahorro', saving_cash:'Ahorro en efectivo' }[t] || t;
+}
+
+function getCat(id) {
+  return S.categories.find(function(c) { return c.id === id; }) || { icon:'?', name:'Sin cat', color:'#666' };
+}
+
+function showToast(msg, type) {
+  let t = document.getElementById('_toast');
+  if (!t) { t = document.createElement('div'); t.id = '_toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.style.opacity = '1';
+  clearTimeout(t._t);
+  t._t = setTimeout(function() { t.style.opacity = '0'; }, 3000);
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
 // ─── DOLAR ────────────────────────────────────────
 async function fetchDolarOficial() {
   try {
-    const r=await fetch('https://dolarapi.com/v1/dolares/oficial');
-    const d=await r.json();
-    if(d&&d.compra){S.tc.oficial=d.compra;localStorage.setItem('tc_oficial',String(d.compra));updateTcBadge();return;}
-  } catch(e){}
-  const saved=localStorage.getItem('tc_oficial');
-  if(saved){S.tc.oficial=parseFloat(saved);updateTcBadge();}
+    const r = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const d = await r.json();
+    if (d && d.compra) {
+      S.tc.oficial = d.compra;
+      localStorage.setItem('tc_oficial', String(d.compra));
+      updateTcBadge();
+      return;
+    }
+  } catch(e) {}
+  const saved = localStorage.getItem('tc_oficial');
+  if (saved) { S.tc.oficial = parseFloat(saved); updateTcBadge(); }
 }
+
 function updateTcBadge() {
-  const el=document.getElementById('tc-badge');
-  if(el&&S.tc.oficial) el.textContent='USD $'+S.tc.oficial.toLocaleString('es-AR');
+  const el = document.getElementById('tc-badge');
+  if (el && S.tc.oficial) el.textContent = 'USD $' + S.tc.oficial.toLocaleString('es-AR');
 }
 
 // ─── AUTH ─────────────────────────────────────────
 function switchAuthTab(tab) {
-  document.getElementById('tab-login').classList.toggle('active',tab==='login');
-  document.getElementById('tab-register').classList.toggle('active',tab==='register');
-  document.getElementById('form-login').classList.toggle('hidden',tab!=='login');
-  document.getElementById('form-register').classList.toggle('hidden',tab!=='register');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('form-login').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('form-register').classList.toggle('hidden', tab !== 'register');
 }
+
 async function doLogin() {
-  const email=document.getElementById('login-email').value.trim();
-  const pass=document.getElementById('login-pass').value;
-  if(!email||!pass) return showToast('Completa todos los campos','error');
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) return showToast('Completa todos los campos', 'error');
   showToast('Ingresando...');
-  const r=await api('login',{email,password:pass});
-  if(r.ok&&r.user){S.user=r.user;localStorage.setItem('session',JSON.stringify(r.user));await initApp();}
-  else showToast(r.error||'Error al ingresar','error');
+  const r = await api('login', { email, password: pass });
+  if (r.ok && r.user) { S.user = r.user; localStorage.setItem('session', JSON.stringify(r.user)); await initApp(); }
+  else showToast(r.error || 'Error al ingresar', 'error');
 }
+
 async function doRegister() {
-  const name=document.getElementById('reg-name').value.trim();
-  const email=document.getElementById('reg-email').value.trim();
-  const pass=document.getElementById('reg-pass').value;
-  if(!name||!email||!pass) return showToast('Completa todos los campos','error');
-  if(pass.length<6) return showToast('Minimo 6 caracteres','error');
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  if (!name || !email || !pass) return showToast('Completa todos los campos', 'error');
+  if (pass.length < 6) return showToast('Minimo 6 caracteres', 'error');
   showToast('Creando cuenta...');
-  const r=await api('register',{name,email,password:pass});
-  if(r.ok&&r.user){S.user=r.user;localStorage.setItem('session',JSON.stringify(r.user));await initApp();}
-  else showToast(r.error||'Error al registrarse','error');
+  const r = await api('register', { name, email, password: pass });
+  if (r.ok && r.user) { S.user = r.user; localStorage.setItem('session', JSON.stringify(r.user)); await initApp(); }
+  else showToast(r.error || 'Error al registrarse', 'error');
 }
+
 function doLogout() {
   localStorage.removeItem('session');
-  Object.assign(S,{user:null,tx:[],accounts:[],categories:[],vacations:[],vacItems:[],pendingRequests:[]});
-  document.getElementById('auth-screen').style.display='flex';
-  document.getElementById('app-screen').style.display='none';
+  Object.assign(S, { user:null, tx:[], accounts:[], categories:[], vacations:[], vacItems:[] });
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app-screen').style.display = 'none';
 }
 
 // ─── INIT ─────────────────────────────────────────
 async function initApp() {
-  document.getElementById('auth-screen').style.display='none';
-  document.getElementById('app-screen').style.display='flex';
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'flex';
   fetchDolarOficial();
-  // Set UI from cached session immediately
-  const ini=((S.user.name||S.user.email||'?')[0]).toUpperCase();
-  document.getElementById('user-avatar').textContent=ini;
-  document.getElementById('config-avatar').textContent=ini;
-  document.getElementById('config-name').textContent=S.user.name||'';
-  document.getElementById('config-email').textContent=S.user.email||'';
-  const coupleOn=S.user.mode==='couple'||S.user.mode==='both';
-  const vacOn=S.user.mode==='vacation'||S.user.mode==='both';
-  document.getElementById('toggle-couple').checked=coupleOn;
-  document.getElementById('toggle-vac').checked=vacOn;
-  document.getElementById('nav-couple').classList.toggle('hidden',!coupleOn);
-  document.getElementById('nav-vac').classList.toggle('hidden',!vacOn);
+  await loadAll();
+  updateUI();
+  const ini = ((S.user.name || S.user.email || '?')[0]).toUpperCase();
+  document.getElementById('user-avatar').textContent  = ini;
+  document.getElementById('config-avatar').textContent = ini;
+  document.getElementById('config-name').textContent  = S.user.name  || '';
+  document.getElementById('config-email').textContent = S.user.email || '';
+  const coupleOn = S.user.mode === 'couple' || S.user.mode === 'both';
+  const vacOn    = S.user.mode === 'vacation' || S.user.mode === 'both';
+  document.getElementById('toggle-couple').checked = coupleOn;
+  document.getElementById('toggle-vac').checked    = vacOn;
+  document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
+  document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
   showScreen('dashboard');
-  // Load all data in background, then update UI
-  loadAll().then(function(){ updateUI(); });
 }
 
 async function loadAll() {
-  const uid=S.user.uid;
-  // All main calls in parallel
-  const [userR,catR,txR,accR,vacR]=await Promise.all([
-    api('getUser',{uid}),
-    api('getCategories',{uid}),
-    api('getTransactions',{uid}),
-    api('getAccounts',{uid}),
-    api('getVacations',{uid})
+  const uid = S.user.uid;
+  // Refresh user data from backend (partner_uid puede haber cambiado)
+  const userR = await api('getUser', { uid });
+  if (userR.ok && userR.user) {
+    S.user = { ...S.user, ...userR.user };
+    localStorage.setItem('session', JSON.stringify(S.user));
+  }
+  const coupleOn = S.user.mode === 'couple' || S.user.mode === 'both';
+  const vacOn    = S.user.mode === 'vacation' || S.user.mode === 'both';
+  document.getElementById('toggle-couple').checked = coupleOn;
+  document.getElementById('toggle-vac').checked    = vacOn;
+  document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
+  document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
+  // Update avatar/profile in case name changed
+  const ini = ((S.user.name || S.user.email || '?')[0]).toUpperCase();
+  document.getElementById('user-avatar').textContent   = ini;
+  document.getElementById('config-avatar').textContent = ini;
+  document.getElementById('config-name').textContent   = S.user.name  || '';
+  document.getElementById('config-email').textContent  = S.user.email || '';
+  const [catR, txR, accR, vacR] = await Promise.all([
+    api('getCategories',   { uid }),
+    api('getTransactions', { uid }),
+    api('getAccounts',     { uid }),
+    api('getVacations',    { uid })
   ]);
-  if(userR.ok&&userR.user){
-    S.user={...S.user,...userR.user};
-    localStorage.setItem('session',JSON.stringify(S.user));
-    const ini=((S.user.name||S.user.email||'?')[0]).toUpperCase();
-    document.getElementById('user-avatar').textContent=ini;
-    document.getElementById('config-avatar').textContent=ini;
-    document.getElementById('config-name').textContent=S.user.name||'';
-    document.getElementById('config-email').textContent=S.user.email||'';
-    const coupleOn=S.user.mode==='couple'||S.user.mode==='both';
-    const vacOn=S.user.mode==='vacation'||S.user.mode==='both';
-    document.getElementById('toggle-couple').checked=coupleOn;
-    document.getElementById('toggle-vac').checked=vacOn;
-    document.getElementById('nav-couple').classList.toggle('hidden',!coupleOn);
-    document.getElementById('nav-vac').classList.toggle('hidden',!vacOn);
+  S.categories = (catR.ok && catR.data) ? catR.data : [];
+  S.tx         = (txR.ok  && txR.data)  ? txR.data  : [];
+  S.accounts   = (accR.ok && accR.data) ? accR.data : [];
+  S.vacations  = (vacR.ok && vacR.data) ? vacR.data : [];
+  // Load vacation items per vacation
+  S.vacItems = [];
+  for (var i = 0; i < S.vacations.length; i++) {
+    const r = await api('getVacationItems', { vacation_id: S.vacations[i].id });
+    if (r.ok && r.data) S.vacItems = S.vacItems.concat(r.data);
   }
-  S.categories=(catR.ok&&catR.data)?catR.data:[];
-  S.tx        =(txR.ok &&txR.data) ?txR.data :[];
-  S.accounts  =(accR.ok&&accR.data)?accR.data:[];
-  S.vacations =(vacR.ok&&vacR.data)?vacR.data:[];
-  // Vacation items
-  S.vacItems=[];
-  for(var i=0;i<S.vacations.length;i++){
-    const r=await api('getVacationItems',{vacation_id:S.vacations[i].id});
-    if(r.ok&&r.data) S.vacItems=S.vacItems.concat(r.data);
-  }
-  // Pending couple requests
-  const reqR=await api('getPendingRequests',{uid});
-  S.pendingRequests=(reqR.ok&&reqR.data)?reqR.data:[];
+  // Check pending couple requests
+  const reqR = await api('getPendingRequests', { uid });
+  S.pendingRequests = (reqR.ok && reqR.data) ? reqR.data : [];
 }
 
 // ─── SCREENS ──────────────────────────────────────
 function updateUI() {
-  renderDashboard(); renderTxList(); renderAccounts();
-  renderCatConfig(); renderCouple(); renderVacations();
+  renderDashboard();
+  renderTxList();
+  renderAccounts();
+  renderCatConfig();
+  renderCouple();
+  renderVacations();
   renderPendingRequests();
 }
+
 function showScreen(name) {
-  ['dashboard','tx','accounts','couple','vac','config'].forEach(function(s){
-    document.getElementById('screen-'+s).classList.toggle('hidden',s!==name);
-    const nav=document.getElementById('nav-'+s);
-    if(nav) nav.classList.toggle('active',s===name);
+  ['dashboard','tx','accounts','couple','vac','config'].forEach(function(s) {
+    document.getElementById('screen-' + s).classList.toggle('hidden', s !== name);
+    const nav = document.getElementById('nav-' + s);
+    if (nav) nav.classList.toggle('active', s === name);
   });
-  document.getElementById('topbar-title').textContent={dashboard:'Inicio',tx:'Movimientos',accounts:'Cuentas',couple:'Pareja',vac:'Viajes',config:'Configuracion'}[name]||name;
-  document.getElementById('fab-btn').classList.toggle('hidden',['accounts','couple','config'].includes(name));
+  document.getElementById('topbar-title').textContent = { dashboard:'Inicio', tx:'Movimientos', accounts:'Cuentas', couple:'Pareja', vac:'Viajes', config:'Configuracion' }[name] || name;
+  document.getElementById('fab-btn').classList.toggle('hidden', ['accounts','couple','config'].includes(name));
 }
 
 // ─── DASHBOARD ────────────────────────────────────
 function renderDashboard() {
-  const now=new Date(),curM=now.getMonth(),curY=now.getFullYear();
-  var income=0,expense=0,savedThisMonth=0;
-  S.tx.forEach(function(t){
-    const d=parseDate(t.date);
-    if(!d||isNaN(d)||d.getMonth()!==curM||d.getFullYear()!==curY) return;
-    if(t.transfer_to){if(isSaving(t.transfer_to))savedThisMonth+=toARS(parseFloat(t.amount||0),t.currency,t.tc||S.tc.oficial);return;}
-    if(t.transfer_from) return;
-    if(isSaving(t.account_id)) return;
-    const amt=toARS(parseFloat(t.amount||0),t.currency,t.tc||S.tc.oficial);
-    if(t.type==='income') income+=amt; else expense+=amt;
+  const now = new Date(), curM = now.getMonth(), curY = now.getFullYear();
+  var income = 0, expense = 0, savedThisMonth = 0;
+  S.tx.forEach(function(t) {
+    const d = parseDate(t.date);
+    if (!d || isNaN(d) || d.getMonth() !== curM || d.getFullYear() !== curY) return;
+    if (t.transfer_to) {
+      if (isSaving(t.transfer_to)) savedThisMonth += toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
+      return;
+    }
+    if (t.transfer_from) return;
+    if (isSaving(t.account_id)) return;
+    const amt = toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
+    if (t.type === 'income') income += amt; else expense += amt;
   });
-  document.getElementById('dash-balance').textContent=fmtMoney(income-expense);
-  document.getElementById('dash-income').textContent=fmtMoney(income);
-  document.getElementById('dash-expense').textContent=fmtMoney(expense);
-  const savBlock=document.getElementById('dash-savings-block');
-  savBlock.classList.toggle('hidden',savedThisMonth<=0);
-  if(savedThisMonth>0) document.getElementById('dash-savings-val').textContent=fmtMoney(savedThisMonth);
-  const catTotals={};
-  S.tx.forEach(function(t){
-    const d=parseDate(t.date);
-    if(!d||isNaN(d)||d.getMonth()!==curM||d.getFullYear()!==curY) return;
-    if(t.type!=='expense'||t.transfer_to||t.transfer_from||isSaving(t.account_id)) return;
-    const amt=toARS(parseFloat(t.amount||0),t.currency,t.tc||S.tc.oficial);
-    catTotals[t.category_id]=(catTotals[t.category_id]||0)+amt;
+  document.getElementById('dash-balance').textContent  = fmtMoney(income - expense);
+  document.getElementById('dash-income').textContent   = fmtMoney(income);
+  document.getElementById('dash-expense').textContent  = fmtMoney(expense);
+  const savBlock = document.getElementById('dash-savings-block');
+  savBlock.classList.toggle('hidden', savedThisMonth <= 0);
+  if (savedThisMonth > 0) document.getElementById('dash-savings-val').textContent = fmtMoney(savedThisMonth);
+  // Pie chart
+  const catTotals = {};
+  S.tx.forEach(function(t) {
+    const d = parseDate(t.date);
+    if (!d || isNaN(d) || d.getMonth() !== curM || d.getFullYear() !== curY) return;
+    if (t.type !== 'expense' || t.transfer_to || t.transfer_from || isSaving(t.account_id)) return;
+    const amt = toARS(parseFloat(t.amount||0), t.currency, t.tc||S.tc.oficial);
+    catTotals[t.category_id] = (catTotals[t.category_id]||0) + amt;
   });
   drawPie(catTotals);
-  const recent=S.tx.slice().sort(function(a,b){return (parseDate(b.date)||0)-(parseDate(a.date)||0);}).slice(0,5);
-  document.getElementById('dash-recent').innerHTML=recent.length
-    ?recent.map(function(t){return txItemHTML(t,false);}).join('')
-    :'<div class="empty"><div>Sin movimientos</div></div>';
+  // Recent
+  const recent = S.tx.slice().sort(function(a,b){ return (parseDate(b.date)||0)-(parseDate(a.date)||0); }).slice(0,5);
+  document.getElementById('dash-recent').innerHTML = recent.length
+    ? recent.map(function(t){ return txItemHTML(t, false); }).join('')
+    : '<div class="empty"><div>Sin movimientos</div></div>';
 }
 
 function drawPie(catTotals) {
-  const canvas=document.getElementById('pie-chart');
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.offsetWidth||300;
-  canvas.width=W;canvas.height=180;ctx.clearRect(0,0,W,180);
-  const entries=Object.entries(catTotals).filter(function(e){return e[1]>0;});
-  if(!entries.length){ctx.fillStyle='#9090a8';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Sin gastos este mes',W/2,90);return;}
-  const total=entries.reduce(function(s,e){return s+e[1];},0);
-  const cx=80,cy=90,r=70;var angle=-Math.PI/2;
-  entries.forEach(function(e){
-    const cat=getCat(e[0]),slice=(e[1]/total)*Math.PI*2;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,angle,angle+slice);ctx.closePath();
-    ctx.fillStyle=cat.color||'#7c6ff7';ctx.fill();angle+=slice;
+  const canvas = document.getElementById('pie-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 300;
+  canvas.width = W; canvas.height = 180;
+  ctx.clearRect(0,0,W,180);
+  const entries = Object.entries(catTotals).filter(function(e){ return e[1] > 0; });
+  if (!entries.length) {
+    ctx.fillStyle='#9090a8'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Sin gastos este mes', W/2, 90); return;
+  }
+  const total = entries.reduce(function(s,e){ return s+e[1]; }, 0);
+  const cx=80, cy=90, r=70; var angle=-Math.PI/2;
+  entries.forEach(function(e) {
+    const cat=getCat(e[0]), slice=(e[1]/total)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,angle,angle+slice); ctx.closePath();
+    ctx.fillStyle=cat.color||'#7c6ff7'; ctx.fill(); angle+=slice;
   });
-  ctx.beginPath();ctx.arc(cx,cy,r*0.55,0,Math.PI*2);ctx.fillStyle='#1a1a24';ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,r*0.55,0,Math.PI*2); ctx.fillStyle='#1a1a24'; ctx.fill();
   var ly=20;
-  entries.slice().sort(function(a,b){return b[1]-a[1];}).slice(0,6).forEach(function(e){
-    const cat=getCat(e[0]),pct=Math.round(e[1]/total*100);
-    ctx.fillStyle=cat.color||'#7c6ff7';ctx.fillRect(170,ly-10,12,12);
-    ctx.fillStyle='#e8e8f0';ctx.font='11px sans-serif';ctx.textAlign='left';
-    ctx.fillText(cat.name+' '+pct+'%',188,ly);ly+=20;
+  entries.slice().sort(function(a,b){return b[1]-a[1];}).slice(0,6).forEach(function(e) {
+    const cat=getCat(e[0]), pct=Math.round(e[1]/total*100);
+    ctx.fillStyle=cat.color||'#7c6ff7'; ctx.fillRect(170,ly-10,12,12);
+    ctx.fillStyle='#e8e8f0'; ctx.font='11px sans-serif'; ctx.textAlign='left';
+    ctx.fillText(cat.name+' '+pct+'%', 188, ly); ly+=20;
   });
 }
 
 // ─── TX LIST ──────────────────────────────────────
 function renderTxList() {
-  const el=document.getElementById('tx-list');if(!el) return;
-  const list=S.tx.filter(function(t){
-    if(!t||t.transfer_to||t.transfer_from) return false;
-    if(S.txFilter==='income') return t.type==='income';
-    if(S.txFilter==='expense') return t.type==='expense';
-    if(S.txFilter==='shared') return t.shared===true||t.shared==='TRUE';
-    if(S.txFilter==='ARS') return t.currency==='ARS';
-    if(S.txFilter==='USD') return t.currency==='USD';
+  const el = document.getElementById('tx-list');
+  if (!el) return;
+  const list = S.tx.filter(function(t) {
+    if (!t || t.transfer_to || t.transfer_from) return false;
+    if (S.txFilter==='income')  return t.type==='income';
+    if (S.txFilter==='expense') return t.type==='expense';
+    if (S.txFilter==='shared')  return t.shared===true||t.shared==='TRUE';
+    if (S.txFilter==='ARS')     return t.currency==='ARS';
+    if (S.txFilter==='USD')     return t.currency==='USD';
     return true;
-  }).sort(function(a,b){return (parseDate(b.date)||0)-(parseDate(a.date)||0);});
-  el.innerHTML=list.length?list.map(function(t){return txItemHTML(t,true);}).join('')
-    :'<div class="empty"><div class="empty-icon">&#x1F4C4;</div><div>Sin movimientos</div></div>';
+  }).sort(function(a,b){ return (parseDate(b.date)||0)-(parseDate(a.date)||0); });
+  el.innerHTML = list.length
+    ? list.map(function(t){ return txItemHTML(t, true); }).join('')
+    : '<div class="empty"><div class="empty-icon">&#x1F4C4;</div><div>Sin movimientos</div></div>';
 }
 
-function txItemHTML(t,actions) {
-  const cat=getCat(t.category_id),isInc=t.type==='income',amt=parseFloat(t.amount||0);
+function txItemHTML(t, actions) {
+  const cat=getCat(t.category_id), isInc=t.type==='income', amt=parseFloat(t.amount||0);
   const amtStr=fmtMoney(amt,t.currency);
   const amtARS=t.currency==='USD'&&S.tc.oficial?' ~ '+fmtMoney(toARS(amt,'USD',t.tc||S.tc.oficial)):'';
   const actHTML=actions
-    ?'<div class="tx-actions"><button class="btn btn-secondary btn-sm" onclick="editTx(\''+t.id+'\')">&#x270F;</button><button class="btn btn-danger btn-sm" onclick="deleteTx(\''+t.id+'\')">&#x1F5D1;</button></div>'
-    :'';
+    ? '<div class="tx-actions"><button class="btn btn-secondary btn-sm" onclick="editTx(\''+t.id+'\')">&#x270F;</button><button class="btn btn-danger btn-sm" onclick="deleteTx(\''+t.id+'\')">&#x1F5D1;</button></div>'
+    : '';
   return '<div class="tx-item">'
     +'<div class="tx-icon" style="background:'+(cat.color||'#7c6ff7')+'22">'+(cat.icon||'?')+'</div>'
     +'<div class="tx-info"><div class="tx-desc">'+(t.description||'Sin descripcion')+'</div>'
@@ -857,183 +887,230 @@ function txItemHTML(t,actions) {
     +actHTML+'</div>';
 }
 
-function setTxFilter(f,el) {
-  S.txFilter=f;
-  document.querySelectorAll('#tx-filters .chip').forEach(function(c){c.classList.remove('active');});
-  el.classList.add('active');renderTxList();
+function setTxFilter(f, el) {
+  S.txFilter = f;
+  document.querySelectorAll('#tx-filters .chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  renderTxList();
 }
 
-// ─── ADD/EDIT TX ──────────────────────────────────
+// ─── ADD / EDIT TX ────────────────────────────────
 function showAddTxModal(prefill) {
-  prefill=prefill||{};S.editTxId=null;S.txTags=[];
-  document.getElementById('modal-tx-title').textContent='Nueva transaccion';
-  document.getElementById('save-tx-btn').textContent='Guardar';
-  document.getElementById('tx-desc').value=prefill.description||'';
-  document.getElementById('tx-amount').value=prefill.amount||'';
-  document.getElementById('tx-currency').value=prefill.currency||'ARS';
-  document.getElementById('tx-date').value=prefill.date||today();
-  document.getElementById('tx-note').value='';
-  document.getElementById('tx-tc').value=S.tc.oficial||'';
+  prefill = prefill || {};
+  S.editTxId = null; S.txTags = [];
+  document.getElementById('modal-tx-title').textContent = 'Nueva transaccion';
+  document.getElementById('save-tx-btn').textContent = 'Guardar';
+  document.getElementById('tx-desc').value     = prefill.description || '';
+  document.getElementById('tx-amount').value   = prefill.amount || '';
+  document.getElementById('tx-currency').value = prefill.currency || 'ARS';
+  document.getElementById('tx-date').value     = prefill.date || today();
+  document.getElementById('tx-note').value     = '';
+  document.getElementById('tx-tc').value       = S.tc.oficial || '';
   document.getElementById('tc-group').classList.add('hidden');
-  renderTagsUI();setTxTypeUI(prefill.type||'expense');
-  renderAccountSelect('tx-account',false,prefill.account_id||'');
-  renderCatPicker(prefill.category_id||'');
-  document.getElementById('shared-section').classList.toggle('hidden',!(S.user.mode==='couple'||S.user.mode==='both'));
-  document.getElementById('tx-shared').checked=false;
+  renderTagsUI();
+  setTxTypeUI(prefill.type || 'expense');
+  renderAccountSelect('tx-account', false, prefill.account_id || '');
+  renderCatPicker(prefill.category_id || '');
+  document.getElementById('shared-section').classList.toggle('hidden', !(S.user.mode==='couple'||S.user.mode==='both'));
+  document.getElementById('tx-shared').checked = false;
   document.getElementById('shared-details').classList.add('hidden');
   document.getElementById('modal-tx').classList.remove('hidden');
 }
+
 function editTx(id) {
-  const t=S.tx.find(function(x){return x.id===id;});if(!t) return;
-  S.editTxId=id;
-  S.txTags=t.tags?(Array.isArray(t.tags)?t.tags:String(t.tags).split(',').filter(Boolean)):[];
-  document.getElementById('modal-tx-title').textContent='Editar transaccion';
-  document.getElementById('save-tx-btn').textContent='Guardar cambios';
-  document.getElementById('tx-desc').value=t.description||'';
-  document.getElementById('tx-amount').value=t.amount||'';
-  document.getElementById('tx-currency').value=t.currency||'ARS';
-  document.getElementById('tx-date').value=t.date?String(t.date).slice(0,10):today();
-  document.getElementById('tx-note').value=t.note||'';
-  document.getElementById('tx-tc').value=t.tc||S.tc.oficial||'';
-  document.getElementById('tc-group').classList.toggle('hidden',t.currency!=='USD');
-  renderTagsUI();setTxTypeUI(t.type||'expense');
-  renderAccountSelect('tx-account',false,t.account_id||'');
-  renderCatPicker(t.category_id||'');
-  const hasCouple=S.user.mode==='couple'||S.user.mode==='both';
-  document.getElementById('shared-section').classList.toggle('hidden',!hasCouple);
-  const isShared=t.shared===true||t.shared==='TRUE';
-  document.getElementById('tx-shared').checked=isShared;
-  document.getElementById('shared-details').classList.toggle('hidden',!isShared);
-  if(isShared){renderPayerSelect(t.payer||'');document.getElementById('tx-split').value=t.split_me||50;}
+  const t = S.tx.find(function(x){ return x.id===id; });
+  if (!t) return;
+  S.editTxId = id;
+  S.txTags = t.tags ? (Array.isArray(t.tags) ? t.tags : String(t.tags).split(',').filter(Boolean)) : [];
+  document.getElementById('modal-tx-title').textContent = 'Editar transaccion';
+  document.getElementById('save-tx-btn').textContent = 'Guardar cambios';
+  document.getElementById('tx-desc').value     = t.description || '';
+  document.getElementById('tx-amount').value   = t.amount || '';
+  document.getElementById('tx-currency').value = t.currency || 'ARS';
+  document.getElementById('tx-date').value     = t.date ? String(t.date).slice(0,10) : today();
+  document.getElementById('tx-note').value     = t.note || '';
+  document.getElementById('tx-tc').value       = t.tc || S.tc.oficial || '';
+  document.getElementById('tc-group').classList.toggle('hidden', t.currency !== 'USD');
+  renderTagsUI();
+  setTxTypeUI(t.type || 'expense');
+  renderAccountSelect('tx-account', false, t.account_id || '');
+  renderCatPicker(t.category_id || '');
+  const hasCouple = S.user.mode==='couple'||S.user.mode==='both';
+  document.getElementById('shared-section').classList.toggle('hidden', !hasCouple);
+  const isShared = t.shared===true||t.shared==='TRUE';
+  document.getElementById('tx-shared').checked = isShared;
+  document.getElementById('shared-details').classList.toggle('hidden', !isShared);
+  if (isShared) { renderPayerSelect(t.payer||''); document.getElementById('tx-split').value = t.split_me||50; }
   document.getElementById('modal-tx').classList.remove('hidden');
 }
+
 function setTxTypeUI(type) {
-  S._txType=type;
-  document.getElementById('type-btn-expense').classList.toggle('active',type==='expense');
-  document.getElementById('type-btn-income').classList.toggle('active',type==='income');
-  renderCatPicker(S._selectedCatId||'');
+  S._txType = type;
+  document.getElementById('type-btn-expense').classList.toggle('active', type==='expense');
+  document.getElementById('type-btn-income').classList.toggle('active', type==='income');
+  renderCatPicker(S._selectedCatId || '');
 }
-function setTxType(type){setTxTypeUI(type);}
+function setTxType(type) { setTxTypeUI(type); }
+
 function onCurrencyChange() {
-  const cur=document.getElementById('tx-currency').value;
-  document.getElementById('tc-group').classList.toggle('hidden',cur!=='USD');
-  if(cur==='USD'&&S.tc.oficial) document.getElementById('tx-tc').value=S.tc.oficial;
+  const cur = document.getElementById('tx-currency').value;
+  document.getElementById('tc-group').classList.toggle('hidden', cur !== 'USD');
+  if (cur === 'USD' && S.tc.oficial) document.getElementById('tx-tc').value = S.tc.oficial;
 }
-function renderAccountSelect(selectId,includeSavings,selectedId) {
-  const sel=document.getElementById(selectId);if(!sel) return;
-  const accs=S.accounts.filter(function(a){return includeSavings?true:(a.type!=='saving'&&a.type!=='saving_cash');});
-  sel.innerHTML='<option value="">Sin cuenta</option>'
-    +accs.map(function(a){return '<option value="'+a.id+'"'+(a.id===selectedId?' selected':'')+'>'+(a.icon||'')+' '+a.name+' ('+fmtMoney(a.balance||0,a.currency)+')</option>';}).join('');
+
+function renderAccountSelect(selectId, includeSavings, selectedId) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  const accs = S.accounts.filter(function(a){ return includeSavings ? true : (a.type!=='saving'&&a.type!=='saving_cash'); });
+  sel.innerHTML = '<option value="">Sin cuenta</option>'
+    + accs.map(function(a){ return '<option value="'+a.id+'"'+(a.id===selectedId?' selected':'')+'>'+(a.icon||'')+' '+a.name+' ('+fmtMoney(a.balance||0,a.currency)+')</option>'; }).join('');
 }
+
 function renderCatPicker(selectedId) {
-  S._selectedCatId=selectedId||'';
-  const el=document.getElementById('tx-cat-picker');if(!el) return;
-  const cats=S.categories.filter(function(c){return !c.type||c.type===S._txType;});
-  el.innerHTML=cats.map(function(c){
-    const sel=c.id===S._selectedCatId;
+  S._selectedCatId = selectedId || '';
+  const el = document.getElementById('tx-cat-picker');
+  if (!el) return;
+  const cats = S.categories.filter(function(c){ return !c.type || c.type===S._txType; });
+  el.innerHTML = cats.map(function(c) {
+    const sel = c.id===S._selectedCatId;
     return '<button class="cat-btn'+(sel?' selected':'')+'" onclick="selectCat(\''+c.id+'\')" style="'+(sel?'border-color:'+(c.color||'var(--accent)')+';':'')+'">'
       +'<span>'+(c.icon||'?')+'</span><span>'+c.name+'</span></button>';
-  }).join('')+'<button class="cat-btn cat-btn-new" onclick="openCatFromPicker()"><span>+</span><span>Nueva</span></button>';
+  }).join('') + '<button class="cat-btn cat-btn-new" onclick="openCatFromPicker()"><span>+</span><span>Nueva</span></button>';
 }
-function selectCat(id){S._selectedCatId=id;renderCatPicker(id);}
-function openCatFromPicker(){S.fromCatPicker=true;closeModal('modal-tx');showAddCatModal(S._txType||'expense');}
+
+function selectCat(id) { S._selectedCatId = id; renderCatPicker(id); }
+
+function openCatFromPicker() {
+  S.fromCatPicker = true;
+  closeModal('modal-tx');
+  showAddCatModal(S._txType || 'expense');
+}
+
 function handleTagKey(e) {
-  if(e.key!=='Enter') return;e.preventDefault();
-  const val=e.target.value.trim();
-  if(val&&!S.txTags.includes(val)){S.txTags.push(val);renderTagsUI();}
-  e.target.value='';
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const val = e.target.value.trim();
+  if (val && !S.txTags.includes(val)) { S.txTags.push(val); renderTagsUI(); }
+  e.target.value = '';
 }
-function removeTag(tag){S.txTags=S.txTags.filter(function(t){return t!==tag;});renderTagsUI();}
+
+function removeTag(tag) { S.txTags = S.txTags.filter(function(t){ return t!==tag; }); renderTagsUI(); }
+
 function renderTagsUI() {
-  const wrap=document.getElementById('tx-tags-wrap'),input=document.getElementById('tx-tags-input');
-  if(!wrap||!input) return;
-  wrap.innerHTML=S.txTags.map(function(t){return '<span class="tag">'+t+' <span class="tag-remove" onclick="removeTag(\''+t+'\')">x</span></span>';}).join('');
+  const wrap = document.getElementById('tx-tags-wrap');
+  const input = document.getElementById('tx-tags-input');
+  if (!wrap || !input) return;
+  wrap.innerHTML = S.txTags.map(function(t){ return '<span class="tag">'+t+' <span class="tag-remove" onclick="removeTag(\''+t+'\')">x</span></span>'; }).join('');
   wrap.appendChild(input);
 }
+
 function renderPayerSelect(selected) {
-  const sel=document.getElementById('tx-payer');if(!sel) return;
-  sel.innerHTML='<option value="'+S.user.uid+'"'+(selected===S.user.uid?' selected':'')+'>'+S.user.name+' (yo)</option>';
-  if(S.user.partner_uid) sel.innerHTML+='<option value="'+S.user.partner_uid+'"'+(selected===S.user.partner_uid?' selected':'')+'>'+(S.user.partner_name||'Pareja')+'</option>';
+  const sel = document.getElementById('tx-payer');
+  if (!sel) return;
+  sel.innerHTML = '<option value="'+S.user.uid+'"'+(selected===S.user.uid?' selected':'')+'>'+S.user.name+' (yo)</option>';
+  if (S.user.partner_uid) sel.innerHTML += '<option value="'+S.user.partner_uid+'"'+(selected===S.user.partner_uid?' selected':'')+'>'+(S.user.partner_name||'Pareja')+'</option>';
 }
+
 function onSharedChange() {
-  const checked=document.getElementById('tx-shared').checked;
-  document.getElementById('shared-details').classList.toggle('hidden',!checked);
-  if(checked) renderPayerSelect('');
+  const checked = document.getElementById('tx-shared').checked;
+  document.getElementById('shared-details').classList.toggle('hidden', !checked);
+  if (checked) renderPayerSelect('');
 }
+
 async function saveTx() {
-  const desc=document.getElementById('tx-desc').value.trim();
-  const amt=parseFloat(document.getElementById('tx-amount').value);
-  const cur=document.getElementById('tx-currency').value;
-  const date=document.getElementById('tx-date').value;
-  const accId=document.getElementById('tx-account').value;
-  const note=document.getElementById('tx-note').value.trim();
-  const type=S._txType||'expense';
-  const tc=cur==='USD'?parseFloat(document.getElementById('tx-tc').value||S.tc.oficial):S.tc.oficial;
-  if(!desc) return showToast('Agrega una descripcion','error');
-  if(!amt||amt<=0) return showToast('Monto invalido','error');
-  if(!date) return showToast('Selecciona una fecha','error');
-  const isShared=document.getElementById('tx-shared').checked;
-  const txData={
-    id:S.editTxId||genId(),uid:S.user.uid,type,description:desc,
-    amount:amt,currency:cur,tc:tc||0,date,
-    category_id:S._selectedCatId||'',tags:S.txTags,
-    note,shared:isShared,
-    payer:isShared?document.getElementById('tx-payer').value:'',
-    split_me:isShared?parseFloat(document.getElementById('tx-split').value||50):100,
-    account_id:accId,transfer_to:'',transfer_from:'',transfer_group:'',
-    created_at:new Date().toISOString()
+  const desc  = document.getElementById('tx-desc').value.trim();
+  const amt   = parseFloat(document.getElementById('tx-amount').value);
+  const cur   = document.getElementById('tx-currency').value;
+  const date  = document.getElementById('tx-date').value;
+  const accId = document.getElementById('tx-account').value;
+  const note  = document.getElementById('tx-note').value.trim();
+  const type  = S._txType || 'expense';
+  const tc    = cur==='USD' ? parseFloat(document.getElementById('tx-tc').value||S.tc.oficial) : S.tc.oficial;
+  if (!desc)         return showToast('Agrega una descripcion', 'error');
+  if (!amt||amt<=0)  return showToast('Monto invalido', 'error');
+  if (!date)         return showToast('Selecciona una fecha', 'error');
+  const isShared = document.getElementById('tx-shared').checked;
+  const txData = {
+    id: S.editTxId || genId(), uid: S.user.uid, type, description: desc,
+    amount: amt, currency: cur, tc: tc||0, date,
+    category_id: S._selectedCatId||'', tags: S.txTags,
+    note, shared: isShared,
+    payer:    isShared ? document.getElementById('tx-payer').value : '',
+    split_me: isShared ? parseFloat(document.getElementById('tx-split').value||50) : 100,
+    account_id: accId,
+    transfer_to: '', transfer_from: '', transfer_group: '',
+    created_at: new Date().toISOString()
   };
   let r;
-  if(S.editTxId){
-    const old=S.tx.find(function(x){return x.id===S.editTxId;});
-    if(old&&old.account_id){
-      const oldAcc=S.accounts.find(function(a){return a.id===old.account_id;});
-      if(oldAcc){oldAcc.balance=(parseFloat(oldAcc.balance)||0)+(old.type==='income'?-parseFloat(old.amount||0):parseFloat(old.amount||0));await apiUpdateAccount(oldAcc);}
+  if (S.editTxId) {
+    // Revert old account balance
+    const old = S.tx.find(function(x){ return x.id===S.editTxId; });
+    if (old && old.account_id) {
+      const oldAcc = S.accounts.find(function(a){ return a.id===old.account_id; });
+      if (oldAcc) {
+        oldAcc.balance = (parseFloat(oldAcc.balance)||0) + (old.type==='income' ? -parseFloat(old.amount||0) : parseFloat(old.amount||0));
+        await apiUpdateAccount(oldAcc);
+      }
     }
-    r=await api('updateTransaction',{uid:S.user.uid,...txData});
-    if(r.ok){const i=S.tx.findIndex(function(x){return x.id===S.editTxId;});if(i>=0)S.tx[i]=txData;}
+    r = await api('updateTransaction', { uid: S.user.uid, ...txData });
+    if (r.ok) { const i=S.tx.findIndex(function(x){return x.id===S.editTxId;}); if(i>=0) S.tx[i]=txData; }
   } else {
-    r=await api('addTransaction',{uid:S.user.uid,...txData});
-    if(r.ok) S.tx.push(txData);
+    r = await api('addTransaction', { uid: S.user.uid, ...txData });
+    if (r.ok) S.tx.push(txData);
   }
-  if(!r.ok) return showToast('Error al guardar','error');
-  if(accId){
-    const acc=S.accounts.find(function(a){return a.id===accId;});
-    if(acc){acc.balance=(parseFloat(acc.balance)||0)+(type==='income'?amt:-amt);await apiUpdateAccount(acc);}
+  if (!r.ok) return showToast('Error al guardar', 'error');
+  // Apply new balance
+  if (accId) {
+    const acc = S.accounts.find(function(a){ return a.id===accId; });
+    if (acc) {
+      acc.balance = (parseFloat(acc.balance)||0) + (type==='income' ? amt : -amt);
+      await apiUpdateAccount(acc);
+    }
   }
-  closeModal('modal-tx');showToast('Guardado','success');updateUI();
+  closeModal('modal-tx');
+  showToast('Guardado', 'success');
+  updateUI();
 }
+
 async function deleteTx(id) {
-  if(!confirm('Eliminar esta transaccion?')) return;
-  const t=S.tx.find(function(x){return x.id===id;});
-  if(t&&t.account_id){
-    const acc=S.accounts.find(function(a){return a.id===t.account_id;});
-    if(acc){acc.balance=(parseFloat(acc.balance)||0)+(t.type==='income'?-parseFloat(t.amount||0):parseFloat(t.amount||0));await apiUpdateAccount(acc);}
+  if (!confirm('Eliminar esta transaccion?')) return;
+  const t = S.tx.find(function(x){ return x.id===id; });
+  if (t && t.account_id) {
+    const acc = S.accounts.find(function(a){ return a.id===t.account_id; });
+    if (acc) {
+      acc.balance = (parseFloat(acc.balance)||0) + (t.type==='income' ? -parseFloat(t.amount||0) : parseFloat(t.amount||0));
+      await apiUpdateAccount(acc);
+    }
   }
-  const r=await api('deleteTransaction',{uid:S.user.uid,id});
-  if(r.ok){S.tx=S.tx.filter(function(x){return x.id!==id;});showToast('Eliminado','success');updateUI();}
+  const r = await api('deleteTransaction', { uid: S.user.uid, id });
+  if (r.ok) { S.tx=S.tx.filter(function(x){return x.id!==id;}); showToast('Eliminado','success'); updateUI(); }
   else showToast('Error al eliminar','error');
 }
 
 // ─── ACCOUNTS ─────────────────────────────────────
+// Helper to avoid repeating all fields on every updateAccount call
 async function apiUpdateAccount(acc) {
-  return api('updateAccount',{uid:S.user.uid,id:acc.id,name:acc.name,type:acc.type,balance:acc.balance,currency:acc.currency,icon:acc.icon,color:acc.color});
+  return api('updateAccount', { uid: S.user.uid, id: acc.id, name: acc.name, type: acc.type, balance: acc.balance, currency: acc.currency, icon: acc.icon, color: acc.color });
 }
+
 function renderAccounts() {
-  const normal=S.accounts.filter(function(a){return a.type!=='saving'&&a.type!=='saving_cash';});
-  const savings=S.accounts.filter(function(a){return a.type==='saving'||a.type==='saving_cash';});
+  const normal  = S.accounts.filter(function(a){ return a.type!=='saving'&&a.type!=='saving_cash'; });
+  const savings = S.accounts.filter(function(a){ return a.type==='saving'||a.type==='saving_cash'; });
   var totalARS=0;
-  normal.forEach(function(a){totalARS+=toARS(parseFloat(a.balance||0),a.currency,S.tc.oficial);});
-  const totEl=document.getElementById('accounts-total');if(totEl)totEl.textContent=fmtMoney(totalARS);
+  normal.forEach(function(a){ totalARS+=toARS(parseFloat(a.balance||0),a.currency,S.tc.oficial); });
+  const totEl=document.getElementById('accounts-total');
+  if(totEl) totEl.textContent=fmtMoney(totalARS);
   const accList=document.getElementById('accounts-list');
-  if(accList)accList.innerHTML=normal.length?normal.map(accountCardHTML).join(''):'<div class="empty"><div>Sin cuentas</div></div>';
+  if(accList) accList.innerHTML=normal.length?normal.map(accountCardHTML).join(''):'<div class="empty"><div>Sin cuentas</div></div>';
   const savList=document.getElementById('savings-list');
-  if(savList)savList.innerHTML=savings.length?savings.map(accountCardHTML).join(''):'<div class="empty"><div>Sin cuentas de ahorro</div></div>';
-  var savARS=0,savUSD=0;
-  savings.forEach(function(a){const b=parseFloat(a.balance||0);if(a.currency==='USD'){savUSD+=b;savARS+=toARS(b,'USD',S.tc.oficial);}else{savARS+=b;}});
-  const stARS=document.getElementById('savings-total-ars'),stUSD=document.getElementById('savings-total-usd');
-  if(stARS)stARS.textContent=fmtMoney(savARS);if(stUSD)stUSD.textContent=fmtMoney(savUSD,'USD');
+  if(savList) savList.innerHTML=savings.length?savings.map(accountCardHTML).join(''):'<div class="empty"><div>Sin cuentas de ahorro</div></div>';
+  var savARS=0, savUSD=0;
+  savings.forEach(function(a){ const b=parseFloat(a.balance||0); if(a.currency==='USD'){savUSD+=b;savARS+=toARS(b,'USD',S.tc.oficial);}else{savARS+=b;} });
+  const stARS=document.getElementById('savings-total-ars'), stUSD=document.getElementById('savings-total-usd');
+  if(stARS) stARS.textContent=fmtMoney(savARS);
+  if(stUSD) stUSD.textContent=fmtMoney(savUSD,'USD');
 }
+
 function accountCardHTML(a) {
   const bal=parseFloat(a.balance||0);
   const sub=a.currency==='USD'&&S.tc.oficial?'<div class="account-balance-sub">~ '+fmtMoney(bal*S.tc.oficial)+'</div>':'';
@@ -1046,70 +1123,111 @@ function accountCardHTML(a) {
     +'<button class="btn btn-danger btn-sm" onclick="deleteAccount(\''+a.id+'\')">&#x1F5D1;</button>'
     +'</div></div>';
 }
+
 function showAddAccountModal(type) {
-  S.editAccId=null;
-  document.getElementById('modal-account-title').textContent='Nueva cuenta';
-  document.getElementById('acc-name').value='';document.getElementById('acc-type').value=type||'bank';
-  document.getElementById('acc-currency').value='ARS';document.getElementById('acc-balance').value='0';
-  document.getElementById('acc-icon').value='\uD83D\uDCB3';document.getElementById('acc-color').value='#7c6ff7';
+  S.editAccId = null;
+  document.getElementById('modal-account-title').textContent = 'Nueva cuenta';
+  document.getElementById('acc-name').value     = '';
+  document.getElementById('acc-type').value     = type || 'bank';
+  document.getElementById('acc-currency').value = 'ARS';
+  document.getElementById('acc-balance').value  = '0';
+  document.getElementById('acc-icon').value     = '\uD83D\uDCB3';
+  document.getElementById('acc-color').value    = '#7c6ff7';
   document.getElementById('modal-account').classList.remove('hidden');
 }
+
 function editAccount(id) {
-  const a=S.accounts.find(function(x){return x.id===id;});if(!a) return;
-  S.editAccId=id;
-  document.getElementById('modal-account-title').textContent='Editar cuenta';
-  document.getElementById('acc-name').value=a.name||'';document.getElementById('acc-type').value=a.type||'bank';
-  document.getElementById('acc-currency').value=a.currency||'ARS';document.getElementById('acc-balance').value=a.balance||0;
-  document.getElementById('acc-icon').value=a.icon||'';document.getElementById('acc-color').value=a.color||'#7c6ff7';
+  const a = S.accounts.find(function(x){ return x.id===id; });
+  if (!a) return;
+  S.editAccId = id;
+  document.getElementById('modal-account-title').textContent = 'Editar cuenta';
+  document.getElementById('acc-name').value     = a.name||'';
+  document.getElementById('acc-type').value     = a.type||'bank';
+  document.getElementById('acc-currency').value = a.currency||'ARS';
+  document.getElementById('acc-balance').value  = a.balance||0;
+  document.getElementById('acc-icon').value     = a.icon||'';
+  document.getElementById('acc-color').value    = a.color||'#7c6ff7';
   document.getElementById('modal-account').classList.remove('hidden');
 }
+
 async function saveAccount() {
-  const name=document.getElementById('acc-name').value.trim();
-  if(!name) return showToast('Agrega un nombre','error');
-  const accData={uid:S.user.uid,name,type:document.getElementById('acc-type').value,currency:document.getElementById('acc-currency').value,balance:parseFloat(document.getElementById('acc-balance').value)||0,icon:document.getElementById('acc-icon').value,color:document.getElementById('acc-color').value,created_at:new Date().toISOString()};
+  const name = document.getElementById('acc-name').value.trim();
+  if (!name) return showToast('Agrega un nombre','error');
+  const accData = {
+    uid: S.user.uid, name,
+    type:     document.getElementById('acc-type').value,
+    currency: document.getElementById('acc-currency').value,
+    balance:  parseFloat(document.getElementById('acc-balance').value)||0,
+    icon:     document.getElementById('acc-icon').value,
+    color:    document.getElementById('acc-color').value,
+    created_at: new Date().toISOString()
+  };
   let r;
-  if(S.editAccId){accData.id=S.editAccId;r=await apiUpdateAccount(accData);if(r.ok){const i=S.accounts.findIndex(function(a){return a.id===S.editAccId;});if(i>=0)S.accounts[i]=accData;}}
-  else{accData.id=genId();r=await api('addAccount',{...accData});if(r.ok)S.accounts.push(accData);}
-  if(!r.ok) return showToast('Error al guardar','error');
-  closeModal('modal-account');showToast('Cuenta guardada','success');renderAccounts();
+  if (S.editAccId) {
+    accData.id = S.editAccId;
+    r = await apiUpdateAccount(accData);
+    if (r.ok) { const i=S.accounts.findIndex(function(a){return a.id===S.editAccId;}); if(i>=0) S.accounts[i]=accData; }
+  } else {
+    accData.id = genId();
+    r = await api('addAccount', { ...accData });
+    if (r.ok) S.accounts.push(accData);
+  }
+  if (!r.ok) return showToast('Error al guardar','error');
+  closeModal('modal-account');
+  showToast('Cuenta guardada','success');
+  renderAccounts();
 }
+
 async function deleteAccount(id) {
-  if(!confirm('Eliminar esta cuenta?')) return;
-  const r=await api('deleteAccount',{uid:S.user.uid,id});
-  if(r.ok){S.accounts=S.accounts.filter(function(a){return a.id!==id;});showToast('Eliminada','success');renderAccounts();}
+  if (!confirm('Eliminar esta cuenta?')) return;
+  const r = await api('deleteAccount', { uid: S.user.uid, id });
+  if (r.ok) { S.accounts=S.accounts.filter(function(a){return a.id!==id;}); showToast('Eliminada','success'); renderAccounts(); }
   else showToast('Error al eliminar','error');
 }
+
 function showTransferModal() {
-  document.getElementById('transfer-amount').value='';document.getElementById('transfer-note').value='';
-  document.getElementById('transfer-currency').value='ARS';
-  renderAccountSelect('transfer-from',true,'');renderAccountSelect('transfer-to',true,'');
+  document.getElementById('transfer-amount').value   = '';
+  document.getElementById('transfer-note').value     = '';
+  document.getElementById('transfer-currency').value = 'ARS';
+  renderAccountSelect('transfer-from', true, '');
+  renderAccountSelect('transfer-to',   true, '');
   document.getElementById('modal-transfer').classList.remove('hidden');
 }
+
 async function doTransfer() {
-  const fromId=document.getElementById('transfer-from').value,toId=document.getElementById('transfer-to').value;
-  const amt=parseFloat(document.getElementById('transfer-amount').value),cur=document.getElementById('transfer-currency').value;
-  const note=document.getElementById('transfer-note').value.trim();
-  if(!fromId||!toId) return showToast('Selecciona ambas cuentas','error');
-  if(fromId===toId) return showToast('Las cuentas deben ser distintas','error');
-  if(!amt||amt<=0) return showToast('Monto invalido','error');
-  const fromAcc=S.accounts.find(function(a){return a.id===fromId;}),toAcc=S.accounts.find(function(a){return a.id===toId;});
-  if(!fromAcc||!toAcc) return showToast('Cuenta no encontrada','error');
+  const fromId = document.getElementById('transfer-from').value;
+  const toId   = document.getElementById('transfer-to').value;
+  const amt    = parseFloat(document.getElementById('transfer-amount').value);
+  const cur    = document.getElementById('transfer-currency').value;
+  const note   = document.getElementById('transfer-note').value.trim();
+  if (!fromId||!toId)   return showToast('Selecciona ambas cuentas','error');
+  if (fromId===toId)    return showToast('Las cuentas deben ser distintas','error');
+  if (!amt||amt<=0)     return showToast('Monto invalido','error');
+  const fromAcc=S.accounts.find(function(a){return a.id===fromId;});
+  const toAcc  =S.accounts.find(function(a){return a.id===toId;});
+  if (!fromAcc||!toAcc) return showToast('Cuenta no encontrada','error');
   const grp=genId();
-  const base={uid:S.user.uid,amount:amt,currency:cur,tc:S.tc.oficial,date:today(),category_id:'',tags:[],note,shared:false,payer:'',split_me:100,transfer_group:grp,created_at:new Date().toISOString()};
-  const txOut={...base,id:genId(),type:'expense',description:'Transferencia a '+toAcc.name,account_id:fromId,transfer_to:toId,transfer_from:''};
-  const txIn ={...base,id:genId(),type:'income', description:'Transferencia desde '+fromAcc.name,account_id:toId,transfer_from:fromId,transfer_to:''};
-  await api('addTransaction',{uid:S.user.uid,...txOut});await api('addTransaction',{uid:S.user.uid,...txIn});
-  S.tx.push(txOut);S.tx.push(txIn);
-  fromAcc.balance=(parseFloat(fromAcc.balance)||0)-amt;toAcc.balance=(parseFloat(toAcc.balance)||0)+amt;
-  await apiUpdateAccount(fromAcc);await apiUpdateAccount(toAcc);
-  closeModal('modal-transfer');showToast('Transferencia realizada','success');updateUI();
+  const base={ uid:S.user.uid, amount:amt, currency:cur, tc:S.tc.oficial, date:today(), category_id:'', tags:[], note, shared:false, payer:'', split_me:100, transfer_group:grp, created_at:new Date().toISOString() };
+  const txOut={ ...base, id:genId(), type:'expense', description:'Transferencia a '+toAcc.name,    account_id:fromId, transfer_to:toId,   transfer_from:'' };
+  const txIn = { ...base, id:genId(), type:'income',  description:'Transferencia desde '+fromAcc.name, account_id:toId,   transfer_from:fromId, transfer_to:'' };
+  await api('addTransaction', { uid:S.user.uid, ...txOut });
+  await api('addTransaction', { uid:S.user.uid, ...txIn  });
+  S.tx.push(txOut); S.tx.push(txIn);
+  fromAcc.balance=(parseFloat(fromAcc.balance)||0)-amt;
+  toAcc.balance  =(parseFloat(toAcc.balance)||0)+amt;
+  await apiUpdateAccount(fromAcc);
+  await apiUpdateAccount(toAcc);
+  closeModal('modal-transfer');
+  showToast('Transferencia realizada','success');
+  updateUI();
 }
 
 // ─── CATEGORIES ───────────────────────────────────
 function renderCatConfig() {
-  const el=document.getElementById('cat-list-config');if(!el) return;
-  if(!S.categories.length){el.innerHTML='<div class="empty"><div>Sin categorias</div></div>';return;}
-  el.innerHTML=S.categories.map(function(c,i){
+  const el = document.getElementById('cat-list-config');
+  if (!el) return;
+  if (!S.categories.length) { el.innerHTML='<div class="empty"><div>Sin categorias</div></div>'; return; }
+  el.innerHTML = S.categories.map(function(c,i) {
     return '<div class="cat-row">'
       +'<div class="cat-row-icon" style="color:'+(c.color||'inherit')+'">'+(c.icon||'?')+'</div>'
       +'<div class="cat-row-info"><div class="cat-row-name">'+c.name+'</div><div class="cat-row-type">'+(c.type==='income'?'Ingreso':'Gasto')+'</div></div>'
@@ -1120,67 +1238,99 @@ function renderCatConfig() {
       +'<button class="btn btn-danger btn-sm" onclick="deleteCat(\''+c.id+'\')">&#x1F5D1;</button>'
       +'</div></div>';
   }).join('');
-  // Restore modos content if it was replaced by skeleton
-  const mc=document.getElementById('modos-content');
-  if(mc&&mc.querySelector('.skeleton')){
-    mc.innerHTML='<div style="display:flex;flex-direction:column;gap:10px">'
-      +'<label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer"><div><div style="font-weight:600">Modo pareja</div><div style="font-size:12px;color:var(--text2)">Vincula tu cuenta con la de tu pareja</div></div><input type="checkbox" id="toggle-couple" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer"></label>'
-      +'<label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer"><div><div style="font-weight:600">Modo vacaciones</div><div style="font-size:12px;color:var(--text2)">Activa el seguimiento de viajes</div></div><input type="checkbox" id="toggle-vac" onchange="toggleMode()" style="width:20px;height:20px;cursor:pointer"></label>'
-      +'</div>';
-    const coupleOn=S.user.mode==='couple'||S.user.mode==='both';
-    const vacOn=S.user.mode==='vacation'||S.user.mode==='both';
-    document.getElementById('toggle-couple').checked=coupleOn;
-    document.getElementById('toggle-vac').checked=vacOn;
+}
+
+function showAddCatModal(preType) {
+  S.editCatId = null;
+  document.getElementById('modal-cat-title').textContent = 'Nueva categoria';
+  document.getElementById('cat-name').value  = '';
+  document.getElementById('cat-icon').value  = '\u2B50';
+  document.getElementById('cat-color').value = '#7c6ff7';
+  document.getElementById('cat-type').value  = preType || 'expense';
+  document.getElementById('modal-cat').classList.remove('hidden');
+}
+
+function editCat(id) {
+  const c = S.categories.find(function(x){ return x.id===id; });
+  if (!c) return;
+  S.editCatId = id;
+  document.getElementById('modal-cat-title').textContent = 'Editar categoria';
+  document.getElementById('cat-name').value  = c.name||'';
+  document.getElementById('cat-icon').value  = c.icon||'';
+  document.getElementById('cat-color').value = c.color||'#7c6ff7';
+  document.getElementById('cat-type').value  = c.type||'expense';
+  document.getElementById('modal-cat').classList.remove('hidden');
+}
+
+async function saveCat() {
+  const name = document.getElementById('cat-name').value.trim();
+  if (!name) return showToast('Agrega un nombre','error');
+  const catData = {
+    uid: S.user.uid, name,
+    icon:  document.getElementById('cat-icon').value,
+    color: document.getElementById('cat-color').value,
+    type:  document.getElementById('cat-type').value,
+    created_at: new Date().toISOString()
+  };
+  let r, newId;
+  if (S.editCatId) {
+    catData.id = S.editCatId;
+    r = await api('updateCategory', { ...catData });
+    if (r.ok) { const i=S.categories.findIndex(function(c){return c.id===S.editCatId;}); if(i>=0) S.categories[i]=catData; }
+    newId = S.editCatId;
+  } else {
+    catData.id = genId();
+    catData.sort_order = S.categories.length;
+    r = await api('addCategory', { ...catData });
+    if (r.ok) S.categories.push(catData);
+    newId = catData.id;
+  }
+  if (!r.ok) return showToast('Error al guardar','error');
+  await saveCatOrder();
+  closeModal('modal-cat');
+  showToast('Categoria guardada','success');
+  renderCatConfig();
+  if (S.fromCatPicker) {
+    S.fromCatPicker = false;
+    showAddTxModal({ type: catData.type, category_id: newId });
+    selectCat(newId);
   }
 }
-function showAddCatModal(preType) {
-  S.editCatId=null;
-  document.getElementById('modal-cat-title').textContent='Nueva categoria';
-  document.getElementById('cat-name').value='';document.getElementById('cat-icon').value='\u2B50';
-  document.getElementById('cat-color').value='#7c6ff7';document.getElementById('cat-type').value=preType||'expense';
-  document.getElementById('modal-cat').classList.remove('hidden');
-}
-function editCat(id) {
-  const c=S.categories.find(function(x){return x.id===id;});if(!c) return;
-  S.editCatId=id;
-  document.getElementById('modal-cat-title').textContent='Editar categoria';
-  document.getElementById('cat-name').value=c.name||'';document.getElementById('cat-icon').value=c.icon||'';
-  document.getElementById('cat-color').value=c.color||'#7c6ff7';document.getElementById('cat-type').value=c.type||'expense';
-  document.getElementById('modal-cat').classList.remove('hidden');
-}
-async function saveCat() {
-  const name=document.getElementById('cat-name').value.trim();if(!name) return showToast('Agrega un nombre','error');
-  const catData={uid:S.user.uid,name,icon:document.getElementById('cat-icon').value,color:document.getElementById('cat-color').value,type:document.getElementById('cat-type').value,created_at:new Date().toISOString()};
-  let r,newId;
-  if(S.editCatId){catData.id=S.editCatId;r=await api('updateCategory',{...catData});if(r.ok){const i=S.categories.findIndex(function(c){return c.id===S.editCatId;});if(i>=0)S.categories[i]=catData;}newId=S.editCatId;}
-  else{catData.id=genId();catData.sort_order=S.categories.length;r=await api('addCategory',{...catData});if(r.ok)S.categories.push(catData);newId=catData.id;}
-  if(!r.ok) return showToast('Error al guardar','error');
-  await saveCatOrder();closeModal('modal-cat');showToast('Categoria guardada','success');renderCatConfig();
-  if(S.fromCatPicker){S.fromCatPicker=false;showAddTxModal({type:catData.type,category_id:newId});selectCat(newId);}
-}async function deleteCat(id) {
-  if(!confirm('Eliminar categoria?')) return;
-  const r=await api('deleteCategory',{uid:S.user.uid,id});
-  if(r.ok){S.categories=S.categories.filter(function(c){return c.id!==id;});showToast('Eliminada','success');renderCatConfig();}
+
+async function deleteCat(id) {
+  if (!confirm('Eliminar categoria?')) return;
+  const r = await api('deleteCategory', { uid: S.user.uid, id });
+  if (r.ok) { S.categories=S.categories.filter(function(c){return c.id!==id;}); showToast('Eliminada','success'); renderCatConfig(); }
   else showToast('Error al eliminar','error');
 }
-async function moveCat(idx,dir) {
-  const ni=idx+dir;if(ni<0||ni>=S.categories.length) return;
-  const tmp=S.categories[idx];S.categories[idx]=S.categories[ni];S.categories[ni]=tmp;
-  renderCatConfig();await saveCatOrder();
+
+async function moveCat(idx, dir) {
+  const ni=idx+dir;
+  if (ni<0||ni>=S.categories.length) return;
+  const tmp=S.categories[idx]; S.categories[idx]=S.categories[ni]; S.categories[ni]=tmp;
+  renderCatConfig();
+  await saveCatOrder();
 }
+
 async function saveCatOrder() {
-  await api('saveCategoryOrder',{uid:S.user.uid,order:S.categories.map(function(c,i){return {id:c.id,sort_order:i};})});
+  await api('saveCategoryOrder', { uid: S.user.uid, order: S.categories.map(function(c,i){ return {id:c.id, sort_order:i}; }) });
 }
 
 // ─── COUPLE ───────────────────────────────────────
 function renderCouple() {
-  const el=document.getElementById('couple-content');if(!el) return;
-  if(!(S.user.mode==='couple'||S.user.mode==='both')){el.innerHTML='<div class="empty"><div class="empty-icon">&#x1F46B;</div><div>Activa el modo pareja en Configuracion</div></div>';return;}
-  if(!S.user.partner_uid){el.innerHTML='<div class="empty"><div class="empty-icon">&#x23F3;</div><div style="margin-top:8px">Solicitud enviada</div><div style="font-size:12px;color:var(--text2);margin-top:4px">Esperando que tu pareja acepte</div></div>';return;}
+  const el = document.getElementById('couple-content');
+  if (!el) return;
+  if (!(S.user.mode==='couple'||S.user.mode==='both')) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">&#x1F46B;</div><div>Activa el modo pareja en Configuracion</div></div>'; return;
+  }
+  if (!S.user.partner_uid) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">&#x23F3;</div><div style="margin-top:8px">Solicitud enviada</div><div style="font-size:12px;color:var(--text2);margin-top:4px">Esperando que tu pareja acepte</div></div>';
+    return;
+  }
   const shared=S.tx.filter(function(t){return t.shared===true||t.shared==='TRUE';});
-  var myTotal=0,partnerTotal=0;
-  shared.forEach(function(t){
-    const amt=toARS(parseFloat(t.amount||0),t.currency,t.tc||S.tc.oficial),pct=parseFloat(t.split_me||50)/100;
+  var myTotal=0, partnerTotal=0;
+  shared.forEach(function(t) {
+    const amt=toARS(parseFloat(t.amount||0),t.currency,t.tc||S.tc.oficial), pct=parseFloat(t.split_me||50)/100;
     if(t.payer===S.user.uid) partnerTotal+=amt*(1-pct); else myTotal+=amt*pct;
   });
   const bal=partnerTotal-myTotal;
@@ -1189,88 +1339,115 @@ function renderCouple() {
     +'<div class="card"><div class="card-title">Gastos compartidos ('+shared.length+')</div>'
     +(shared.length?shared.map(function(t){return txItemHTML(t,false);}).join(''):'<div class="empty"><div>Sin gastos compartidos</div></div>')+'</div>';
 }
+
 async function sendCoupleRequest() {
-  const email=document.getElementById('couple-email').value.trim();
-  if(!email) return showToast('Ingresa el email de tu pareja','error');
-  const r=await api('sendCoupleRequest',{uid:S.user.uid,partner_email:email});
-  if(r.ok){closeModal('modal-couple');showToast('Solicitud enviada. Tu pareja la vera al abrir la app.','success');renderCouple();}
-  else showToast(r.error||'Error al enviar','error');
+  const email = document.getElementById('couple-email').value.trim();
+  if (!email) return showToast('Ingresa el email de tu pareja', 'error');
+  const r = await api('sendCoupleRequest', { uid: S.user.uid, partner_email: email });
+  if (r.ok) {
+    closeModal('modal-couple');
+    showToast('Solicitud enviada. Tu pareja la vera al abrir la app.', 'success');
+    renderCouple();
+  } else {
+    showToast(r.error || 'Error al enviar', 'error');
+  }
 }
+
 function cancelCoupleModal() {
-  if(!S.user.partner_uid){
-    document.getElementById('toggle-couple').checked=false;
+  // Si cancela sin tener pareja vinculada, apagar el toggle y revertir modo
+  if (!S.user.partner_uid) {
+    document.getElementById('toggle-couple').checked = false;
     document.getElementById('nav-couple').classList.add('hidden');
-    const vacOn=document.getElementById('toggle-vac').checked;
-    S.user.mode=vacOn?'vacation':'normal';
-    localStorage.setItem('session',JSON.stringify(S.user));
-    api('updateUserMode',{uid:S.user.uid,mode:S.user.mode});
+    const vacOn = document.getElementById('toggle-vac').checked;
+    S.user.mode = vacOn ? 'vacation' : 'normal';
+    localStorage.setItem('session', JSON.stringify(S.user));
+    api('updateUserMode', { uid: S.user.uid, mode: S.user.mode });
   }
   closeModal('modal-couple');
 }
+
 function renderPendingRequests() {
-  const existing=document.getElementById('couple-requests-banner');if(existing)existing.remove();
-  if(!S.pendingRequests||!S.pendingRequests.length) return;
-  const configScreen=document.getElementById('screen-config');
-  const firstCard=configScreen.querySelector('.card');if(!configScreen||!firstCard) return;
-  const banner=document.createElement('div');
-  banner.id='couple-requests-banner';banner.className='card';
-  banner.style.cssText='border-color:var(--accent);margin-bottom:12px';
-  banner.innerHTML='<div class="card-title" style="color:var(--accent)">&#x1F46B; Solicitudes de vinculacion</div>'
-    +S.pendingRequests.map(function(req){
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">'
-        +'<div><div style="font-weight:600">'+req.from_name+'</div>'
-        +'<div style="font-size:12px;color:var(--text2)">quiere vincularse como pareja</div></div>'
-        +'<div style="display:flex;gap:6px">'
-        +'<button class="btn btn-primary btn-sm" onclick="respondRequest(\''+req.id+'\',true)">Aceptar</button>'
-        +'<button class="btn btn-secondary btn-sm" onclick="respondRequest(\''+req.id+'\',false)">Rechazar</button>'
-        +'</div></div>';
-    }).join('');
-  configScreen.insertBefore(banner,firstCard);
+  // Show banner in config screen if there are pending requests
+  const existing = document.getElementById('couple-requests-banner');
+  if (existing) existing.remove();
+  if (!S.pendingRequests || !S.pendingRequests.length) return;
+  const configCard = document.querySelector('#screen-config .card');
+  if (!configCard) return;
+  const banner = document.createElement('div');
+  banner.id = 'couple-requests-banner';
+  banner.className = 'card';
+  banner.style.cssText = 'border-color:var(--accent);margin-bottom:12px';
+  banner.innerHTML = '<div class="card-title" style="color:var(--accent)">&#x1F46B; Solicitudes de vinculacion</div>'
+    + S.pendingRequests.map(function(req) {
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">'
+          +'<div><div style="font-weight:600">'+req.from_name+'</div>'
+          +'<div style="font-size:12px;color:var(--text2)">quiere vincularse como pareja</div></div>'
+          +'<div style="display:flex;gap:6px">'
+          +'<button class="btn btn-primary btn-sm" onclick="respondRequest(\''+req.id+'\',true)">Aceptar</button>'
+          +'<button class="btn btn-secondary btn-sm" onclick="respondRequest(\''+req.id+'\',false)">Rechazar</button>'
+          +'</div></div>';
+      }).join('');
+  // Insert before first card in config
+  document.getElementById('screen-config').insertBefore(banner, configCard);
 }
-async function respondRequest(requestId,accept) {
-  const r=await api('respondCoupleRequest',{request_id:requestId,uid:S.user.uid,accept});
-  if(!r.ok) return showToast(r.error||'Error','error');
-  S.pendingRequests=S.pendingRequests.filter(function(x){return x.id!==requestId;});
-  if(accept&&r.accepted){
-    S.user.partner_uid=r.partner_uid;S.user.partner_name=r.partner_name;S.user.mode=r.new_mode;
-    localStorage.setItem('session',JSON.stringify(S.user));
-    document.getElementById('toggle-couple').checked=true;
+
+async function respondRequest(requestId, accept) {
+  const r = await api('respondCoupleRequest', { request_id: requestId, uid: S.user.uid, accept });
+  if (!r.ok) return showToast(r.error || 'Error', 'error');
+  S.pendingRequests = S.pendingRequests.filter(function(x){ return x.id !== requestId; });
+  if (accept && r.accepted) {
+    S.user.partner_uid  = r.partner_uid;
+    S.user.partner_name = r.partner_name;
+    S.user.mode         = r.new_mode;
+    localStorage.setItem('session', JSON.stringify(S.user));
+    document.getElementById('toggle-couple').checked = true;
     document.getElementById('nav-couple').classList.remove('hidden');
-    showToast('Vinculacion aceptada!','success');updateUI();
-  } else {showToast('Solicitud rechazada','');}
+    showToast('Vinculacion aceptada! Ya estan conectados.', 'success');
+    updateUI();
+  } else {
+    showToast('Solicitud rechazada', '');
+  }
   renderPendingRequests();
 }
 
 // ─── MODES ────────────────────────────────────────
 async function toggleMode() {
-  const coupleOn=document.getElementById('toggle-couple').checked;
-  const vacOn=document.getElementById('toggle-vac').checked;
-  const mode=coupleOn&&vacOn?'both':coupleOn?'couple':vacOn?'vacation':'normal';
-  S.user.mode=mode;localStorage.setItem('session',JSON.stringify(S.user));
-  document.getElementById('nav-couple').classList.toggle('hidden',!coupleOn);
-  document.getElementById('nav-vac').classList.toggle('hidden',!vacOn);
-  await api('updateUserMode',{uid:S.user.uid,mode});
-  if(coupleOn&&!S.user.partner_uid){document.getElementById('couple-email').value='';document.getElementById('modal-couple').classList.remove('hidden');}
+  const coupleOn = document.getElementById('toggle-couple').checked;
+  const vacOn    = document.getElementById('toggle-vac').checked;
+  const mode = coupleOn&&vacOn?'both':coupleOn?'couple':vacOn?'vacation':'normal';
+  S.user.mode = mode;
+  localStorage.setItem('session', JSON.stringify(S.user));
+  document.getElementById('nav-couple').classList.toggle('hidden', !coupleOn);
+  document.getElementById('nav-vac').classList.toggle('hidden', !vacOn);
+  await api('updateUserMode', { uid: S.user.uid, mode });
+  // Si acaba de activar modo pareja y no tiene pareja vinculada, abrir modal
+  if (coupleOn && !S.user.partner_uid) {
+    document.getElementById('couple-email').value = '';
+    document.getElementById('modal-couple').classList.remove('hidden');
+  }
   updateUI();
 }
 
 // ─── TC ───────────────────────────────────────────
 function showTcModal() {
-  document.getElementById('tc-oficial-display').textContent=S.tc.oficial?fmtMoney(S.tc.oficial):'No disponible';
-  document.getElementById('tc-manual').value=S.tc.oficial||'';
+  document.getElementById('tc-oficial-display').textContent = S.tc.oficial ? fmtMoney(S.tc.oficial) : 'No disponible';
+  document.getElementById('tc-manual').value = S.tc.oficial || '';
   document.getElementById('modal-tc').classList.remove('hidden');
 }
+
 function saveTc() {
-  const val=parseFloat(document.getElementById('tc-manual').value);
-  if(val>0){S.tc.oficial=val;localStorage.setItem('tc_oficial',String(val));updateTcBadge();}
-  closeModal('modal-tc');showToast('TC actualizado','success');
+  const val = parseFloat(document.getElementById('tc-manual').value);
+  if (val>0) { S.tc.oficial=val; localStorage.setItem('tc_oficial',String(val)); updateTcBadge(); }
+  closeModal('modal-tc');
+  showToast('TC actualizado','success');
 }
 
 // ─── VACATIONS ────────────────────────────────────
 function renderVacations() {
-  const el=document.getElementById('vac-list');if(!el) return;
-  if(!S.vacations.length){el.innerHTML='<div class="empty"><div class="empty-icon">&#x2708;</div><div>Sin viajes</div></div>';return;}
-  el.innerHTML=S.vacations.map(function(v){
+  const el=document.getElementById('vac-list');
+  if (!el) return;
+  if (!S.vacations.length) { el.innerHTML='<div class="empty"><div class="empty-icon">&#x2708;</div><div>Sin viajes</div></div>'; return; }
+  el.innerHTML=S.vacations.map(function(v) {
     const items=S.vacItems.filter(function(i){return i.vacation_id===v.id&&i.type==='expense';});
     const spent=items.reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
     const budget=toARS(parseFloat(v.budget||0),v.currency,S.tc.oficial);
@@ -1284,75 +1461,117 @@ function renderVacations() {
       +'<div class="vac-progress"><div class="vac-progress-bar" style="width:'+pct+'%;background:'+(pct>80?'var(--red)':'var(--accent)')+'"></div></div></div>';
   }).join('');
 }
+
 function showAddVacModal() {
-  document.getElementById('vac-name').value='';document.getElementById('vac-start').value=today();
-  document.getElementById('vac-end').value=today();document.getElementById('vac-budget').value='';
-  document.getElementById('vac-currency').value='ARS';document.getElementById('modal-vac').classList.remove('hidden');
+  document.getElementById('vac-name').value=''; document.getElementById('vac-start').value=today();
+  document.getElementById('vac-end').value=today(); document.getElementById('vac-budget').value='';
+  document.getElementById('vac-currency').value='ARS';
+  document.getElementById('modal-vac').classList.remove('hidden');
 }
+
 async function saveVac() {
-  const name=document.getElementById('vac-name').value.trim();if(!name) return showToast('Agrega un nombre','error');
-  const vacData={id:genId(),uid:S.user.uid,name,start_date:document.getElementById('vac-start').value,end_date:document.getElementById('vac-end').value,budget:parseFloat(document.getElementById('vac-budget').value)||0,currency:document.getElementById('vac-currency').value,created_at:new Date().toISOString()};
+  const name=document.getElementById('vac-name').value.trim();
+  if (!name) return showToast('Agrega un nombre','error');
+  const vacData={ id:genId(), uid:S.user.uid, name,
+    start_date:document.getElementById('vac-start').value,
+    end_date:  document.getElementById('vac-end').value,
+    budget:    parseFloat(document.getElementById('vac-budget').value)||0,
+    currency:  document.getElementById('vac-currency').value,
+    created_at:new Date().toISOString() };
   const r=await api('addVacation',{uid:S.user.uid,...vacData});
   if(!r.ok) return showToast('Error al guardar','error');
-  S.vacations.push(vacData);closeModal('modal-vac');showToast('Viaje guardado','success');renderVacations();
+  S.vacations.push(vacData); closeModal('modal-vac'); showToast('Viaje guardado','success'); renderVacations();
 }
+
 function showVacDetail(id) {
   S.currentVacId=id;
-  const v=S.vacations.find(function(x){return x.id===id;});if(!v) return;
+  const v=S.vacations.find(function(x){return x.id===id;});
+  if (!v) return;
   document.getElementById('vac-detail-title').textContent=v.name;
-  renderVacDetail(id);document.getElementById('modal-vac-detail').classList.remove('hidden');
+  renderVacDetail(id);
+  document.getElementById('modal-vac-detail').classList.remove('hidden');
 }
+
 function renderVacDetail(id) {
   const items=S.vacItems.filter(function(i){return i.vacation_id===id;});
   const expenses=items.filter(function(i){return i.type==='expense';});
-  const checks=items.filter(function(i){return i.type==='checklist';});
-  const el=document.getElementById('vac-detail-content');if(!el) return;
+  const checks  =items.filter(function(i){return i.type==='checklist';});
+  const el=document.getElementById('vac-detail-content');
+  if (!el) return;
   const byDay={};
   expenses.forEach(function(i){const d=i.day||1;if(!byDay[d])byDay[d]=[];byDay[d].push(i);});
   var html='';
-  Object.keys(byDay).sort(function(a,b){return a-b;}).forEach(function(day){
+  Object.keys(byDay).sort(function(a,b){return a-b;}).forEach(function(day) {
     const dayTotal=byDay[day].reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
     html+='<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia '+day+' &mdash; '+fmtMoney(dayTotal)+'</div>'
-      +byDay[day].map(function(i){return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div><div class="tx-info"><div class="tx-desc">'+i.description+'</div><div class="tx-meta">'+i.currency+(i.shared?' &#x1F46B;':'')+'</div></div><div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div></div>';}).join('')+'</div>';
+      +byDay[day].map(function(i){
+        return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div>'
+          +'<div class="tx-info"><div class="tx-desc">'+i.description+'</div>'
+          +'<div class="tx-meta">'+i.currency+(i.shared?' &#x1F46B;':'')+'</div></div>'
+          +'<div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div></div>';
+      }).join('')+'</div>';
   });
-  if(checks.length){
+  if (checks.length) {
     html+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Checklist</div>'
-      +checks.map(function(i){const done=i.done===true||i.done==='TRUE';return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)"><input type="checkbox"'+(done?' checked':'')+' onchange="toggleVacItem(\''+i.id+'\',this.checked)" style="width:18px;height:18px;cursor:pointer"><span style="font-size:14px;'+(done?'text-decoration:line-through;color:var(--text2)':'')+'">'+(i.description)+'</span></div>';}).join('')+'</div>';
+      +checks.map(function(i){
+        const done=i.done===true||i.done==='TRUE';
+        return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">'
+          +'<input type="checkbox"'+(done?' checked':'')+' onchange="toggleVacItem(\''+i.id+'\',this.checked)" style="width:18px;height:18px;cursor:pointer">'
+          +'<span style="font-size:14px;'+(done?'text-decoration:line-through;color:var(--text2)':'')+'">'
+          +i.description+'</span></div>';
+      }).join('')+'</div>';
   }
   el.innerHTML=html||'<div class="empty"><div>Sin items. Agrega gastos o checklist.</div></div>';
 }
+
 function showAddVacItemModal() {
-  document.getElementById('vac-item-type').value='expense';document.getElementById('vac-item-desc').value='';
-  document.getElementById('vac-item-amount').value='';document.getElementById('vac-item-currency').value='ARS';
-  document.getElementById('vac-item-day').value='1';document.getElementById('vac-item-expense-fields').classList.remove('hidden');
+  document.getElementById('vac-item-type').value='expense';
+  document.getElementById('vac-item-desc').value='';
+  document.getElementById('vac-item-amount').value='';
+  document.getElementById('vac-item-currency').value='ARS';
+  document.getElementById('vac-item-day').value='1';
+  document.getElementById('vac-item-expense-fields').classList.remove('hidden');
   const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
   document.getElementById('vac-item-shared-section').classList.toggle('hidden',!hasCouple);
   document.getElementById('vac-item-shared').checked=false;
   document.getElementById('modal-vac-item').classList.remove('hidden');
 }
-function onVacItemTypeChange(){document.getElementById('vac-item-expense-fields').classList.toggle('hidden',document.getElementById('vac-item-type').value!=='expense');}
+
+function onVacItemTypeChange() {
+  document.getElementById('vac-item-expense-fields').classList.toggle('hidden', document.getElementById('vac-item-type').value!=='expense');
+}
+
 async function saveVacItem() {
-  const desc=document.getElementById('vac-item-desc').value.trim();if(!desc) return showToast('Agrega una descripcion','error');
+  const desc=document.getElementById('vac-item-desc').value.trim();
+  if (!desc) return showToast('Agrega una descripcion','error');
   const type=document.getElementById('vac-item-type').value;
-  const itemData={id:genId(),vacation_id:S.currentVacId,type,description:desc,done:false,amount:type==='expense'?parseFloat(document.getElementById('vac-item-amount').value)||0:0,currency:type==='expense'?document.getElementById('vac-item-currency').value:'ARS',tc:S.tc.oficial,day:type==='expense'?parseInt(document.getElementById('vac-item-day').value)||1:0,shared:document.getElementById('vac-item-shared').checked,payer:'',split_me:100,created_at:new Date().toISOString()};
+  const itemData={ id:genId(), vacation_id:S.currentVacId, type, description:desc, done:false,
+    amount:  type==='expense'?parseFloat(document.getElementById('vac-item-amount').value)||0:0,
+    currency:type==='expense'?document.getElementById('vac-item-currency').value:'ARS',
+    tc:S.tc.oficial, day:type==='expense'?parseInt(document.getElementById('vac-item-day').value)||1:0,
+    shared:document.getElementById('vac-item-shared').checked, payer:'', split_me:100,
+    created_at:new Date().toISOString() };
   const r=await api('addVacationItem',{uid:S.user.uid,...itemData});
   if(!r.ok) return showToast('Error al guardar','error');
-  S.vacItems.push(itemData);closeModal('modal-vac-item');renderVacDetail(S.currentVacId);renderVacations();showToast('Guardado','success');
+  S.vacItems.push(itemData); closeModal('modal-vac-item'); renderVacDetail(S.currentVacId); renderVacations(); showToast('Guardado','success');
 }
-async function toggleVacItem(id,done) {
-  const item=S.vacItems.find(function(i){return i.id===id;});if(item)item.done=done;
-  await api('updateVacationItem',{id,done});renderVacDetail(S.currentVacId);
+
+async function toggleVacItem(id, done) {
+  const item=S.vacItems.find(function(i){return i.id===id;});
+  if (item) item.done=done;
+  await api('updateVacationItem',{id,done});
+  renderVacDetail(S.currentVacId);
 }
 
 // ─── BOOT ─────────────────────────────────────────
 (async function() {
   const saved=localStorage.getItem('session');
-  if(saved){
-    try{
+  if (saved) {
+    try {
       S.user=JSON.parse(saved);
-      if(!S.user||!S.user.uid) throw new Error('invalid');
+      if (!S.user||!S.user.uid) throw new Error('invalid');
       await initApp();
-    }catch(e){localStorage.removeItem('session');document.getElementById('auth-screen').style.display='flex';}
+    } catch(e) { localStorage.removeItem('session'); document.getElementById('auth-screen').style.display='flex'; }
   } else {
     document.getElementById('auth-screen').style.display='flex';
   }
