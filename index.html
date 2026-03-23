@@ -1247,8 +1247,13 @@ function showAddVacModal() {
 }
 async function saveVac() {
   const name=document.getElementById('vac-name').value.trim();if(!name) return showToast('Agrega un nombre','error');
-  const vacData={id:genId(),uid:S.user.uid,name,start_date:document.getElementById('vac-start').value,end_date:document.getElementById('vac-end').value,budget:parseFloat(document.getElementById('vac-budget').value)||0,currency:document.getElementById('vac-currency').value,created_at:new Date().toISOString()};
-  const r=await api('addVacation',{uid:S.user.uid,...vacData});
+  const vacData={ id:genId(), name,
+    start_date:document.getElementById('vac-start').value,
+    end_date:  document.getElementById('vac-end').value,
+    budget:    parseFloat(document.getElementById('vac-budget').value)||0,
+    currency:  document.getElementById('vac-currency').value,
+    created_at:new Date().toISOString() };
+  const r=await api('addVacation',{ uid: S.user.uid, ...vacData });
   if(!r.ok) return showToast('Error al guardar','error');
   S.vacations.push(vacData);closeModal('modal-vac');showToast('Viaje guardado','success');renderVacations();
 }
