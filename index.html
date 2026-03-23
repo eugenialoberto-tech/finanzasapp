@@ -516,11 +516,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <script>
 const WORKER = 'https://finanzas-proxy.eugenialoberto.workers.dev';
-const GAS    = 'https://script.google.com/macros/s/AKfycbycNYzIFyhrn5G5Yjg1AwET6O-rErf6QHye2d_OnOLUrCP0XGNAv9-ibW-6lS0fHnB8eA/exec';
+const GAS    = 'https://script.google.com/macros/s/AKfycbyeZNCsElkQ7YZnPMdLfIFyFMAWwX5Qld_6Wr8fWGDqhBBAZ4vC3nQMfhfUczQzEYFTLg/exec';
 
 const S = {
   user: null, tx: [], accounts: [], categories: [],
-  vacations: [], vacItems: [], pendingRequests: [],
+  vacations: [], sharedVacations: [], vacItems: [], pendingRequests: [], pendingVacShares: [],
   tc: { oficial: 0 }, txFilter: 'all',
   editTxId: null, editAccId: null, editCatId: null,
   currentVacId: null, fromCatPicker: false,
@@ -1184,23 +1184,71 @@ function cancelCoupleModal() {
 
 function renderPendingRequests() {
   const existing=document.getElementById('couple-requests-banner');if(existing)existing.remove();
-  if(!S.pendingRequests||!S.pendingRequests.length) return;
+  const existingVac=document.getElementById('vac-share-banner');if(existingVac)existingVac.remove();
   const configScreen=document.getElementById('screen-config');
   const firstCard=configScreen.querySelector('.card');if(!firstCard) return;
-  const banner=document.createElement('div');
-  banner.id='couple-requests-banner';banner.className='card';
-  banner.style.cssText='border-color:var(--accent);margin-bottom:12px';
-  banner.innerHTML='<div class="card-title" style="color:var(--accent)">&#x1F46B; Solicitudes de vinculacion</div>'
-    +S.pendingRequests.map(function(req){
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">'
-        +'<div><div style="font-weight:600">'+req.from_name+'</div>'
-        +'<div style="font-size:12px;color:var(--text2)">quiere vincularse como pareja</div></div>'
-        +'<div style="display:flex;gap:6px">'
-        +'<button class="btn btn-primary btn-sm" onclick="respondRequest(\''+req.id+'\',true)">Aceptar</button>'
-        +'<button class="btn btn-secondary btn-sm" onclick="respondRequest(\''+req.id+'\',false)">Rechazar</button>'
-        +'</div></div>';
-    }).join('');
-  configScreen.insertBefore(banner,firstCard);
+
+  // Couple requests
+  if(S.pendingRequests&&S.pendingRequests.length){
+    const banner=document.createElement('div');
+    banner.id='couple-requests-banner';banner.className='card';
+    banner.style.cssText='border-color:var(--accent);margin-bottom:12px';
+    banner.innerHTML='<div class="card-title" style="color:var(--accent)">&#x1F46B; Solicitudes de vinculacion</div>'
+      +S.pendingRequests.map(function(req){
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">'
+          +'<div><div style="font-weight:600">'+req.from_name+'</div>'
+          +'<div style="font-size:12px;color:var(--text2)">quiere vincularse como pareja</div></div>'
+          +'<div style="display:flex;gap:6px">'
+          +'<button class="btn btn-primary btn-sm" onclick="respondRequest(\''+req.id+'\',true)">Aceptar</button>'
+          +'<button class="btn btn-secondary btn-sm" onclick="respondRequest(\''+req.id+'\',false)">Rechazar</button>'
+          +'</div></div>';
+      }).join('');
+    configScreen.insertBefore(banner,firstCard);
+  }
+
+  // Vacation share requests
+  if(S.pendingVacShares&&S.pendingVacShares.length){
+    const banner2=document.createElement('div');
+    banner2.id='vac-share-banner';banner2.className='card';
+    banner2.style.cssText='border-color:var(--blue);margin-bottom:12px';
+    banner2.innerHTML='<div class="card-title" style="color:var(--blue)">&#x2708; Solicitudes de viaje compartido</div>'
+      +S.pendingVacShares.map(function(share){
+        return '<div style="padding:8px 0;border-bottom:1px solid var(--border)">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+          +'<div><div style="font-weight:600">'+share.vacation_name+'</div>'
+          +'<div style="font-size:12px;color:var(--text2)">Tu pareja quiere compartir este viaje</div></div></div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+          +'<input type="number" id="vac-share-budget-'+share.id+'" placeholder="Mi presupuesto" style="padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;outline:none">'
+          +'<select id="vac-share-cur-'+share.id+'" style="padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;outline:none"><option value="ARS">ARS</option><option value="USD">USD</option></select>'
+          +'</div>'
+          +'<div style="display:flex;gap:6px">'
+          +'<button class="btn btn-primary btn-sm" onclick="respondVacShare(\''+share.id+'\',\''+share.vacation_id+'\',true)">Aceptar</button>'
+          +'<button class="btn btn-secondary btn-sm" onclick="respondVacShare(\''+share.id+'\',\''+share.vacation_id+'\',false)">Rechazar</button>'
+          +'</div></div>';
+      }).join('');
+    configScreen.insertBefore(banner2, firstCard);
+  }
+}
+
+async function respondVacShare(shareId, vacationId, accept) {
+  const budget   = accept ? parseFloat(document.getElementById('vac-share-budget-'+shareId).value)||0 : 0;
+  const currency = accept ? document.getElementById('vac-share-cur-'+shareId).value : 'ARS';
+  const r = await api('respondVacShare', { uid: S.user.uid, share_id: shareId, accept, partner_budget: budget, partner_currency: currency });
+  if(!r.ok) return showToast(r.error||'Error','error');
+  S.pendingVacShares = S.pendingVacShares.filter(function(x){return x.id!==shareId;});
+  if(accept && r.accepted) {
+    // Reload shared vacations
+    const svR = await api('getSharedVacations', { uid: S.user.uid });
+    S.sharedVacations = svR.ok && svR.shared_vacations ? svR.shared_vacations : [];
+    // Load items for this vacation
+    const itemsR = await api('getVacationItems', { vacation_id: vacationId });
+    if(itemsR.ok && itemsR.data) S.vacItems = S.vacItems.concat(itemsR.data);
+    showToast('Viaje aceptado', 'success');
+    updateUI();
+  } else {
+    showToast('Solicitud rechazada','');
+  }
+  renderPendingRequests();
 }
 
 async function respondRequest(requestId,accept) {
