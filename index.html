@@ -502,9 +502,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </div>
     <div id="vac-item-shared-section" class="hidden">
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer">
-        <input type="checkbox" id="vac-item-shared" style="width:18px;height:18px">
+        <input type="checkbox" id="vac-item-shared" onchange="onVacItemSharedChange()" style="width:18px;height:18px">
         <span style="font-size:13px">Compartido con pareja</span>
       </label>
+      <div id="vac-item-shared-details" class="hidden">
+        <div class="form-group"><label>Quien pago</label><select id="vac-item-payer"></select></div>
+        <div class="form-group"><label>Mi porcentaje (%)</label><input type="number" id="vac-item-split" value="50" min="0" max="100"></div>
+      </div>
     </div>
     <button class="btn btn-primary btn-full" onclick="saveVacItem()">Guardar</button>
   </div>
@@ -725,7 +729,7 @@ function showScreen(name) {
     if(nav) nav.classList.toggle('active',s===name);
   });
   document.getElementById('topbar-title').textContent={dashboard:'Inicio',tx:'Movimientos',accounts:'Cuentas',couple:'Pareja',vac:'Viajes',config:'Configuracion'}[name]||name;
-  document.getElementById('fab-btn').classList.toggle('hidden',['accounts','couple','config'].includes(name));
+  document.getElementById('fab-btn').classList.toggle('hidden',['accounts','couple','config','vac'].includes(name));
 }
 
 function renderDashboard() {
@@ -1139,8 +1143,21 @@ function renderCouple() {
     if(t.payer===S.user.uid) partnerTotal+=amt*(1-pct); else myTotal+=amt*pct;
   });
   const bal=partnerTotal-myTotal;
-  el.innerHTML='<div class="card"><div class="card-title">Balance con '+(S.user.partner_name||'tu pareja')+'</div>'
+  // Vac balance
+  var vacBalanceHTML='';
+  S.vacations.forEach(function(v){
+    const {balance}=calcVacBalance(v.id);
+    if(balance!==0){
+      const lbl=balance>0?'Te debe '+fmtMoney(balance):'Le debes '+fmtMoney(Math.abs(balance));
+      const col=balance>0?'var(--green)':'var(--red)';
+      vacBalanceHTML+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:13px">&#x2708; '+v.name+'</div>'
+        +'<div style="font-size:13px;font-weight:700;color:'+col+'">'+lbl+'</div></div>';
+    }
+  });
+  el.innerHTML='<div class="card"><div class="card-title">Balance gastos del mes</div>'
     +'<div style="font-size:22px;font-weight:800;margin-top:8px;color:'+(bal>=0?'var(--green)':'var(--red)')+'">'+( bal>=0?'Te deben ':'Debes ')+fmtMoney(Math.abs(bal))+'</div></div>'
+    +(vacBalanceHTML?'<div class="card"><div class="card-title">&#x2708; Balance por viaje</div>'+vacBalanceHTML+'</div>':'')
     +'<div class="card"><div class="card-title">Gastos compartidos ('+shared.length+')</div>'
     +(shared.length?shared.map(function(t){return txItemHTML(t,false);}).join(''):'<div class="empty"><div>Sin gastos compartidos</div></div>')+'</div>';
 }
@@ -1306,18 +1323,70 @@ function showVacDetail(id) {
   document.getElementById('vac-detail-title').textContent=v.name;
   renderVacDetail(id);document.getElementById('modal-vac-detail').classList.remove('hidden');
 }
+function calcVacBalance(id) {
+  // Returns { myTotal, theirTotal, iOwe, theyOwe } all in original currency of each item
+  // We work in ARS equivalent for balance
+  var myTotal=0, balance=0;
+  S.vacItems.filter(function(i){return i.vacation_id===id&&i.type==='expense';}).forEach(function(i){
+    const amt=toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);
+    const isShared=i.shared===true||i.shared==='TRUE';
+    const splitMe=parseFloat(i.split_me||100)/100;
+    if(!isShared) {
+      // Only counts for whoever loaded it — assume current user loaded all non-shared
+      myTotal+=amt;
+    } else {
+      const myShare=amt*splitMe;
+      const theirShare=amt*(1-splitMe);
+      myTotal+=myShare;
+      if(i.payer===S.user.uid) {
+        // I paid the full amount, they owe me their share
+        balance+=theirShare;
+      } else {
+        // They paid, I owe them my share
+        balance-=myShare;
+      }
+    }
+  });
+  return { myTotal, balance };
+}
+
 function renderVacDetail(id) {
   const items=S.vacItems.filter(function(i){return i.vacation_id===id;});
   const expenses=items.filter(function(i){return i.type==='expense';});
   const checks=items.filter(function(i){return i.type==='checklist';});
   const el=document.getElementById('vac-detail-content');if(!el) return;
+
+  // Balance block
+  const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
+  var balanceHTML='';
+  if(hasCouple) {
+    const {myTotal, balance}=calcVacBalance(id);
+    const balanceLabel=balance>0?'Te debe '+fmtMoney(balance):balance<0?'Le debes '+fmtMoney(Math.abs(balance)):'Estamos a mano';
+    const balanceColor=balance>0?'var(--green)':balance<0?'var(--red)':'var(--text2)';
+    balanceHTML='<div style="background:var(--surface2);border-radius:var(--radius);padding:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">'
+      +'<div><div style="font-size:11px;color:var(--text2)">Mi gasto en el viaje</div>'
+      +'<div style="font-size:18px;font-weight:700">'+fmtMoney(myTotal)+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:11px;color:var(--text2)">Balance con '+(S.user.partner_name||'pareja')+'</div>'
+      +'<div style="font-size:16px;font-weight:700;color:'+balanceColor+'">'+balanceLabel+'</div></div>'
+      +'</div>';
+  }
+
   const byDay={};
   expenses.forEach(function(i){const d=i.day||1;if(!byDay[d])byDay[d]=[];byDay[d].push(i);});
-  var html='';
+  var html=balanceHTML;
   Object.keys(byDay).sort(function(a,b){return a-b;}).forEach(function(day){
     const dayTotal=byDay[day].reduce(function(s,i){return s+toARS(parseFloat(i.amount||0),i.currency,i.tc||S.tc.oficial);},0);
     html+='<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Dia '+day+' &mdash; '+fmtMoney(dayTotal)+'</div>'
-      +byDay[day].map(function(i){return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div><div class="tx-info"><div class="tx-desc">'+i.description+'</div><div class="tx-meta">'+i.currency+(i.shared?' &#x1F46B;':'')+'</div></div><div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div><div style="display:flex;gap:4px"><button class="btn btn-secondary btn-sm" onclick="editVacItem(\''+i.id+'\')">&#x270F;</button><button class="btn btn-danger btn-sm" onclick="deleteVacItem(\''+i.id+'\')">&#x1F5D1;</button></div></div>';}).join('')+'</div>';
+      +byDay[day].map(function(i){
+        const isShared=i.shared===true||i.shared==='TRUE';
+        const sharedTag=isShared?(' <span style="font-size:10px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:8px">'+Math.round(parseFloat(i.split_me||50))+'% yo</span>'):'';
+        return '<div class="tx-item"><div class="tx-icon" style="background:#7c6ff722">&#x1F4B8;</div>'
+          +'<div class="tx-info"><div class="tx-desc">'+i.description+sharedTag+'</div>'
+          +'<div class="tx-meta">'+i.currency+(isShared?' &bull; pag\xF3 '+(i.payer===S.user.uid?'yo':(S.user.partner_name||'pareja')):'')+'</div></div>'
+          +'<div class="tx-amount expense">-'+fmtMoney(parseFloat(i.amount||0),i.currency)+'</div>'
+          +'<div style="display:flex;gap:4px"><button class="btn btn-secondary btn-sm" onclick="editVacItem(\''+i.id+'\')">&#x270F;</button>'
+          +'<button class="btn btn-danger btn-sm" onclick="deleteVacItem(\''+i.id+'\')">&#x1F5D1;</button></div></div>';
+      }).join('')+'</div>';
   });
   if(checks.length){
     html+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px">Checklist</div>'
@@ -1333,9 +1402,10 @@ function showAddVacItemModal() {
   document.getElementById('vac-item-currency').value='ARS';
   document.getElementById('vac-item-day').value='1';
   document.getElementById('vac-item-expense-fields').classList.remove('hidden');
+  document.getElementById('vac-item-shared').checked=false;
+  document.getElementById('vac-item-shared-details').classList.add('hidden');
   const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
   document.getElementById('vac-item-shared-section').classList.toggle('hidden',!hasCouple);
-  document.getElementById('vac-item-shared').checked=false;
   document.getElementById('modal-vac-item').classList.remove('hidden');
 }
 
@@ -1348,27 +1418,36 @@ function editVacItem(id) {
   document.getElementById('vac-item-currency').value=item.currency||'ARS';
   document.getElementById('vac-item-day').value=item.day||1;
   document.getElementById('vac-item-expense-fields').classList.toggle('hidden',item.type!=='expense');
+  const isShared=item.shared===true||item.shared==='TRUE';
   const hasCouple=S.user.partner_uid&&(S.user.mode==='both'||S.user.mode==='couple');
   document.getElementById('vac-item-shared-section').classList.toggle('hidden',!hasCouple);
-  document.getElementById('vac-item-shared').checked=item.shared===true||item.shared==='TRUE';
+  document.getElementById('vac-item-shared').checked=isShared;
+  document.getElementById('vac-item-shared-details').classList.toggle('hidden',!isShared);
+  if(isShared){
+    renderVacPayerSelect(item.payer||'');
+    document.getElementById('vac-item-split').value=item.split_me||50;
+  }
   document.getElementById('modal-vac-item').classList.remove('hidden');
 }
 function onVacItemTypeChange(){document.getElementById('vac-item-expense-fields').classList.toggle('hidden',document.getElementById('vac-item-type').value!=='expense');}
 async function saveVacItem() {
   const desc=document.getElementById('vac-item-desc').value.trim();if(!desc) return showToast('Agrega una descripcion','error');
   const type=document.getElementById('vac-item-type').value;
+  const isShared=document.getElementById('vac-item-shared').checked;
+  const payer=isShared?document.getElementById('vac-item-payer').value:'';
+  const splitMe=isShared?parseFloat(document.getElementById('vac-item-split').value||50):100;
   const itemData={
     id: S.editVacItemId || genId(),
     vacation_id:S.currentVacId, type, description:desc,
     amount:  type==='expense'?parseFloat(document.getElementById('vac-item-amount').value)||0:0,
     currency:type==='expense'?document.getElementById('vac-item-currency').value:'ARS',
     tc:S.tc.oficial, day:type==='expense'?parseInt(document.getElementById('vac-item-day').value)||1:0,
-    shared:document.getElementById('vac-item-shared').checked, payer:'', split_me:100,
+    shared:isShared, payer:payer, split_me:splitMe,
     created_at:new Date().toISOString()
   };
   let r;
   if(S.editVacItemId) {
-    r=await api('updateVacationItem',{id:itemData.id, done: false, ...itemData});
+    r=await api('updateVacationItem',{id:itemData.id, ...itemData});
     if(r.ok){const i=S.vacItems.findIndex(function(x){return x.id===S.editVacItemId;});if(i>=0)S.vacItems[i]=itemData;}
   } else {
     r=await api('addVacationItem',{uid:S.user.uid,...itemData});
@@ -1377,6 +1456,18 @@ async function saveVacItem() {
   if(!r.ok) return showToast('Error al guardar','error');
   S.editVacItemId=null;
   closeModal('modal-vac-item');renderVacDetail(S.currentVacId);renderVacations();showToast('Guardado','success');
+}
+
+function renderVacPayerSelect(selected) {
+  const sel=document.getElementById('vac-item-payer');if(!sel) return;
+  sel.innerHTML='<option value="'+S.user.uid+'"'+(selected===S.user.uid?' selected':'')+'>'+S.user.name+' (yo)</option>';
+  if(S.user.partner_uid) sel.innerHTML+='<option value="'+S.user.partner_uid+'"'+(selected===S.user.partner_uid?' selected':'')+'>'+(S.user.partner_name||'Pareja')+'</option>';
+}
+
+function onVacItemSharedChange() {
+  const checked=document.getElementById('vac-item-shared').checked;
+  document.getElementById('vac-item-shared-details').classList.toggle('hidden',!checked);
+  if(checked) renderVacPayerSelect('');
 }
 async function deleteVacItem(id) {
   if(!confirm('Eliminar este item?')) return;
